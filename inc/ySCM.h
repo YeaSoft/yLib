@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/05/25 16:31:53  leopoldo
+ * Added configuration management methods
+ *
  * Revision 1.4  2001/05/25 14:50:07  leopoldo
  * Changed access mode to YService::Open
  *
@@ -64,6 +67,54 @@
  *============================================================================*/
 class YServiceControlManager;
 class YService;
+
+/*=============================================================================
+ * NT API PSEUDOFUNCTIONS REMAPPER
+ *============================================================================*/
+#ifndef YLB_NATIVE_NT_LINKING
+
+#define ChangeServiceConfigA			YlbChangeServiceConfigA
+#define ChangeServiceConfigW			YlbChangeServiceConfigW
+#define ChangeServiceConfig2A			YlbChangeServiceConfig2A
+#define ChangeServiceConfig2W			YlbChangeServiceConfig2W
+#define CloseServiceHandle				YlbCloseServiceHandle
+#define ControlService					YlbControlService
+#define CreateServiceA					YlbCreateServiceA
+#define CreateServiceW					YlbCreateServiceW
+#define DeleteService					YlbDeleteService
+#define EnumDependentServicesA			YlbEnumDependentServicesA
+#define EnumDependentServicesW			YlbEnumDependentServicesW
+#define EnumServicesStatusA				YlbEnumServicesStatusA
+#define EnumServicesStatusW				YlbEnumServicesStatusW
+#define GetServiceKeyNameA				YlbGetServiceKeyNameA
+#define GetServiceKeyNameW				YlbGetServiceKeyNameW
+#define GetServiceDisplayNameA			YlbGetServiceDisplayNameA
+#define GetServiceDisplayNameW			YlbGetServiceDisplayNameW
+#define LockServiceDatabase				YlbLockServiceDatabase
+#define NotifyBootConfigStatus			YlbNotifyBootConfigStatus
+#define OpenSCManagerA					YlbOpenSCManagerA
+#define OpenSCManagerW					YlbOpenSCManagerW
+#define OpenServiceA					YlbOpenServiceA
+#define OpenServiceW					YlbOpenServiceW
+#define QueryServiceConfigA				YlbQueryServiceConfigA
+#define QueryServiceConfigW				YlbQueryServiceConfigW
+#define QueryServiceConfig2A			YlbQueryServiceConfig2A
+#define QueryServiceConfig2W			YlbQueryServiceConfig2W
+#define QueryServiceLockStatusA			YlbQueryServiceLockStatusA
+#define QueryServiceLockStatusW			YlbQueryServiceLockStatusW
+#define QueryServiceObjectSecurity		YlbQueryServiceObjectSecurity
+#define QueryServiceStatus				YlbQueryServiceStatus
+#define RegisterServiceCtrlHandlerA		YlbRegisterServiceCtrlHandlerA
+#define RegisterServiceCtrlHandlerW		YlbRegisterServiceCtrlHandlerW
+#define SetServiceObjectSecurity		YlbSetServiceObjectSecurity
+#define SetServiceStatus				YlbSetServiceStatus
+#define StartServiceCtrlDispatcherA		YlbStartServiceCtrlDispatcherA
+#define StartServiceCtrlDispatcherW		YlbStartServiceCtrlDispatcherW
+#define StartServiceA					YlbStartServiceA
+#define StartServiceW					YlbStartServiceW
+#define UnlockServiceDatabase			YlbUnlockServiceDatabase
+
+#endif //YLB_NATIVE_NT_LINKING
 
 /*=============================================================================
  * TYPE DEFINITIONS
@@ -215,6 +266,306 @@ private:
 #ifdef YLB_ENABLE_INLINE
 #include <ySCM.inl>
 #endif
+
+/*=============================================================================
+ * NT API PSEUDOFUNCTIONS
+ *============================================================================*/
+#ifndef YLB_NATIVE_NT_LINKING
+
+extern "C" {
+
+
+BOOL YLBAPI YlbChangeServiceConfigA (
+	SC_HANDLE	hService,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCSTR		lpBinaryPathName,
+	LPCSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCSTR		lpDependencies,
+	LPCSTR		lpServiceStartName,
+	LPCSTR		lpPassword,
+	LPCSTR		lpDisplayName
+);
+
+BOOL YLBAPI YlbChangeServiceConfigW (
+	SC_HANDLE	hService,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCWSTR		lpBinaryPathName,
+	LPCWSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCWSTR		lpDependencies,
+	LPCWSTR		lpServiceStartName,
+	LPCWSTR		lpPassword,
+	LPCWSTR		lpDisplayName
+);
+
+BOOL YLBAPI YlbChangeServiceConfig2A (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPVOID		lpInfo
+);
+
+BOOL YLBAPI YlbChangeServiceConfig2W (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPVOID		lpInfo
+);
+
+BOOL YLBAPI YlbCloseServiceHandle (
+	SC_HANDLE	hSCObject
+);
+
+BOOL YLBAPI YlbControlService (
+	SC_HANDLE			hService,
+	DWORD				dwControl,
+	LPSERVICE_STATUS	lpServiceStatus
+);
+
+SC_HANDLE YLBAPI YlbCreateServiceA (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpServiceName,
+	LPCSTR		lpDisplayName,
+	DWORD		dwDesiredAccess,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCSTR		lpBinaryPathName,
+	LPCSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCSTR		lpDependencies,
+	LPCSTR		lpServiceStartName,
+	LPCSTR		lpPassword
+);
+
+SC_HANDLE YLBAPI YlbCreateServiceW (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpServiceName,
+	LPCWSTR		lpDisplayName,
+	DWORD		dwDesiredAccess,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCWSTR		lpBinaryPathName,
+	LPCWSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCWSTR		lpDependencies,
+	LPCWSTR		lpServiceStartName,
+	LPCWSTR		lpPassword
+);
+
+BOOL YLBAPI YlbDeleteService (
+	SC_HANDLE	hService
+);
+
+BOOL YLBAPI YlbEnumDependentServicesA (
+	SC_HANDLE				hService,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSA	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned
+);
+
+BOOL YLBAPI YlbEnumDependentServicesW (
+	SC_HANDLE				hService,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSW	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned
+);
+
+BOOL YLBAPI YlbEnumServicesStatusA (
+	SC_HANDLE				hSCManager,
+	DWORD					dwServiceType,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSA	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned,
+	LPDWORD					lpResumeHandle
+);
+
+BOOL YLBAPI YlbEnumServicesStatusW (
+	SC_HANDLE				hSCManager,
+	DWORD					dwServiceType,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSW	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned,
+	LPDWORD					lpResumeHandle
+);
+
+BOOL YLBAPI YlbGetServiceKeyNameA (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpDisplayName,
+	LPSTR		lpServiceName,
+	LPDWORD		lpcchBuffer
+);
+
+BOOL YLBAPI YlbGetServiceKeyNameW (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpDisplayName,
+	LPWSTR		lpServiceName,
+	LPDWORD		lpcchBuffer
+);
+
+BOOL YLBAPI YlbGetServiceDisplayNameA (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpServiceName,
+	LPSTR		lpDisplayName,
+	LPDWORD		lpcchBuffer
+);
+
+BOOL YLBAPI YlbGetServiceDisplayNameW (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpServiceName,
+	LPWSTR		lpDisplayName,
+	LPDWORD		lpcchBuffer
+);
+
+SC_LOCK YLBAPI YlbLockServiceDatabase (
+	SC_HANDLE	hSCManager
+);
+
+BOOL YLBAPI YlbNotifyBootConfigStatus (
+	BOOL	BootAcceptable
+);
+
+SC_HANDLE YLBAPI YlbOpenSCManagerA (
+	LPCSTR	lpMachineName,
+	LPCSTR	lpDatabaseName,
+	DWORD	dwDesiredAccess
+);
+
+SC_HANDLE YLBAPI YlbOpenSCManagerW (
+	LPCWSTR	lpMachineName,
+	LPCWSTR	lpDatabaseName,
+	DWORD	dwDesiredAccess
+);
+
+SC_HANDLE YLBAPI YlbOpenServiceA (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpServiceName,
+	DWORD		dwDesiredAccess
+);
+
+SC_HANDLE YLBAPI YlbOpenServiceW (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpServiceName,
+	DWORD		dwDesiredAccess
+);
+
+BOOL YLBAPI YlbQueryServiceConfigA (
+	SC_HANDLE				hService,
+	LPQUERY_SERVICE_CONFIGA	lpServiceConfig,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded
+);
+
+BOOL YLBAPI YlbQueryServiceConfigW (
+	SC_HANDLE				hService,
+	LPQUERY_SERVICE_CONFIGW	lpServiceConfig,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded
+);
+
+BOOL YLBAPI YlbQueryServiceConfig2A (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPBYTE		lpBuffer,
+	DWORD		cbBufSize,
+	LPDWORD		pcbBytesNeeded
+);
+
+BOOL YLBAPI YlbQueryServiceConfig2W (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPBYTE		lpBuffer,
+	DWORD		cbBufSize,
+	LPDWORD		pcbBytesNeeded
+);
+
+BOOL YLBAPI YlbQueryServiceLockStatusA (
+	SC_HANDLE						hSCManager,
+	LPQUERY_SERVICE_LOCK_STATUSA	lpLockStatus,
+	DWORD							cbBufSize,
+	LPDWORD							pcbBytesNeeded
+);
+
+BOOL YLBAPI YlbQueryServiceLockStatusW (
+	SC_HANDLE						hSCManager,
+	LPQUERY_SERVICE_LOCK_STATUSW	lpLockStatus,
+	DWORD							cbBufSize,
+	LPDWORD							pcbBytesNeeded
+);
+
+BOOL YLBAPI YlbQueryServiceObjectSecurity (
+	SC_HANDLE				hService,
+	SECURITY_INFORMATION	dwSecurityInformation,
+	PSECURITY_DESCRIPTOR	lpSecurityDescriptor,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded
+);
+
+BOOL YLBAPI YlbQueryServiceStatus (
+	SC_HANDLE			hService,
+	LPSERVICE_STATUS	lpServiceStatus
+);
+
+SERVICE_STATUS_HANDLE YLBAPI YlbRegisterServiceCtrlHandlerA (
+	LPCSTR				lpServiceName,
+	LPHANDLER_FUNCTION	lpHandlerProc
+);
+
+SERVICE_STATUS_HANDLE YLBAPI YlbRegisterServiceCtrlHandlerW (
+	LPCWSTR				lpServiceName,
+	LPHANDLER_FUNCTION	lpHandlerProc
+);
+
+BOOL YLBAPI YlbSetServiceObjectSecurity (
+	SC_HANDLE				hService,
+	SECURITY_INFORMATION	dwSecurityInformation,
+	PSECURITY_DESCRIPTOR	lpSecurityDescriptor
+);
+
+BOOL YLBAPI YlbSetServiceStatus (
+	SERVICE_STATUS_HANDLE	hServiceStatus,
+	LPSERVICE_STATUS		lpServiceStatus
+);
+
+BOOL YLBAPI YlbStartServiceCtrlDispatcherA (
+	CONST SERVICE_TABLE_ENTRYA *	lpServiceStartTable
+);
+
+BOOL YLBAPI YlbStartServiceCtrlDispatcherW (
+	CONST SERVICE_TABLE_ENTRYW *	lpServiceStartTable
+);
+
+BOOL YLBAPI YlbStartServiceA (
+	SC_HANDLE	hService,
+	DWORD		dwNumServiceArgs,
+	LPCSTR *	lpServiceArgVectors
+);
+
+BOOL YLBAPI YlbStartServiceW (
+	SC_HANDLE	hService,
+	DWORD		dwNumServiceArgs,
+	LPCWSTR *	lpServiceArgVectors
+);
+
+BOOL YLBAPI YlbUnlockServiceDatabase (
+	SC_LOCK	ScLock
+);
+
+} //extern "C"
+
+#endif //YLB_NATIVE_NT_LINKING
 
 #endif //__ySCM_h__
 
