@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.8  2001/09/06 11:57:19  leopoldo
+ * Added new initialisation methods
+ *
  * Revision 1.7  2001/05/24 15:16:55  leopoldo
  * Added some new method
  * Changed size variables to int
@@ -47,7 +50,7 @@
  * Added new class YDynamicBuffer
  *
  * Revision 1.3  2000/10/25 09:19:22  leopoldo
- * Added assignment operations
+ * Addd assignment operations
  *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
@@ -78,6 +81,69 @@ class YBuffer;
 /*=============================================================================
  * CLASS DECLARATIONS
  *============================================================================*/
+class YMemBlock
+{
+public:
+	// construction/destruction
+	YMemBlock					() { m_lpPtr = NULL; }
+	YMemBlock					(const YMemBlock &memSrc) { m_lpPtr = memSrc.m_lpPtr; }
+	YMemBlock					(const void *pSrc) { m_lpPtr = static_cast<BYTE *>(const_cast<void *>(pSrc)); }
+	~YMemBlock					() { }
+
+public:
+	// operations
+	void						Attach					(void *lpPtr) { m_lpPtr = static_cast<BYTE *>(lpPtr); }
+	void *						Detach					();
+	void						Move					(void *lpDest, const void *lpSrc, int cbCount) { memmove (lpDest, lpSrc, cbCount); }
+	void						Move					(int iDestOffset, int iSrcOffset, int cbCount) { memmove (m_lpPtr + iDestOffset, m_lpPtr + iSrcOffset, cbCount); }
+	void						Copy					(const void *lpPtr, int cbCount) { memcpy (m_lpPtr, lpPtr, cbCount); }
+	void *						CopyUpTo				(const void *lpPtr, int iChar, int cbCount);
+	void						Fill					(int iValue, int cbCount) { memset (m_lpPtr, iValue, cbCount); }
+	int							Compare					(const void *lpPtr, int cbCount) const { return memcmp (m_lpPtr, lpPtr, cbCount); }
+	int							CompareNoCase			(const void *lpPtr, int cbCount) const { return _memicmp (m_lpPtr, lpPtr, cbCount); }
+
+public:
+	// attributes
+	BOOL						IsNull					() const { return m_lpPtr == NULL; }
+	BOOL						IsNil					() const { return m_lpPtr == NULL; }
+
+public:
+	// attributes
+	operator					LPVOID					() { return m_lpPtr; }
+	operator					LPCVOID					() const { return m_lpPtr; }
+	operator					LPBYTE					() { return m_lpPtr; }
+	operator					const BYTE *			() const { return m_lpPtr; }
+	const BYTE					operator[]				(int iPos) const { return m_lpPtr[iPos]; }
+	BYTE &						operator[]				(int iPos) { return m_lpPtr[iPos]; }
+
+protected:
+	// implementation
+	LPBYTE						m_lpPtr;
+};
+
+class YSizedMemBlock : public YMemBlock
+{
+public:
+	// construction/destruction
+	YSizedMemBlock				() { m_lpPtr = NULL; m_cbSize = 0; }
+	YSizedMemBlock				(const YSizedMemBlock &memSrc) { m_lpPtr = memSrc.m_lpPtr; m_cbSize = memSrc.m_cbSize; }
+	YSizedMemBlock				(const void *pSrc, int cbSize);
+	~YSizedMemBlock				() { }
+
+public:
+	// operations
+	BOOL						Attach					(void *lpPtr, int cbSize);
+	void *						Detach					(int *lpcbSize = NULL);
+
+public:
+	// attributes
+	int							GetSize					() const;
+
+protected:
+	// implementation
+	int						m_cbSize;
+};
+
 class YBuffer
 {
 private:

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.7  2001/05/28 15:24:48  leopoldo
+ * Fixed YDynamicBuffer::IsEmpty
+ *
  * Revision 1.6  2001/05/24 15:16:55  leopoldo
  * Added some new method
  * Changed size variables to int
@@ -57,6 +60,31 @@
 /*=============================================================================
  * @doc YLIB | yBuffer.h
  *============================================================================*/
+YLB_INLINE void * YMemBlock::CopyUpTo (const void *lpPtr, int iChar, int cbCount)
+{
+	void *lpRes = _memccpy (m_lpPtr, lpPtr, iChar, cbCount);
+	return (lpRes) ? (lpRes) : (m_lpPtr + cbCount);
+}
+
+YLB_INLINE void * YMemBlock::Detach ()
+{
+	void *lpPtr = m_lpPtr;
+	m_lpPtr = NULL;
+	return lpPtr;
+}
+
+YLB_INLINE YSizedMemBlock::YSizedMemBlock (const void *pSrc, int cbSize)
+{
+	ASSERTY((!pSrc && !cbSize) || (pSrc && (cbSize >= 0)));
+	m_lpPtr		= static_cast<BYTE *>(const_cast<void *>(pSrc));
+	m_cbSize	= cbSize;
+}
+
+YLB_INLINE int YSizedMemBlock::GetSize () const
+{
+	return m_cbSize;
+}
+
 YLB_INLINE YBuffer::YBuffer ()
 {
 	m_cbSize	= 0;

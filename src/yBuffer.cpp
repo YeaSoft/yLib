@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.9  2001/09/06 11:57:08  leopoldo
+ * Added new initialisation methods
+ *
  * Revision 1.8  2001/05/24 15:17:31  leopoldo
  * Added some new method
  * Changed size variables to int
@@ -65,6 +68,31 @@
 /*=============================================================================
  * @doc YLIB | yBuffer.h
  *============================================================================*/
+
+/*=============================================================================
+ * SIZED MEMORY BLOCK IMPLEMENTATION
+ *============================================================================*/
+BOOL YSizedMemBlock::Attach (void *lpPtr, int cbSize)
+{
+	ASSERTY((!lpPtr && !cbSize) || (lpPtr && cbSize >= 0));
+	if ( cbSize < 0 ) {
+		return FALSE;
+	}
+	m_lpPtr		= static_cast<LPBYTE>(lpPtr);
+	m_cbSize	= cbSize;
+	return TRUE;
+}
+
+void * YSizedMemBlock::Detach (int *lpcbSize)
+{
+	if ( lpcbSize ) {
+		*lpcbSize = m_cbSize;
+	}
+	void *lpRet	= m_lpPtr;
+	m_lpPtr		= NULL;
+	m_cbSize	= 0;
+	return lpRet;
+}
 
 /*=============================================================================
  * SIMPLE BUFFER IMPLEMENTATION
