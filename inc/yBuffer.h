@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/10/25 09:19:22  leopoldo
+ * Added assignment operations
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -70,6 +73,7 @@ private:
 public:
 	// construction/destruction
 	YBuffer						();
+	YBuffer						(LPVOID lpBuffer, UINT cbSize);
 	~YBuffer					();
 
 public:
@@ -80,7 +84,7 @@ public:
 	BOOL						Realloc					(UINT cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
 	void						Free					();
 	void						Clear					(int iFill = 0);
-	BOOL						Copy					(const YBuffer &srcBuffer, BOOL bDontReallocIfFits = FALSE);
+	BOOL						Copy					(const YBuffer &srcBuffer, BOOL bDontReallocIfFits = TRUE);
 
 public:
 	// operators
@@ -89,13 +93,63 @@ public:
 public:
 	// attributes
 	UINT						GetSize					() const;
-	LPVOID						GetBuffer				() const;
-	operator					LPVOID					() const;
+	LPVOID						GetBuffer				();
+	LPCVOID						GetBuffer				() const;
+	LPBYTE						GetByteBufferPtr		(int iOffset = 0);
+	operator					LPVOID					();
+	operator					LPCVOID					() const;
+	operator					LPBYTE					();
 
 protected:
 	// implementation
 	UINT						m_cbSize;
 	LPVOID						m_lpPtr;
+};
+
+class YDynamicBuffer : public YBuffer
+{
+private:
+	// kill these construction methods & operators
+	YDynamicBuffer				(const YBuffer &);
+
+public:
+	// construction/destruction
+	YDynamicBuffer				(UINT nAllocationGranularity = 0);
+	YDynamicBuffer				(LPVOID lpBuffer, UINT cbSize, UINT cbContentSize = 0);
+
+public:
+	// operations
+	void						Attach					(LPVOID lpBuffer, UINT cbSize, UINT cbContentSize = 0);
+	LPVOID						Detach					(LPUINT lpcbContentSize = NULL, LPUINT lpcbSize = NULL);
+	BOOL						Alloc					(UINT cbSize, BOOL fZeroInit = FALSE);
+	BOOL						Realloc					(UINT cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
+	void						Free					();
+	BOOL						FreeExtra				();
+	void						Clear					(int iFill = 0);
+	BOOL						Copy					(const YDynamicBuffer &srcBuffer, BOOL bDontReallocIfFits = TRUE);
+
+	BOOL						PushData				(LPCVOID lpData, UINT cbSize);
+	BOOL						PushString				(LPCSTR pszData);
+	BOOL						PushString				(LPCWSTR pszData);
+	BOOL						PushTerminatedString	(LPCSTR pszData);
+	BOOL						PushTerminatedString	(LPCWSTR pszData);
+
+	BOOL						IncreaseSize			(UINT cbIncrease);
+
+public:
+	// operators
+	YDynamicBuffer &			operator=				(const YDynamicBuffer &srcBuffer) { Copy (srcBuffer, FALSE); return *this; }
+
+public:
+	// attributes
+	UINT						GetContentSize			() const;
+	UINT						GetAllocationIncrease	() const;
+	void						SetAllocationIncrease	(UINT nAllocationIncrease = 0);
+
+protected:
+	// implementation
+	UINT						m_cbContentSize;
+	UINT						m_nAllocationIncrease;
 };
 
 #ifdef YLB_ENABLE_INLINE

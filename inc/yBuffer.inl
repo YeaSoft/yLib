@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:02:56  leo
  * Initial revision
  *
@@ -46,6 +49,13 @@ YLB_INLINE YBuffer::YBuffer ()
 	m_lpPtr		= NULL;
 }
 
+YLB_INLINE YBuffer::YBuffer (LPVOID lpBuffer, UINT cbSize)
+{
+	ASSERTY((!lpBuffer && !cbSize) || (lpBuffer && cbSize));
+	m_lpPtr		= lpBuffer;
+	m_cbSize	= cbSize;
+}
+
 YLB_INLINE YBuffer::~YBuffer ()
 {
 	Free ();
@@ -56,14 +66,34 @@ YLB_INLINE UINT YBuffer::GetSize () const
 	return m_cbSize;
 }
 
-YLB_INLINE LPVOID YBuffer::GetBuffer () const
+YLB_INLINE LPVOID YBuffer::GetBuffer ()
 {
 	return m_lpPtr;
 }
 
-YLB_INLINE YBuffer::operator LPVOID () const
+YLB_INLINE LPCVOID YBuffer::GetBuffer () const
 {
 	return m_lpPtr;
+}
+
+YLB_INLINE LPBYTE YBuffer::GetByteBufferPtr (int iOffset /* = 0 */)
+{
+	return ((LPBYTE) m_lpPtr) + iOffset;
+}
+
+YLB_INLINE YBuffer::operator LPVOID ()
+{
+	return m_lpPtr;
+}
+
+YLB_INLINE YBuffer::operator LPCVOID () const
+{
+	return m_lpPtr;
+}
+
+YLB_INLINE YBuffer::operator LPBYTE ()
+{
+	return (LPBYTE) m_lpPtr;
 }
 
 YLB_INLINE void YBuffer::Clear (int iFill)
@@ -71,6 +101,72 @@ YLB_INLINE void YBuffer::Clear (int iFill)
 	if ( m_lpPtr ) {
 		memset (m_lpPtr, iFill, m_cbSize);
 	}
+}
+
+/////////////////////////////
+
+YLB_INLINE YDynamicBuffer::YDynamicBuffer (UINT nAllocationIncrease /* = 0 */)
+{
+	m_cbContentSize			= 0;
+	m_nAllocationIncrease	= 0;
+}
+
+YLB_INLINE YDynamicBuffer::YDynamicBuffer (LPVOID lpBuffer, UINT cbSize, UINT cbContentSize /* = 0 */) : YBuffer (lpBuffer, cbSize)
+{
+	m_cbContentSize			= (cbContentSize < cbSize) ? (cbContentSize) : (cbSize);
+	m_nAllocationIncrease	= 0;
+}
+
+YLB_INLINE void YDynamicBuffer::Attach (LPVOID lpBuffer, UINT cbSize, UINT cbContentSize /* = 0 */)
+{
+	YBuffer::Attach (lpBuffer, cbSize);
+	m_cbContentSize = (cbContentSize < cbSize) ? (cbContentSize) : (cbSize);
+}
+
+YLB_INLINE void YDynamicBuffer::Free ()
+{
+	YBuffer::Free ();
+	m_cbContentSize	= 0;
+}
+
+YLB_INLINE BOOL YDynamicBuffer::FreeExtra ()
+{
+	return Realloc (m_cbContentSize, FALSE, FALSE);
+}
+
+YLB_INLINE BOOL YDynamicBuffer::PushString (LPCSTR pszData)
+{
+	return PushData (pszData, strlen (pszData));
+}
+
+YLB_INLINE BOOL YDynamicBuffer::PushString (LPCWSTR pszData)
+{
+	return PushData (pszData, wcslen (pszData) * sizeof (WCHAR));
+}
+
+YLB_INLINE BOOL YDynamicBuffer::PushTerminatedString (LPCSTR pszData)
+{
+	return PushData (pszData, strlen (pszData) + 1);
+}
+
+YLB_INLINE BOOL YDynamicBuffer::PushTerminatedString (LPCWSTR pszData)
+{
+	return PushData (pszData, (wcslen (pszData) + 1) * sizeof (WCHAR));
+}
+
+YLB_INLINE UINT YDynamicBuffer::GetContentSize () const
+{
+	return m_cbContentSize;
+}
+
+YLB_INLINE UINT YDynamicBuffer::GetAllocationIncrease () const
+{
+	return m_nAllocationIncrease;
+}
+
+YLB_INLINE void YDynamicBuffer::SetAllocationIncrease (UINT nAllocationIncrease /* = 0 */)
+{
+	m_nAllocationIncrease = nAllocationIncrease;
 }
 
 //

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/04/11 17:03:15  leopoldo
+ * Fixed arroneous free in YBuffer::Realloc
+ *
  * Revision 1.3  2000/10/25 09:18:59  leopoldo
  * Added assignment operations
  *
@@ -50,7 +53,7 @@
  *============================================================================*/
 
 /*=============================================================================
- * IMPLEMENTATION
+ * SIMPLE BUFFER IMPLEMENTATION
  *============================================================================*/
 void YBuffer::Attach (LPVOID lpBuffer, UINT cbSize)
 {
@@ -144,6 +147,120 @@ BOOL YBuffer::Copy (const YBuffer &srcBuffer, BOOL bDontReallocIfFits)
 	m_lpPtr		= lpData;
 	m_cbSize	= srcBuffer.m_cbSize;
 
+	return TRUE;
+}
+
+/*=============================================================================
+ * DYNAMIC BUFFER IMPLEMENTATION
+ *============================================================================*/
+LPVOID YDynamicBuffer::Detach (LPUINT lpcbContentSize /* = NULL */, LPUINT lpcbSize /* = NULL */)
+{
+	if ( lpcbContentSize ) {
+		*lpcbContentSize = m_cbContentSize;
+	}
+	m_cbContentSize = 0;
+	return YBuffer::Detach (lpcbSize);
+}
+
+BOOL YDynamicBuffer::Alloc (UINT cbSize, BOOL fZeroInit)
+{
+	if ( YBuffer::Alloc (cbSize, fZeroInit) ) {
+		m_cbContentSize = 0;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL YDynamicBuffer::Realloc (UINT cbSize, BOOL fAllocCopyFree, BOOL fNoCopy)
+{
+	LPVOID	lpData;
+
+	if ( !m_lpPtr || fAllocCopyFree || !cbSize ) {
+		if ( !(lpData = malloc (cbSize)) ) {
+			return FALSE;
+		}
+		if ( m_lpPtr && !fNoCopy ) {
+			memcpy (lpData, m_lpPtr, min (cbSize, m_cbContentSize));
+		}
+		Free ();
+		m_lpPtr			= lpData;
+		m_cbSize		= cbSize;
+		m_cbContentSize	= min (cbSize, m_cbContentSize);
+		return TRUE;
+	}
+	else {
+		if ( !(lpData = realloc (m_lpPtr, cbSize)) ) {
+			return FALSE;
+		}
+		m_lpPtr			= lpData;
+		m_cbSize		= cbSize;
+		m_cbContentSize	= min (cbSize, m_cbContentSize);
+		return TRUE;
+	}
+}
+
+BOOL YDynamicBuffer::Copy (const YDynamicBuffer &srcBuffer, BOOL bDontReallocIfFits)
+{
+	if ( bDontReallocIfFits && (srcBuffer.m_cbContentSize <= m_cbSize) ) {
+		// avoid risk of failed allocation and avoid fragmentation
+		memcpy (m_lpPtr, srcBuffer.m_lpPtr, srcBuffer.m_cbContentSize);
+		m_cbContentSize			= srcBuffer.m_cbContentSize;
+		m_nAllocationIncrease	= srcBuffer.m_nAllocationIncrease;
+		return TRUE;
+	}
+
+	LPVOID lpData = malloc (srcBuffer.m_cbSize);
+	if ( !lpData ) {
+		// fail without destroying previous content
+		return FALSE;
+	}
+	memcpy (lpData, srcBuffer.m_lpPtr, srcBuffer.m_cbContentSize);
+
+	// free previous
+	Free ();
+	// reassign
+	m_lpPtr					= lpData;
+	m_cbSize				= srcBuffer.m_cbSize;
+	m_cbContentSize			= srcBuffer.m_cbContentSize;
+	m_nAllocationIncrease	= srcBuffer.m_nAllocationIncrease;
+
+	return TRUE;
+}
+
+BOOL YDynamicBuffer::IncreaseSize (UINT cbIncrease)
+{
+	if ( !cbIncrease ) {
+		return TRUE;
+	}
+	UINT cbNewSize = m_cbSize;
+	if ( m_nAllocationIncrease ) {
+		cbNewSize += (((cbIncrease / m_nAllocationIncrease) + 1) * m_nAllocationIncrease);
+	}
+	else {
+		// determine how much to grow the buffer.
+		// if no increase is specified, we grow dynamically:
+		// 1/8 of the buffer size, but not less than 2 times
+		// the requested size and not more than 256 times.
+		cbNewSize += min (max (m_cbSize / 8, 2 * cbIncrease), 256 * cbIncrease);
+	}
+	LPVOID lpData = realloc (m_lpPtr, cbNewSize);
+	if ( !lpData ) {
+		return FALSE;
+	}
+	m_lpPtr		= lpData;
+	m_cbSize	= cbNewSize;
+	return TRUE;
+}
+
+BOOL YDynamicBuffer::PushData (LPCVOID lpData, UINT cbSize)
+{
+	if ( (m_cbContentSize + cbSize) > m_cbSize ) {
+		if ( !IncreaseSize (cbSize) ) {
+			return FALSE;
+		}
+	}
+	memcpy (GetByteBufferPtr (m_cbContentSize), lpData, cbSize);
+	m_cbContentSize += cbSize;
 	return TRUE;
 }
 
