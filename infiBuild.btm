@@ -1,0 +1,25 @@
+echo off
+setLocal
+set bldConf=Debug
+set bldMode=
+set bldFile=
+iff "%1" eq "d" then
+	set bldConf=Debug
+elseiff "%1" eq "r" then
+	set bldConf=Release
+endiff
+iff "%2" eq "r" then
+	set bldMode=/REBUILD
+elseiff "%2" eq "c" then
+	set bldMode=/CLEAN
+endiff
+iff "%3" ne "" then
+	iff not exist %3 then
+		echo Build Log File > %3
+		echo ============== > %3
+	endiff
+	(msdev yLib.dsw /MAKE "yAfc - Win32 Dynamic %bldConf% CRT" %bldMode% %+ set bldErr=%?) | tee /A %3
+else
+	msdev yLib.dsw /MAKE "yAfc - Win32 Dynamic %bldConf% CRT" %bldMode% %+ set bldErr=%?
+endiff
+quit bldErr
