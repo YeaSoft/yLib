@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/09/14 16:19:48  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 /*=============================================================================
  * @doc YLIB | yProfile.h
@@ -123,6 +126,8 @@ public:
 	long						NumberGet				(LPCTSTR lpszValueName, long lDefault) const;
 	// @cmember Returns a numeric value
 	DWORD						NumberGet				(LPCTSTR lpszValueName, DWORD dwDefault) const;
+	// @cmember Returns a numeric value
+	double						NumberGet				(LPCTSTR lpszValueName, double dDefault) const;
 	// @cmember Returns a string value
 	LPCTSTR						StringGet				(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPCTSTR lpszDefault = NULL);
 	// @cmember Returns a string value
@@ -144,6 +149,8 @@ public:
 	bool						NumberSet				(LPCTSTR lpszValueName, long lValue, YFormatFlags fFlags = numberDecimal) const;
 	// @cmember Writes a numeric value
 	bool						NumberSet				(LPCTSTR lpszValueName, DWORD dwValue, YFormatFlags fFlags = numberDecimal) const;
+	// @cmember Writes a numeric value
+	bool						NumberSet				(LPCTSTR lpszValueName, double dValue) const;
 	// @cmember Writes a string value
 	bool						StringSet				(LPCTSTR lpszValueName, LPCTSTR lpszValue) const;
 	// @cmember Writes an expandable string value

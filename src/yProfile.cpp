@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/09/14 16:21:51  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 #include "StdInc.hpp"
 
@@ -228,6 +231,23 @@ DWORD YProfile::NumberGet (LPCTSTR lpszValueName, DWORD dwDefault) const
 	return dwDefault;
 }
 
+double YProfile::NumberGet (LPCTSTR lpszValueName, double dDefault) const
+{
+	if ( !IsOpen () ) {
+		return dDefault;
+	}
+	YString32 ysBuffer;
+	if ( !::GetPrivateProfileString (m_ysSection, lpszValueName, _T(""), ysBuffer.GetBuffer (), ysBuffer.GetBufferSize (), m_ysIniFile) ) {
+		return dDefault;
+	}
+	LPTSTR lpEnd;
+	double dRet = _tcstod (ysBuffer, &lpEnd);
+	if ( lpEnd && (lpEnd != ysBuffer.GetString () + ysBuffer.GetLength ()) ) {
+		return dDefault;
+	}
+	return dRet;
+}
+
 LPCTSTR YProfile::StringGet (LPCTSTR lpszValueName, LPTSTR pszBuffer, UINT cbBuffer, LPCTSTR lpszDefault)
 {
 	CHECK_HELPER(pszBuffer, cbBuffer);
@@ -302,6 +322,13 @@ bool YProfile::NumberSet (LPCTSTR lpszValueName, DWORD dwValue, YFormatFlags fFl
 		ysBuffer.Format (_T("0x%08x"), dwValue);
 		break;
 	}
+	return StringSet (lpszValueName, ysBuffer);
+}
+
+bool YProfile::NumberSet (LPCTSTR lpszValueName, double dValue) const
+{
+	YString32 ysBuffer;
+	ysBuffer.Format (_T("%f"), dValue);
 	return StringSet (lpszValueName, ysBuffer);
 }
 
