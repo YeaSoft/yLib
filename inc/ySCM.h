@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/25 14:28:21  leopoldo
+ * Improved YServiceControlManager::StatusGet
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -179,7 +182,7 @@ public:
 														LPCTSTR	lpServiceStartName = NULL,
 														LPCTSTR	lpPassword = NULL
 														);
-	BOOL						Open					(LPCTSTR pszServiceName, DWORD dwDesiredAccess = GENERIC_EXECUTE);
+	BOOL						Open					(LPCTSTR pszServiceName, DWORD dwDesiredAccess = GENERIC_READ|GENERIC_EXECUTE);
 	void						Close					();
 	BOOL						Delete					(BOOL bAutoClose = TRUE);
 	BOOL						Start					(DWORD dwNumServiceArgs = 0, LPCTSTR *lpServiceArgVectors = NULL) const;
