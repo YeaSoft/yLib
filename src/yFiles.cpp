@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/05/06 18:29:59  leopoldo
+ * Improved YStdioFile::ReadString
+ *
  * Revision 1.4  2001/01/17 17:58:49  leopoldo
  * YStdioFile::WriteString now works with a variable parameter list
  *
@@ -320,7 +323,7 @@ BOOL YStdioFile::Read (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNu
 	if ( !IsValid () ) {
 		return FALSE;
 	}
-	size_t tRead = fread (lpBuffer, nNumberOfBytesToRead, 1, m_pStream);
+	size_t tRead = fread (lpBuffer, 1, nNumberOfBytesToRead, m_pStream);
 	if ( lpNumberOfBytesRead ) {
 		*lpNumberOfBytesRead = tRead;
 	}
@@ -335,7 +338,7 @@ BOOL YStdioFile::Write (LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPDWORD l
 	if ( !IsValid () ) {
 		return FALSE;
 	}
-	size_t tWrite = fwrite (lpBuffer, nNumberOfBytesToWrite, 1, m_pStream);
+	size_t tWrite = fwrite (lpBuffer, 1, nNumberOfBytesToWrite, m_pStream);
 	if ( lpNumberOfBytesWritten ) {
 		*lpNumberOfBytesWritten = tWrite;
 	}
