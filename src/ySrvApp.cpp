@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.7  2001/09/24 12:49:10  leopoldo
+ * Moved destruction of termination event
+ *
  * Revision 1.6  2001/05/31 09:47:32  leopoldo
  * Increased application name size
  *
@@ -796,8 +799,8 @@ void YServiceLogic::OnContinueError (DWORD dwError, LPCTSTR pszCompName, LPCTSTR
 BOOL YServiceLogic::OnRemove (BOOL bStopped)
 {
 	if ( !bStopped ) {
-		_tprintf (_T("FAILURE: The %s service cannot\n"));
-		_tprintf (_T("         be removed because it's currently running.\n"), GetAppDescription ());
+		_tprintf (_T("FAILURE: The %s service cannot\n"), GetAppDescription ());
+		_tprintf (_T("         be removed because it's currently running.\n"));
 		return FALSE;
 	}
 	_tprintf (_T("Removing %s...\n"), GetAppDescription ());
