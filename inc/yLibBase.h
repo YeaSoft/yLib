@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2002/06/03 11:31:45  leopoldo
+ * Added support for YLB_NATIVE_NT_LINKING
+ *
  * Revision 1.5  2002/05/09 11:01:09  leopoldo
  * Made _countof definition dependendent of previous definitions
  *
@@ -68,12 +71,13 @@
 /*=============================================================================
  * These defines are relevant when compiling yLib:
  *
- * YLB_ENABLE_PORTABLE:		Don't use machine specific extension
- * YLB_ENABLE_INLINE:		Activate inlining
- * YLB_ALWAYS_VTABLE:		Deactivates __declspec(novtable) for YObject classes
- * YLB_BIGSTRING_SIZE:		Size for the YBigString fixed string (defaults to 4096)
- * YLB_PACKING:				
- * YLB_NATIVE_NT_LINKING:	Native NT Functions are linked directly
+ * YLB_ENABLE_PORTABLE:		(0)		Don't use machine specific extension
+ * YLB_ENABLE_INLINE:		(1)		Activate inlining
+ * YLB_ALWAYS_VTABLE:		(R)		Deactivates __declspec(novtable) for YObject classes
+ * YLB_BIGSTRING_SIZE:		(4096)	Size for the YBigString fixed string (defaults to 4096)
+ * YLB_PACKING:				(4,8)	Default structure packing
+ * YLB_NATIVE_NT_LINKING:	(0)		Native NT Functions are linked directly
+ * YLB_VERY_OLD_API:		(0)		Windows 95 and NT 3.51 Compatibility
  *============================================================================*/
 #if defined(_M_MRX000) || defined(_M_ALPHA) || defined(_M_PPC)
 #define YLB_PACKING		8
@@ -516,6 +520,12 @@ public: \
 	IMPLEMENT_RUNTIMEINFO(class_name, base_class_name, class_name::CreateObject) \
 
 /*=============================================================================
+ * USEFUL MAKROS
+ *============================================================================*/
+#define VERIFY_POINTER_ASSIGNMENT(p, value) \
+	if ( (p) ) *(p) = (value)
+
+/*=============================================================================
  * HELPER CLASSES
  *============================================================================*/
 struct YRuntimeInfo
@@ -589,356 +599,13 @@ public:
 	// attributes
 	DWORD						GetLastError			() const { return m_dwLastError; }
 	BOOL						SetLastError			(DWORD dwLastError) { m_dwLastError = dwLastError; return  m_dwLastError != NOERROR; }
-	void						SetLastSysError			() { m_dwLastError = ::GetLastError (); }
+	BOOL						SetLastSysError			() { return SetLastError (::GetLastError ()); }
 	BOOL						HasFailed				() const { return m_dwLastError != NOERROR; }
 
 protected:
 	// implementation
 	DWORD						m_dwLastError;
 };
-
-/*=============================================================================
- * NT API PSEUDOFUNCTIONS
- *============================================================================*/
-
-#ifndef YLB_NATIVE_NT_LINKING
-
-#define ChangeServiceConfigA			YlbChangeServiceConfigA
-#define ChangeServiceConfigW			YlbChangeServiceConfigW
-#define ChangeServiceConfig2A			YlbChangeServiceConfig2A
-#define ChangeServiceConfig2W			YlbChangeServiceConfig2W
-#define CloseServiceHandle				YlbCloseServiceHandle
-#define ControlService					YlbControlService
-#define CreateServiceA					YlbCreateServiceA
-#define CreateServiceW					YlbCreateServiceW
-#define DeleteService					YlbDeleteService
-#define EnumDependentServicesA			YlbEnumDependentServicesA
-#define EnumDependentServicesW			YlbEnumDependentServicesW
-#define EnumServicesStatusA				YlbEnumServicesStatusA
-#define EnumServicesStatusW				YlbEnumServicesStatusW
-#define GetServiceKeyNameA				YlbGetServiceKeyNameA
-#define GetServiceKeyNameW				YlbGetServiceKeyNameW
-#define GetServiceDisplayNameA			YlbGetServiceDisplayNameA
-#define GetServiceDisplayNameW			YlbGetServiceDisplayNameW
-#define LockServiceDatabase				YlbLockServiceDatabase
-#define NotifyBootConfigStatus			YlbNotifyBootConfigStatus
-#define OpenSCManagerA					YlbOpenSCManagerA
-#define OpenSCManagerW					YlbOpenSCManagerW
-#define OpenServiceA					YlbOpenServiceA
-#define OpenServiceW					YlbOpenServiceW
-#define QueryServiceConfigA				YlbQueryServiceConfigA
-#define QueryServiceConfigW				YlbQueryServiceConfigW
-#define QueryServiceConfig2A			YlbQueryServiceConfig2A
-#define QueryServiceConfig2W			YlbQueryServiceConfig2W
-#define QueryServiceLockStatusA			YlbQueryServiceLockStatusA
-#define QueryServiceLockStatusW			YlbQueryServiceLockStatusW
-#define QueryServiceObjectSecurity		YlbQueryServiceObjectSecurity
-#define QueryServiceStatus				YlbQueryServiceStatus
-#define RegisterServiceCtrlHandlerA		YlbRegisterServiceCtrlHandlerA
-#define RegisterServiceCtrlHandlerW		YlbRegisterServiceCtrlHandlerW
-#define SetServiceObjectSecurity		YlbSetServiceObjectSecurity
-#define SetServiceStatus				YlbSetServiceStatus
-#define StartServiceCtrlDispatcherA		YlbStartServiceCtrlDispatcherA
-#define StartServiceCtrlDispatcherW		YlbStartServiceCtrlDispatcherW
-#define StartServiceA					YlbStartServiceA
-#define StartServiceW					YlbStartServiceW
-#define UnlockServiceDatabase			YlbUnlockServiceDatabase
-
-extern "C" {
-
-
-BOOL YLBAPI YlbChangeServiceConfigA (
-	SC_HANDLE	hService,
-	DWORD		dwServiceType,
-	DWORD		dwStartType,
-	DWORD		dwErrorControl,
-	LPCSTR		lpBinaryPathName,
-	LPCSTR		lpLoadOrderGroup,
-	LPDWORD		lpdwTagId,
-	LPCSTR		lpDependencies,
-	LPCSTR		lpServiceStartName,
-	LPCSTR		lpPassword,
-	LPCSTR		lpDisplayName
-);
-
-BOOL YLBAPI YlbChangeServiceConfigW (
-	SC_HANDLE	hService,
-	DWORD		dwServiceType,
-	DWORD		dwStartType,
-	DWORD		dwErrorControl,
-	LPCWSTR		lpBinaryPathName,
-	LPCWSTR		lpLoadOrderGroup,
-	LPDWORD		lpdwTagId,
-	LPCWSTR		lpDependencies,
-	LPCWSTR		lpServiceStartName,
-	LPCWSTR		lpPassword,
-	LPCWSTR		lpDisplayName
-);
-
-BOOL YLBAPI YlbChangeServiceConfig2A (
-	SC_HANDLE	hService,
-	DWORD		dwInfoLevel,
-	LPVOID		lpInfo
-);
-
-BOOL YLBAPI YlbChangeServiceConfig2W (
-	SC_HANDLE	hService,
-	DWORD		dwInfoLevel,
-	LPVOID		lpInfo
-);
-
-BOOL YLBAPI YlbCloseServiceHandle (
-	SC_HANDLE	hSCObject
-);
-
-BOOL YLBAPI YlbControlService (
-	SC_HANDLE			hService,
-	DWORD				dwControl,
-	LPSERVICE_STATUS	lpServiceStatus
-);
-
-SC_HANDLE YLBAPI YlbCreateServiceA (
-	SC_HANDLE	hSCManager,
-	LPCSTR		lpServiceName,
-	LPCSTR		lpDisplayName,
-	DWORD		dwDesiredAccess,
-	DWORD		dwServiceType,
-	DWORD		dwStartType,
-	DWORD		dwErrorControl,
-	LPCSTR		lpBinaryPathName,
-	LPCSTR		lpLoadOrderGroup,
-	LPDWORD		lpdwTagId,
-	LPCSTR		lpDependencies,
-	LPCSTR		lpServiceStartName,
-	LPCSTR		lpPassword
-);
-
-SC_HANDLE YLBAPI YlbCreateServiceW (
-	SC_HANDLE	hSCManager,
-	LPCWSTR		lpServiceName,
-	LPCWSTR		lpDisplayName,
-	DWORD		dwDesiredAccess,
-	DWORD		dwServiceType,
-	DWORD		dwStartType,
-	DWORD		dwErrorControl,
-	LPCWSTR		lpBinaryPathName,
-	LPCWSTR		lpLoadOrderGroup,
-	LPDWORD		lpdwTagId,
-	LPCWSTR		lpDependencies,
-	LPCWSTR		lpServiceStartName,
-	LPCWSTR		lpPassword
-);
-
-BOOL YLBAPI YlbDeleteService (
-	SC_HANDLE	hService
-);
-
-BOOL YLBAPI YlbEnumDependentServicesA (
-	SC_HANDLE				hService,
-	DWORD					dwServiceState,
-	LPENUM_SERVICE_STATUSA	lpServices,
-	DWORD					cbBufSize,
-	LPDWORD					pcbBytesNeeded,
-	LPDWORD					lpServicesReturned
-);
-
-BOOL YLBAPI YlbEnumDependentServicesW (
-	SC_HANDLE				hService,
-	DWORD					dwServiceState,
-	LPENUM_SERVICE_STATUSW	lpServices,
-	DWORD					cbBufSize,
-	LPDWORD					pcbBytesNeeded,
-	LPDWORD					lpServicesReturned
-);
-
-BOOL YLBAPI YlbEnumServicesStatusA (
-	SC_HANDLE				hSCManager,
-	DWORD					dwServiceType,
-	DWORD					dwServiceState,
-	LPENUM_SERVICE_STATUSA	lpServices,
-	DWORD					cbBufSize,
-	LPDWORD					pcbBytesNeeded,
-	LPDWORD					lpServicesReturned,
-	LPDWORD					lpResumeHandle
-);
-
-BOOL YLBAPI YlbEnumServicesStatusW (
-	SC_HANDLE				hSCManager,
-	DWORD					dwServiceType,
-	DWORD					dwServiceState,
-	LPENUM_SERVICE_STATUSW	lpServices,
-	DWORD					cbBufSize,
-	LPDWORD					pcbBytesNeeded,
-	LPDWORD					lpServicesReturned,
-	LPDWORD					lpResumeHandle
-);
-
-BOOL YLBAPI YlbGetServiceKeyNameA (
-	SC_HANDLE	hSCManager,
-	LPCSTR		lpDisplayName,
-	LPSTR		lpServiceName,
-	LPDWORD		lpcchBuffer
-);
-
-BOOL YLBAPI YlbGetServiceKeyNameW (
-	SC_HANDLE	hSCManager,
-	LPCWSTR		lpDisplayName,
-	LPWSTR		lpServiceName,
-	LPDWORD		lpcchBuffer
-);
-
-BOOL YLBAPI YlbGetServiceDisplayNameA (
-	SC_HANDLE	hSCManager,
-	LPCSTR		lpServiceName,
-	LPSTR		lpDisplayName,
-	LPDWORD		lpcchBuffer
-);
-
-BOOL YLBAPI YlbGetServiceDisplayNameW (
-	SC_HANDLE	hSCManager,
-	LPCWSTR		lpServiceName,
-	LPWSTR		lpDisplayName,
-	LPDWORD		lpcchBuffer
-);
-
-SC_LOCK YLBAPI YlbLockServiceDatabase (
-	SC_HANDLE	hSCManager
-);
-
-BOOL YLBAPI YlbNotifyBootConfigStatus (
-	BOOL	BootAcceptable
-);
-
-SC_HANDLE YLBAPI YlbOpenSCManagerA (
-	LPCSTR	lpMachineName,
-	LPCSTR	lpDatabaseName,
-	DWORD	dwDesiredAccess
-);
-
-SC_HANDLE YLBAPI YlbOpenSCManagerW (
-	LPCWSTR	lpMachineName,
-	LPCWSTR	lpDatabaseName,
-	DWORD	dwDesiredAccess
-);
-
-SC_HANDLE YLBAPI YlbOpenServiceA (
-	SC_HANDLE	hSCManager,
-	LPCSTR		lpServiceName,
-	DWORD		dwDesiredAccess
-);
-
-SC_HANDLE YLBAPI YlbOpenServiceW (
-	SC_HANDLE	hSCManager,
-	LPCWSTR		lpServiceName,
-	DWORD		dwDesiredAccess
-);
-
-BOOL YLBAPI YlbQueryServiceConfigA (
-	SC_HANDLE				hService,
-	LPQUERY_SERVICE_CONFIGA	lpServiceConfig,
-	DWORD					cbBufSize,
-	LPDWORD					pcbBytesNeeded
-);
-
-BOOL YLBAPI YlbQueryServiceConfigW (
-	SC_HANDLE				hService,
-	LPQUERY_SERVICE_CONFIGW	lpServiceConfig,
-	DWORD					cbBufSize,
-	LPDWORD					pcbBytesNeeded
-);
-
-BOOL YLBAPI YlbQueryServiceConfig2A (
-	SC_HANDLE	hService,
-	DWORD		dwInfoLevel,
-	LPBYTE		lpBuffer,
-	DWORD		cbBufSize,
-	LPDWORD		pcbBytesNeeded
-);
-
-BOOL YLBAPI YlbQueryServiceConfig2W (
-	SC_HANDLE	hService,
-	DWORD		dwInfoLevel,
-	LPBYTE		lpBuffer,
-	DWORD		cbBufSize,
-	LPDWORD		pcbBytesNeeded
-);
-
-BOOL YLBAPI YlbQueryServiceLockStatusA (
-	SC_HANDLE						hSCManager,
-	LPQUERY_SERVICE_LOCK_STATUSA	lpLockStatus,
-	DWORD							cbBufSize,
-	LPDWORD							pcbBytesNeeded
-);
-
-BOOL YLBAPI YlbQueryServiceLockStatusW (
-	SC_HANDLE						hSCManager,
-	LPQUERY_SERVICE_LOCK_STATUSW	lpLockStatus,
-	DWORD							cbBufSize,
-	LPDWORD							pcbBytesNeeded
-);
-
-BOOL YLBAPI YlbQueryServiceObjectSecurity (
-	SC_HANDLE				hService,
-	SECURITY_INFORMATION	dwSecurityInformation,
-	PSECURITY_DESCRIPTOR	lpSecurityDescriptor,
-	DWORD					cbBufSize,
-	LPDWORD					pcbBytesNeeded
-);
-
-BOOL YLBAPI YlbQueryServiceStatus (
-	SC_HANDLE			hService,
-	LPSERVICE_STATUS	lpServiceStatus
-);
-
-SERVICE_STATUS_HANDLE YLBAPI YlbRegisterServiceCtrlHandlerA (
-	LPCSTR				lpServiceName,
-	LPHANDLER_FUNCTION	lpHandlerProc
-);
-
-SERVICE_STATUS_HANDLE YLBAPI YlbRegisterServiceCtrlHandlerW (
-	LPCWSTR				lpServiceName,
-	LPHANDLER_FUNCTION	lpHandlerProc
-);
-
-BOOL YLBAPI YlbSetServiceObjectSecurity (
-	SC_HANDLE				hService,
-	SECURITY_INFORMATION	dwSecurityInformation,
-	PSECURITY_DESCRIPTOR	lpSecurityDescriptor
-);
-
-BOOL YLBAPI YlbSetServiceStatus (
-	SERVICE_STATUS_HANDLE	hServiceStatus,
-	LPSERVICE_STATUS		lpServiceStatus
-);
-
-BOOL YLBAPI YlbStartServiceCtrlDispatcherA (
-	CONST SERVICE_TABLE_ENTRYA *	lpServiceStartTable
-);
-
-BOOL YLBAPI YlbStartServiceCtrlDispatcherW (
-	CONST SERVICE_TABLE_ENTRYW *	lpServiceStartTable
-);
-
-BOOL YLBAPI YlbStartServiceA (
-	SC_HANDLE	hService,
-	DWORD		dwNumServiceArgs,
-	LPCSTR *	lpServiceArgVectors
-);
-
-BOOL YLBAPI YlbStartServiceW (
-	SC_HANDLE	hService,
-	DWORD		dwNumServiceArgs,
-	LPCWSTR *	lpServiceArgVectors
-);
-
-BOOL YLBAPI YlbUnlockServiceDatabase (
-	SC_LOCK	ScLock
-);
-
-} //extern "C"
-
-#endif //YLB_NATIVE_NT_LINKING
-
 
 #ifdef YLB_ENABLE_INLINE
 #include <yLibBase.inl>
