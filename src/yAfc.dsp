@@ -315,6 +315,10 @@ SOURCE=..\inc\ySrvApp.inl
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\inc\yArray.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\inc\yBuffer.h
 # End Source File
 # Begin Source File
@@ -412,6 +416,110 @@ SOURCE=..\inc\yUNC.h
 # Begin Source File
 
 SOURCE=..\inc\yVersInfo.h
+# End Source File
+# End Group
+# Begin Group "yLib Inline Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\inc\yArray.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yBuffer.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yConsole.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yCrc32.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yEventSource.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFileObjects.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFiles.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFileTools.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFixStr.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFlags.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yHandle.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yLibBase.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yLogging.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yMailSlots.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yMailSlotServer.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yPipes.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yPipeServer.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yRegistry.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\ySCM.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\ySecDesc.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\ySync.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yThread.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yTokens.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yUNC.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yVersInfo.inl
 # End Source File
 # End Group
 # End Target
