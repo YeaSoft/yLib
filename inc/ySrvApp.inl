@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/04/12 18:50:16  leopoldo
+ * Added YSrvApp::OnCrtDebugReport implementation which excludes
+ * interactive operations
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -55,6 +59,11 @@ YLB_INLINE void YServiceCmdLineParser::ShowExtro ()
 {
 }
 
+YLB_INLINE void YServiceCmdLineParser::ShowServices ()
+{
+	ASSERTY(YlbGetSrv ());
+	ShowServices (YlbGetSrv (), YlbGetSrv ()->IsOwnService ());
+}
 
 /*============================================================================*
  * THE SERVICE LOGIC CLASS

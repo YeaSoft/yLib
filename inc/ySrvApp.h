@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/04/12 18:50:16  leopoldo
+ * Added YSrvApp::OnCrtDebugReport implementation which excludes
+ * interactive operations
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -103,7 +107,11 @@ class YServiceCmdLineParser : public YCmdLineParser
 {
 public:
 	// construction
-	YServiceCmdLineParser		(BOOL bAutoParse = TRUE);
+	YServiceCmdLineParser		(BOOL bAutoParse = TRUE, BOOL bCanBeRenamed = FALSE);
+
+public:
+	// attributes
+	BOOL						CanBeRenamed			() const { return m_bCanBeRenamed; }
 
 public:
 	// overridables
@@ -112,11 +120,40 @@ public:
 	virtual void				ShowExtro				();
 	virtual void				ShowServices			();
 
+protected:
+	// usage helpers
+	virtual void				ShowCommands			(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowServices			(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowInstallCommand		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowInstallExplanation	(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowInstallOptions		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowRemoveCommand		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowRemoveExplanation	(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowRemoveOptions		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowStartCommand		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowStartExplanation	(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowStartOptions		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowStopCommand			(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowStopExplanation		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowStopOptions			(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowPauseCommand		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowPauseExplanation	(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowPauseOptions		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowResumeCommand		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowResumeExplanation	(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowResumeOptions		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowSimulateCommand		(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowSimulateExplanation	(YSrvApp *pApp, BOOL bSingle);
+	virtual void				ShowSimulateOptions		(YSrvApp *pApp, BOOL bSingle);
+
 public:
 	// implemented overridables
 	virtual BOOL				OnProcessOption			(BOOL &bTerminate, LPCTSTR &pszOptString, YCmdLineOption &cliOpt);
 	virtual BOOL				OnProcessParam			(BOOL &bTerminate, YCmdLineParam &cliPar);
 	virtual BOOL				OnFinalCheck			();
+
+protected:
+	BOOL						m_bCanBeRenamed;
 };
 
 /*============================================================================*
@@ -197,6 +234,7 @@ public:
 
 public:
 	// advanced overridables
+	virtual BOOL				OnServiceRename			(BOOL bFromServiceMain, LPCTSTR pszNewName);
 	virtual void				OnReportStatus			(DWORD dwState, DWORD &dwControlsAccepted);
 
 public:
