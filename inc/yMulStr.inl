@@ -32,18 +32,54 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/05/18 16:00:44  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
  * MULTISTRING CLASS IMPLEMENTATION
  *============================================================================*/
-YLB_INLINE YMultiString::YMultiString () : YStringData (NULL, 0)
+YLB_INLINE YMultiString::YMultiString ()
 {
 }
 
 YLB_INLINE YMultiString::~YMultiString ()
 {
-	Free ();
+}
+
+YLB_INLINE BOOL YMultiString::IsEmpty () const
+{
+	return !GetBuffer () || (GetBufferSize () < 2) || (!GetBuffer ()[0] && !GetBuffer ()[1]);
+}
+
+YLB_INLINE LPCTSTR YMultiString::GetString	() const
+{
+	return (IsEmpty ()) ? (_T("\0\0")) : (GetBuffer ());
+}
+
+YLB_INLINE LPCTSTR YMultiString::GetNullForEmptyString	() const
+{
+	return (IsEmpty ()) ? (NULL) : (GetBuffer ());
+}
+
+YLB_INLINE ITERATOR YMultiString::GetFirstStringPosition () const
+{
+	return (IsEmpty ()) ? (NULL) : ((ITERATOR) GetBuffer ());
+}
+
+YLB_INLINE void YMultiString::Empty (BOOL bFreeExtra /* = FALSE */)
+{
+	m_dbStorage.Empty (bFreeExtra);
+}
+
+YLB_INLINE BOOL YMultiString::Prepare (int cbSize)
+{
+	if ( Alloc (cbSize) ) {
+		m_dbStorage.SetContentSize (cbSize);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 //

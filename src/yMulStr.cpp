@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/05/18 16:01:06  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdInc.hpp"
@@ -43,6 +46,109 @@
 /*=============================================================================
  * MULTISTRING CLASS IMPLEMENTATION
  *============================================================================*/
+int YMultiString::GetStringCount () const
+{
+	if ( IsEmpty () ) {
+		return 0;
+	}
+
+	int iRet = 0;
+
+	for ( LPCTSTR lpPtr = GetBuffer (); *lpPtr; lpPtr += _tcslen (lpPtr) + 1 ) {
+		++iRet;
+	}
+	return iRet;
+}
+
+ITERATOR YMultiString::GetLastStringPosition () const
+{
+	if ( IsEmpty () ) {
+		return NULL;
+	}
+
+	// find the beginning of the last string
+	for ( LPCTSTR lpPtr = GetBufferLast (); lpPtr && *lpPtr && (lpPtr > GetBuffer ()); lpPtr-- ) {
+		/*TUNIX*/
+	}
+
+	if ( !lpPtr || (lpPtr == GetBuffer ()) ) {
+		// empty or first string reached
+		return (ITERATOR) lpPtr;
+	}
+
+	return  (ITERATOR) lpPtr - 1;
+}
+
+LPCTSTR YMultiString::GetNext (ITERATOR &pos) const
+{
+	LPCTSTR lpPtr = (LPCTSTR) pos;
+
+	if ( IsEmpty () || (lpPtr < GetBuffer ()) || (lpPtr > (LPCTSTR) m_dbStorage.GetByteBufferPtr (m_dbStorage.GetContentSize() - sizeof (TCHAR))) ) {
+		// junk pos
+		pos = NULL;
+		return NULL;
+	}
+
+	if ( !*lpPtr ) {
+		// SNH: end of multistring
+		pos = NULL;
+	}
+	else {
+		// go one further
+		pos = (ITERATOR) (lpPtr + _tcslen (lpPtr) + 1);
+		if ( !*((LPCTSTR) pos) ) {
+			// end of multistring
+			pos = NULL;
+		}
+	}
+
+	return lpPtr;
+}
+
+LPCTSTR YMultiString::GetPrev (ITERATOR &pos) const
+{
+	LPCTSTR lpPtr = (LPCTSTR) pos;
+
+	if ( IsEmpty () || (lpPtr < GetBuffer ()) || (lpPtr >= (LPCTSTR) m_dbStorage.GetByteBufferPtr (m_dbStorage.GetContentSize())) ) {
+		// junk pos
+		pos = NULL;
+		return NULL;
+	}
+
+	if ( lpPtr == GetBuffer () ) {
+		// this was the last string
+		pos = NULL;
+	}
+	else {
+		// lets go back
+		for ( LPCTSTR lpTest = lpPtr - 1; *lpTest && (lpTest > GetBuffer ()); lpTest-- ) {
+			/*TUNIX*/
+		}
+		if ( lpTest == GetBuffer () ) {
+			// reached first string
+			pos = (ITERATOR) GetBuffer ();
+		}
+		else {
+			pos = (ITERATOR) lpTest - 1;
+		}
+	}
+	return lpPtr;
+}
+
+BOOL YMultiString::Alloc (int cbSize)
+{
+	if ( cbSize < 2 ) {
+		return FALSE;
+	}
+	if ( !m_dbStorage.Alloc (cbSize * sizeof (TCHAR)) ) {
+		return FALSE;
+	}
+	GetBuffer ()[0] = 0;
+	GetBuffer ()[1] = 0;
+	return TRUE;
+}
+
+/*
 BOOL YMultiString::Alloc (UINT cbSize, BOOL bEmpty)
 {
 	if ( cbSize < 2) {
@@ -79,6 +185,7 @@ void YMultiString::Free ()
 	m_pszString	= NULL;
 	m_cbSize	= 0;
 }
+*/
 
 #ifndef YLB_ENABLE_INLINE
 #include <yMulStr.inl>

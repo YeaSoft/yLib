@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/05/18 16:00:44  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -43,6 +46,9 @@
 /*=============================================================================
  * RELATED INCLUDES
  *============================================================================*/
+#ifndef __yBuffer_h__
+#include <yBuffer.h>
+#endif
 #ifndef __yFixStr_h__
 #include <yFixStr.h>
 #endif
@@ -54,7 +60,7 @@
 /*=============================================================================
  * MULTISTRING CLASS DECLARATION
  *============================================================================*/
-class YMultiString : public YStringData
+class YMultiString
 {
 private:
 	// kill these construction methods & operators
@@ -66,15 +72,42 @@ public:
 	~YMultiString				();
 
 public:
-	// allocation
-	BOOL						Alloc					(UINT cbSize, BOOL bEmpty = TRUE);
-	void						Free					();
+	// attributes
+	BOOL						IsEmpty					() const;
+	LPCTSTR						GetString				() const;
+	LPCTSTR						GetNullForEmptyString	() const;
+	int							GetStringCount			() const;
+
+	ITERATOR					GetFirstStringPosition	() const;
+	ITERATOR					GetLastStringPosition	() const;
+	LPCTSTR						GetNext					(ITERATOR &pos) const;
+	LPCTSTR						GetPrev					(ITERATOR &pos) const;
+
+	LPTSTR						GetBuffer				() { return (LPTSTR) m_dbStorage.GetBuffer (); }
+	LPCTSTR						GetBuffer				() const { return (LPCTSTR) m_dbStorage.GetBuffer (); }
+	UINT						GetBufferSize			() const { return m_dbStorage.GetContentSize () / sizeof (TCHAR); }
+	UINT						GetBufferSizeInBytes	() const { return m_dbStorage.GetContentSize (); }
 
 public:
-	// attributes
-	UINT						GetLength				() const;
-	BOOL						IsEmpty					() const;
-	void						Empty					();
+	// operations
+	void						Empty					(BOOL bFreeExtra = FALSE);
+	BOOL						Alloc					(int cbSize);
+	BOOL						Prepare					(int cbSize);
+
+public:
+	// operators
+
+protected:
+	// implementation
+	BOOL						IsBufferEmpty			() const { return m_dbStorage.IsEmpty (); }
+	LPTSTR						GetBufferNext			() { return (LPTSTR) m_dbStorage.GetByteBufferPtr (m_dbStorage.GetContentSize() - sizeof (TCHAR)); }
+	LPCTSTR						GetBufferNext			() const { return (LPCTSTR) m_dbStorage.GetByteBufferPtr (m_dbStorage.GetContentSize() - sizeof (TCHAR)); }
+	LPTSTR						GetBufferLast			() { return (LPTSTR) m_dbStorage.GetByteBufferPtr (m_dbStorage.GetContentSize() - 2 * sizeof (TCHAR)); }
+	LPCTSTR						GetBufferLast			() const { return (LPCTSTR) m_dbStorage.GetByteBufferPtr (m_dbStorage.GetContentSize() - 2 * sizeof (TCHAR)); }
+	
+protected:
+	// implementation
+	YDynamicBuffer				m_dbStorage;
 };
 
 #ifdef YLB_ENABLE_INLINE
