@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.9  2001/05/06 18:28:12  leopoldo
+ * Improved YPathString::GetFileExtension
+ *
  * Revision 1.8  2001/04/25 12:28:01  leopoldo
  * Added IsAbsolute, IsRelative and IsUNC to YPathString
  *
@@ -336,6 +339,14 @@ YLB_INLINE void YFixedString::MakeReverse ()
 	_tcsrev (m_pszString);
 }
 
+YLB_INLINE void YFixedString::Cut (UINT cbLen)
+{
+	ASSERTY(m_pszString);
+	if ( cbLen < m_cbSize ) {
+		m_pszString[cbLen] = 0;
+	}
+}
+
 YLB_INLINE int YFixedString::Find (TCHAR ch) const
 {
 	LPCTSTR lpPtr = FindPtr (ch);
@@ -625,6 +636,11 @@ YLB_INLINE BOOL YPathString::IsAbsolute () const
 YLB_INLINE BOOL YPathString::IsRelative () const
 {
 	return !IsAbsolute ();
+}
+
+YLB_INLINE BOOL YPathString::IsRoot () const
+{
+	return (m_szData[0] == _T('\\')) && (m_szData[1] != _T('\\'));
 }
 
 YLB_INLINE BOOL YPathString::IsUNC () const

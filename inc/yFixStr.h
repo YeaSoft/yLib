@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.13  2001/05/06 18:26:52  leopoldo
+ * Switched to template based predefined fixed strings
+ *
  * Revision 1.12  2001/04/25 12:28:01  leopoldo
  * Added IsAbsolute, IsRelative and IsUNC to YPathString
  *
@@ -160,6 +163,8 @@ public:
 	UINT						GetLength				() const;
 	BOOL						IsEmpty					() const;
 	void						Empty					();
+	void						Fill					(WCHAR ch, UINT cSize = (UINT) -1);
+	void						Fill					(char ch, UINT cSize = (UINT) -1);
 	TCHAR						GetAt					(UINT nIndex) const;
 	TCHAR						operator[]				(UINT nIndex) const;
 	void						SetAt					(UINT nIndex, TCHAR ch);
@@ -262,6 +267,7 @@ public:
 	void						TrimLeft				(LPCTSTR lpszTargets);
 
 	// shortening
+	void						Cut						(UINT cbLen);
 	void						Terminate				(TCHAR cTermChar);
 	void						ReverseTerminate		(TCHAR cTermChar);
 	void						Terminate				(LPCTSTR lpszTermCharSet);
@@ -301,6 +307,10 @@ public:
 	void YLB_CDECL				FormatMessage			(UINT nFormatID, ...);
 
 	BOOL						LoadString				(UINT nID);
+
+	// complex formatting
+	void						BufferToHex				(LPCVOID lpBuffer, UINT cbSize, TCHAR chDivisor = 0);
+	BOOL						HexToBuffer				(LPVOID lpBuffer, UINT cbSize) const;
 
 	// ANSI <-> OEM support (convert string in place)
 #ifndef _UNICODE
@@ -524,6 +534,7 @@ public:
 
 	BOOL						IsAbsolute				() const;
 	BOOL						IsRelative				() const;
+	BOOL						IsRoot					() const;
 	BOOL						IsUNC					() const;
 
 private:
