@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/07/05  13:46:46  leo
+ * Added the YUserName class
+ *
  * Revision 1.2  2000/07/05  13:26:39  leo
  * Added the "TerminateAfter" methods
  *
@@ -231,6 +234,12 @@ public:
 	int							FindOneOf				(LPCTSTR lpszCharSet) const;
 	int							Find					(LPCTSTR lpszSub) const;
 	int							Find					(LPCTSTR lpszSub, int nStart) const;
+	LPCTSTR						FindPtr					(TCHAR ch) const;
+	LPCTSTR						ReverseFindPtr			(TCHAR ch) const;
+	LPCTSTR						FindPtr					(TCHAR ch, int nStart) const;
+	LPCTSTR						FindOneOfPtr			(LPCTSTR lpszCharSet) const;
+	LPCTSTR						FindPtr					(LPCTSTR lpszSub) const;
+	LPCTSTR						FindPtr					(LPCTSTR lpszSub, int nStart) const;
 
 	// simple formatting
 	void YLB_CDECL				Format					(LPCTSTR lpszFormat, ...);

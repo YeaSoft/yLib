@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/07/05  13:46:34  leo
+ * Added the YUserName class
+ *
  * Revision 1.2  2000/07/05  13:30:38  leo
  * Added the "TerminateAfter" methods
  *
@@ -830,7 +833,7 @@ int YFixedString::Delete (int nIndex, int nCount /* = 1 */)
 	return nLength;
 }
 
-int YFixedString::Find(TCHAR ch, int nStart) const
+LPCTSTR YFixedString::FindPtr (TCHAR ch, int nStart) const
 {
 	ASSERTY(m_pszString);
 
@@ -838,14 +841,13 @@ int YFixedString::Find(TCHAR ch, int nStart) const
 		nStart = 0;
 	}
 	if ( (UINT) nStart >= GetLength () ) {
-		return -1;
+		return NULL;
 	}
 
-	LPTSTR lpPtr = _tcschr (m_pszString + nStart, (_TUCHAR) ch);
-	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
+	return _tcschr (m_pszString + nStart, (_TUCHAR) ch);
 }
 
-int YFixedString::Find (LPCTSTR lpszSub, int nStart) const
+LPCTSTR YFixedString::FindPtr (LPCTSTR lpszSub, int nStart) const
 {
 	ASSERTY(m_pszString);
 	ASSERTY(YlbIsValidString(lpszSub));
@@ -854,11 +856,10 @@ int YFixedString::Find (LPCTSTR lpszSub, int nStart) const
 		nStart = 0;
 	}
 	if ( (UINT) nStart >= GetLength () ) {
-		return -1;
+		return NULL;
 	}
 
-	LPTSTR lpPtr = _tcsstr (m_pszString + nStart, lpszSub);
-	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
+	return _tcsstr (m_pszString + nStart, lpszSub);
 }
 
 void YLB_CDECL YFixedString::Format(LPCTSTR lpszFormat, ...)

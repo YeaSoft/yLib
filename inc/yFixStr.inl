@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:03:09  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -301,32 +304,64 @@ YLB_INLINE void YFixedString::MakeReverse ()
 
 YLB_INLINE int YFixedString::Find (TCHAR ch) const
 {
-	ASSERTY(m_pszString);
-	LPCTSTR lpPtr = _tcschr (m_pszString, (_TUCHAR) ch);
+	LPCTSTR lpPtr = FindPtr (ch);
 	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
 }
 
 YLB_INLINE int YFixedString::ReverseFind (TCHAR ch) const
 {
-	ASSERTY(m_pszString);
-	LPCTSTR lpPtr = _tcsrchr (m_pszString, (_TUCHAR) ch);
+	LPCTSTR lpPtr = ReverseFindPtr (ch);
+	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
+}
+
+YLB_INLINE int YFixedString::Find (TCHAR ch, int nStart) const
+{
+	LPCTSTR lpPtr = FindPtr (ch, nStart);
 	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
 }
 
 YLB_INLINE int YFixedString::FindOneOf (LPCTSTR lpszCharSet) const
 {
-	ASSERTY(m_pszString);
-	ASSERTY(YlbIsValidString(lpszCharSet));
-	LPTSTR lpPtr = _tcspbrk (m_pszString, lpszCharSet);
+	LPCTSTR lpPtr = FindOneOfPtr (lpszCharSet);
 	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
 }
 
 YLB_INLINE int YFixedString::Find (LPCTSTR lpszSub) const
 {
+	LPCTSTR lpPtr = FindPtr (lpszSub);
+	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
+}
+
+YLB_INLINE int YFixedString::Find (LPCTSTR lpszSub, int nStart) const
+{
+	LPCTSTR lpPtr = FindPtr (lpszSub, nStart);
+	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
+}
+
+YLB_INLINE LPCTSTR YFixedString::FindPtr (TCHAR ch) const
+{
+	ASSERTY(m_pszString);
+	return _tcschr (m_pszString, (_TUCHAR) ch);
+}
+
+YLB_INLINE LPCTSTR YFixedString::ReverseFindPtr (TCHAR ch) const
+{
+	ASSERTY(m_pszString);
+	return _tcsrchr (m_pszString, (_TUCHAR) ch);
+}
+
+YLB_INLINE LPCTSTR YFixedString::FindOneOfPtr (LPCTSTR lpszCharSet) const
+{
+	ASSERTY(m_pszString);
+	ASSERTY(YlbIsValidString(lpszCharSet));
+	return _tcspbrk (m_pszString, lpszCharSet);
+}
+
+YLB_INLINE LPCTSTR YFixedString::FindPtr (LPCTSTR lpszSub) const
+{
 	ASSERTY(m_pszString);
 	ASSERTY(YlbIsValidString(lpszSub));
-	LPTSTR lpPtr = _tcsstr (m_pszString, lpszSub);
-	return (lpPtr) ? (int) (lpPtr - m_pszString) : (-1);
+	return _tcsstr (m_pszString, lpszSub);
 }
 
 YLB_INLINE void YFixedString::FormatV (LPCTSTR lpszFormat, va_list argList)
