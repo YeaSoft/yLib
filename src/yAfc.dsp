@@ -315,6 +315,10 @@ SOURCE=..\inc\ySrvApp.inl
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\inc\yArgParser.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\inc\yArray.h
 # End Source File
 # Begin Source File
@@ -425,6 +429,10 @@ SOURCE=..\inc\yVersInfo.h
 # Begin Group "yLib Inline Files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\inc\yArgParser.inl
+# End Source File
 # Begin Source File
 
 SOURCE=..\inc\yArray.inl

@@ -267,6 +267,10 @@ SOURCE=.\_yState.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\yArgParser.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\yBuffer.cpp
 # End Source File
 # Begin Source File
@@ -391,6 +395,10 @@ SOURCE=.\StdInc.hpp
 # End Group
 # Begin Source File
 
+SOURCE=..\inc\yArgParser.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\inc\yArray.h
 # End Source File
 # Begin Source File
@@ -505,6 +513,10 @@ SOURCE=..\inc\yVersInfo.h
 # Begin Group "Inline Files"
 
 # PROP Default_Filter "inl"
+# Begin Source File
+
+SOURCE=..\inc\yArgParser.inl
+# End Source File
 # Begin Source File
 
 SOURCE=..\inc\yArray.inl
