@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/08/22  15:41:08  leo
+ * Added more oethods for path strings
+ * Updated license
+ *
  * Revision 1.2  2000/07/25  09:05:38  leo
  * Added pointer based find methods
  *
@@ -144,6 +148,24 @@ YLB_INLINE void YFixedString::SetAt (UINT nIndex, TCHAR ch)
 		m_pszString[nIndex] = ch;
 	}
 }
+
+#ifdef _UNICODE
+
+YLB_INLINE void YFixedString::Copy (LPSTR pszDest, UINT cbSize)
+{
+	ASSERTY(pszDest);
+	_ywcstombsz (pstDest, m_pszString, cbSize);
+}
+
+#else
+
+YLB_INLINE void YFixedString::Copy (LPWSTR pszDest, UINT cbSize)
+{
+	ASSERTY(pszDest);
+	_ymbstowcsz (pszDest, m_pszString, cbSize);
+}
+
+#endif
 
 YLB_INLINE void YFixedString::Assign (const YStringData& stringSrc)
 {

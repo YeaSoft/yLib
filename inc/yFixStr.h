@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2000/08/22  15:41:11  leo
+ * Added more oethods for path strings
+ * Updated license
+ *
  * Revision 1.4  2000/07/25  09:06:12  leo
  * Added pointer based find methods
  *
@@ -133,6 +137,14 @@ public:
 	TCHAR						GetAt					(UINT nIndex) const;
 	TCHAR						operator[]				(UINT nIndex) const;
 	void						SetAt					(UINT nIndex, TCHAR ch);
+
+	// transfer
+	void						Copy					(LPTSTR pszDest, UINT cbSize);
+#ifdef _UNICODE
+	void						Copy					(LPSTR pszDest, UINT cbSize);
+#else
+	void						Copy					(LPWSTR pszDest, UINT cbSize);
+#endif
 
 	// assignment
 	void						Assign					(const YStringData& stringSrc);

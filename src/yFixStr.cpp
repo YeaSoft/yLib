@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2000/08/22  15:41:01  leo
+ * Added more oethods for path strings
+ * Updated license
+ *
  * Revision 1.4  2000/07/25  09:06:07  leo
  * Added pointer based find methods
  *
@@ -100,6 +104,15 @@ YBigString YLBAPI operator+ (TCHAR ch, const YStringData& string)
 /*=============================================================================
  * FIXED STRING CLASS IMPLEMENTATION
  *============================================================================*/
+void YFixedString::Copy (LPTSTR pszDest, UINT cbSize)
+{
+	ASSERTY(m_pszString && pszDest);
+	if ( cbSize ) {
+		_tcsncpy (pszDest, m_pszString, cbSize - 1);
+		pszDest[cbSize - 1] = 0;
+	}
+}
+
 void YFixedString::Assign (TCHAR ch)
 {
 	ASSERTY(m_pszString);
