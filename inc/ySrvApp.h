@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/04/26 08:54:41  leopoldo
+ * Added support for renamable services
+ *
  * Revision 1.3  2001/04/12 18:50:16  leopoldo
  * Added YSrvApp::OnCrtDebugReport implementation which excludes
  * interactive operations
@@ -115,6 +118,8 @@ public:
 
 public:
 	// overridables
+	virtual void				ShowFullUsage			(DWORDLONG dwCmd, LPCTSTR pszError, ...);
+	virtual void				ShowFullUsageVa			(DWORDLONG dwCmd, LPCTSTR pszError, va_list va);
 	virtual void				ShowIntro				();
 	virtual void				ShowUsage				(DWORDLONG dwCmd);
 	virtual void				ShowExtro				();
