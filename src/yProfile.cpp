@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2002/08/20 18:48:17  leopoldo
+ * Added enumeration methods
+ *
  * Revision 1.3  2002/08/04 15:25:49  leo
  * Updated from sourceforge
  *
@@ -134,6 +137,7 @@ bool YProfile::Create (LPCTSTR lpszKey)
 	}
 	if ( ::WritePrivateProfileString (lpszKey, _T("$yLibDummyKey$"), _T("$yLibDummyKey$"), m_ysIniFile) ) {
 		::WritePrivateProfileString (lpszKey, _T("$yLibDummyKey$"), NULL, m_ysIniFile);
+		m_ysSection = lpszKey;
 		return true;
 	}
 	return false;
@@ -165,7 +169,7 @@ bool YProfile::ValueExists (LPCTSTR lpszValue) const
 	if ( IsOpen () ) {
 		TCHAR	szDummy[32];
 		::GetPrivateProfileString (m_ysSection, lpszValue, _T("$yLibTestValue$"), szDummy, _countof (szDummy), m_ysIniFile);
-		return !_tcscmp (szDummy, _T("$yLibTestValue$"));
+		return _tcscmp (szDummy, _T("$yLibTestValue$")) != 0;
 	}
 	return false;
 }
