@@ -233,13 +233,33 @@ LIB32=link.exe -lib
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
-# Begin Source File
+# Begin Group "Collections"
 
-SOURCE=.\_yState.cpp
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\yArray.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\yArrayC.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\yArrayI.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\yArrayP.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\yArrayS.cpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\_yState.cpp
 # End Source File
 # Begin Source File
 
