@@ -72,21 +72,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Sample4"=.\samples\Sample4\Sample4.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name yAfc
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "yAfc"=.\src\yAfc.dsp - Package Owner=<4>
 
 Package=<5>
