@@ -25,8 +25,8 @@ CFG=Sample5 - Win32 Static Debug CRT Unicode
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "Sample5"
+# PROP Scc_LocalPath "..\.."
 CPP=cl.exe
 RSC=rc.exe
 

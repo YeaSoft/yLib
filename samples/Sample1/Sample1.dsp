@@ -25,8 +25,8 @@ CFG=Sample1 - Win32 Static Debug CRT Unicode
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "Sample1"
+# PROP Scc_LocalPath "..\.."
 CPP=cl.exe
 RSC=rc.exe
 
@@ -348,6 +348,10 @@ SOURCE=..\..\inc\yAfcBase.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\inc\yArray.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\inc\yBaseApp.h
 # End Source File
 # Begin Source File
@@ -433,10 +437,6 @@ SOURCE=..\..\inc\ySCM.h
 # Begin Source File
 
 SOURCE=..\..\inc\ySecDesc.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\inc\yService.h1
 # End Source File
 # Begin Source File
 

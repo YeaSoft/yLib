@@ -25,8 +25,8 @@ CFG=Sample3 - Win32 Static Debug CRT Unicode
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "Sample3"
+# PROP Scc_LocalPath "."
 CPP=cl.exe
 RSC=rc.exe
 
@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G5 /MTd /W3 /Gm /GX /Zi /Od /I "..\..\inc" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX"yAfc.h" /FD /GZ /c
-# ADD CPP /nologo /G5 /MTd /W3 /Gm- /GX /Zi /Od /I "..\..\inc" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX"StdAfc.h" /FD /GZ /c
+# ADD CPP /nologo /G5 /MTd /W3 /GX /Zi /Od /I "..\..\inc" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX"StdAfc.h" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -94,7 +94,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G5 /MTd /W3 /Gm /GX /Zi /Od /I "..\..\inc" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX"yAfc.h" /FD /GZ /c
-# ADD CPP /nologo /G5 /MTd /W3 /Gm- /GX /Zi /Od /I "..\..\inc" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_UNICODE" /YX"StdAfc.h" /FD /GZ /c
+# ADD CPP /nologo /G5 /MTd /W3 /GX /Zi /Od /I "..\..\inc" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_UNICODE" /YX"StdAfc.h" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
