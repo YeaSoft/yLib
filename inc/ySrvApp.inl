@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:33  leo
  * Initial revision
  *
@@ -220,6 +223,19 @@ YLB_INLINE BOOL YSrvApp::IsOwnService () const
 	return m_nServices == 1;
 }
 
+#ifdef _DEBUG
+
+YLB_INLINE BOOL YSrvApp::OnCrtDebugReport (int reportType, LPCSTR pszMessage, int *iRetValue)
+{
+	if ( reportType == _CRT_ASSERT ) {
+		// do not show dialog box.
+		YlbDebugBreak ();
+		return TRUE;
+	}
+	return FALSE;
+}
+
+#endif
 
 //
 // EoF

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:32  leo
  * Initial revision
  *
@@ -269,6 +272,12 @@ public:
 	BOOL						AddService				(YServiceLogic *psl);
 	UINT						FindService				(LPCTSTR pszName) const;
 	BOOL						ProcessShellCommand		(YServiceCmdLineParser &cliParser);
+
+public:
+	// advanced overridables
+#ifdef _DEBUG
+	virtual BOOL				OnCrtDebugReport		(int reportType, LPCSTR pszMessage, int *iRetValue);
+#endif
 
 public:
 	// very advanced overridables (the whole service logic)
