@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.13  2000/10/05 17:24:18  leopoldo
+ * YFixedString::MakeCapital now upperizes also the first letter
+ *
  * Revision 1.12  2000/10/05 17:20:28  leopoldo
  * Added YFixedString::MakeCapital
  *
@@ -1082,6 +1085,15 @@ void YPathString::StripFileName (BOOL bToValidPath /* = FALSE */)
 	ReverseTerminateAfter (_T('\\'));
 	if ( !*m_pszString && bToValidPath ) {
 		Assign (_T(".\\"));
+	}
+}
+
+void YPathString::StripExtension ()
+{
+	LPCTSTR lpSep = _tcsrchr (m_pszString, _T('\\'));
+	LPTSTR  lpExt = _tcsrchr (m_pszString, _T('.'));
+	if ( lpExt > lpSep ) {
+		*lpExt = 0;
 	}
 }
 
