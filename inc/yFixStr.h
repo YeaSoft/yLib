@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.12  2001/04/25 12:28:01  leopoldo
+ * Added IsAbsolute, IsRelative and IsUNC to YPathString
+ *
  * Revision 1.11  2001/03/23 12:17:55  leopoldo
  * Added missing compare helpers
  *
@@ -91,12 +94,12 @@
 class YStringData;
 	class YFixedString;
 		// fixed length strings with different lengths
-		class YString32;
-		class YString64;
-		class YString128;
-		class YString256;
-		class YString512;
-		class YString1024;
+		// class YString32;
+		// class YString64;
+		// class YString128;
+		// class YString256;
+		// class YString512;
+		// class YString1024;
 		class YBigString;
 		// dynamically allocated string with fixed length
 		class YHeapString;
@@ -124,6 +127,7 @@ public:
 	UINT						GetSize					() const;
 	UINT						GetBufferSize			() const;
 	LPTSTR						GetBuffer				() const;
+	LPCTSTR						GetString				() const;
 	LPCTSTR						GetNullForEmptyString	() const;
 	operator					LPCTSTR					() const;
 
@@ -373,10 +377,8 @@ private:
 	TCHAR						m_szData[SIZE];
 };
 
-#ifdef WITH_TEMPLATES
-
 /*=============================================================================
- * PREDEFINED FIXED STRINGS (DISABLED SINCE NOT TESTED
+ * PREDEFINED FIXED STRINGS
  *============================================================================*/
 typedef YFixedStringClass<16>							YString16;
 typedef YFixedStringClass<32>							YString32;
@@ -385,250 +387,6 @@ typedef YFixedStringClass<128>							YString128;
 typedef YFixedStringClass<256>							YString256;
 typedef YFixedStringClass<512>							YString512;
 typedef YFixedStringClass<1024>							YString1024;
-typedef YFixedStringClass<YLB_BIGSTRING_SIZE>			YBigString;
-
-#else 
-
-/*=============================================================================
- * PREDEFINED FIXED STRINGS
- *============================================================================*/
-class YString16 : public YFixedString
-{
-public:
-	// construction
-	YString16					(BOOL bEmpty = TRUE) : YFixedString (m_szData, 16, bEmpty) { }
-	YString16					(const YStringData& stringSrc) : YFixedString (m_szData, 16, FALSE) { Assign (stringSrc); }
-	YString16					(LPCTSTR lpsz) : YFixedString (m_szData, 16, FALSE) { Assign (lpsz); }
-	
-	// overloaded assignment
-	const YString16 &			operator=				(const YString16& stringSrc) { Assign (stringSrc); return *this; }
-	const YString16 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
-	const YString16 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
-	const YString16 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
-	const YString16 &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
-	const YString16 &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
-#ifdef _UNICODE
-	const YString16 &			operator=				(char ch) { Assign (ch); return *this; }
-#endif
-
-	// overloaded concatenation
-	const YString16 &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
-	const YString16 &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
-	const YString16 &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
-	const YString16 &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
-	const YString16 &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
-#ifdef _UNICODE
-	const YString16 &			operator+=				(char ch) { Concat (ch); return *this; };
-#endif
-
-private:
-	// implementation
-	TCHAR						m_szData[16];
-};
-
-class YString32 : public YFixedString
-{
-public:
-	// construction
-	YString32					(BOOL bEmpty = TRUE) : YFixedString (m_szData, 32, bEmpty) { }
-	YString32					(const YStringData& stringSrc) : YFixedString (m_szData, 32, FALSE) { Assign (stringSrc); }
-	YString32					(LPCTSTR lpsz) : YFixedString (m_szData, 32, FALSE) { Assign (lpsz); }
-	
-	// overloaded assignment
-	const YString32 &			operator=				(const YString32& stringSrc) { Assign (stringSrc); return *this; }
-	const YString32 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
-	const YString32 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
-	const YString32 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
-	const YString32 &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
-	const YString32 &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
-#ifdef _UNICODE
-	const YString32 &			operator=				(char ch) { Assign (ch); return *this; }
-#endif
-
-	// overloaded concatenation
-	const YString32 &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
-	const YString32 &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
-	const YString32 &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
-	const YString32 &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
-	const YString32 &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
-#ifdef _UNICODE
-	const YString32 &			operator+=				(char ch) { Concat (ch); return *this; };
-#endif
-
-private:
-	// implementation
-	TCHAR						m_szData[32];
-};
-
-class YString64 : public YFixedString
-{
-public:
-	// construction
-	YString64					(BOOL bEmpty = TRUE) : YFixedString (m_szData, 64, bEmpty) { }
-	YString64					(const YStringData& stringSrc) : YFixedString (m_szData, 64, FALSE) { Assign (stringSrc); }
-	YString64					(LPCTSTR lpsz) : YFixedString (m_szData, 64, FALSE) { Assign (lpsz); }
-
-	// overloaded assignment
-	const YString64 &			operator=				(const YString64& stringSrc) { Assign (stringSrc); return *this; }
-	const YString64 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
-	const YString64 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
-	const YString64 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
-	const YString64 &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
-	const YString64 &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
-#ifdef _UNICODE
-	const YString64 &			operator=				(char ch) { Assign (ch); return *this; }
-#endif
-
-	// overloaded concatenation
-	const YString64 &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
-	const YString64 &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
-	const YString64 &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
-	const YString64 &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
-	const YString64 &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
-#ifdef _UNICODE
-	const YString64 &			operator+=				(char ch) { Concat (ch); return *this; };
-#endif
-
-private:
-	// implementation
-	TCHAR						m_szData[64];
-};
-
-class YString128 : public YFixedString
-{
-public:
-	// construction
-	YString128					(BOOL bEmpty = TRUE) : YFixedString (m_szData, 128, bEmpty) { }
-	YString128					(const YStringData& stringSrc) : YFixedString (m_szData, 128, FALSE) { Assign (stringSrc); }
-	YString128					(LPCTSTR lpsz) : YFixedString (m_szData, 128, FALSE) { Assign (lpsz); }
-	
-	// overloaded assignment
-	const YString128 &			operator=				(const YString128& stringSrc) { Assign (stringSrc); return *this; }
-	const YString128 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
-	const YString128 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
-	const YString128 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
-	const YString128 &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
-	const YString128 &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
-#ifdef _UNICODE
-	const YString128 &			operator=				(char ch) { Assign (ch); return *this; }
-#endif
-
-	// overloaded concatenation
-	const YString128 &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
-	const YString128 &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
-	const YString128 &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
-	const YString128 &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
-	const YString128 &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
-#ifdef _UNICODE
-	const YString128 &			operator+=				(char ch) { Concat (ch); return *this; };
-#endif
-
-private:
-	// implementation
-	TCHAR						m_szData[128];
-};
-
-class YString256 : public YFixedString
-{
-public:
-	// construction
-	YString256					(BOOL bEmpty = TRUE) : YFixedString (m_szData, 256, bEmpty) { }
-	YString256					(const YStringData& stringSrc) : YFixedString (m_szData, 256, FALSE) { Assign (stringSrc); }
-	YString256					(LPCTSTR lpsz) : YFixedString (m_szData, 256, FALSE) { Assign (lpsz); }
-	
-	// overloaded assignment
-	const YString256 &			operator=				(const YString256& stringSrc) { Assign (stringSrc); return *this; }
-	const YString256 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
-	const YString256 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
-	const YString256 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
-	const YString256 &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
-	const YString256 &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
-#ifdef _UNICODE
-	const YString256 &			operator=				(char ch) { Assign (ch); return *this; }
-#endif
-
-	// overloaded concatenation
-	const YString256 &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
-	const YString256 &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
-	const YString256 &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
-	const YString256 &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
-	const YString256 &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
-#ifdef _UNICODE
-	const YString256 &			operator+=				(char ch) { Concat (ch); return *this; };
-#endif
-
-private:
-	// implementation
-	TCHAR						m_szData[256];
-};
-
-class YString512 : public YFixedString
-{
-public:
-	// construction
-	YString512					(BOOL bEmpty = TRUE) : YFixedString (m_szData, 512, bEmpty) { }
-	YString512					(const YStringData& stringSrc) : YFixedString (m_szData, 512, FALSE) { Assign (stringSrc); }
-	YString512					(LPCTSTR lpsz) : YFixedString (m_szData, 512, FALSE) { Assign (lpsz); }
-	
-	// overloaded assignment
-	const YString512 &			operator=				(const YString512& stringSrc) { Assign (stringSrc); return *this; }
-	const YString512 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
-	const YString512 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
-	const YString512 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
-	const YString512 &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
-	const YString512 &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
-#ifdef _UNICODE
-	const YString512 &			operator=				(char ch) { Assign (ch); return *this; }
-#endif
-
-	// overloaded concatenation
-	const YString512 &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
-	const YString512 &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
-	const YString512 &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
-	const YString512 &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
-	const YString512 &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
-#ifdef _UNICODE
-	const YString512 &			operator+=				(char ch) { Concat (ch); return *this; };
-#endif
-
-private:
-	// implementation
-	TCHAR						m_szData[512];
-};
-
-class YString1024 : public YFixedString
-{
-public:
-	// construction
-	YString1024					(BOOL bEmpty = TRUE) : YFixedString (m_szData, 1024, bEmpty) { }
-	YString1024					(const YStringData& stringSrc) : YFixedString (m_szData, 1024, FALSE) { Assign (stringSrc); }
-	YString1024					(LPCTSTR lpsz) : YFixedString (m_szData, 1024, FALSE) { Assign (lpsz); }
-	
-	// overloaded assignment
-	const YString1024 &			operator=				(const YString1024& stringSrc) { Assign (stringSrc); return *this; }
-	const YString1024 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
-	const YString1024 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
-	const YString1024 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
-	const YString1024 &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
-	const YString1024 &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
-#ifdef _UNICODE
-	const YString1024 &			operator=				(char ch) { Assign (ch); return *this; }
-#endif
-
-	// overloaded concatenation
-	const YString1024 &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
-	const YString1024 &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
-	const YString1024 &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
-	const YString1024 &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
-	const YString1024 &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
-#ifdef _UNICODE
-	const YString1024 &			operator+=				(char ch) { Concat (ch); return *this; };
-#endif
-
-private:
-	// implementation
-	TCHAR						m_szData[1024];
-};
 
 class YBigString : public YFixedString
 {
@@ -663,8 +421,6 @@ private:
 	// implementation
 	TCHAR						m_szData[YLB_BIGSTRING_SIZE];
 };
-
-#endif //WITH_TEMPLATES
 
 /*=============================================================================
  * DYNAMICALLY ALLOCATED FIXED SYSTEM STRING CLASS
