@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/09/26 11:14:09  leopoldo
+ * Fixed UNICODE issues
+ *
  * Revision 1.3  2001/05/16 17:15:53  leopoldo
  * Added support for reattachment of RTL output handles
  *
@@ -370,6 +373,16 @@ YAUX_DATA::~YAUX_DATA()
 /*=============================================================================
  * COMMANDLINE INFO
  *============================================================================*/
+bool YCommandLineInfo::Shift ()
+{
+	if ( !m_argc || !m_argv ) {
+		return false;
+	}
+	--m_argc;
+	++m_argv;
+	return true;
+}
+
 LPCTSTR YCommandLineInfo::GetAt (ITERATOR pos) const
 {
 	LPTSTR *lpPtr = (LPTSTR *) pos;

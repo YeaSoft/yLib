@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.8  2004/08/05 13:14:59  leopoldo
+ * Improved compatibility: Counters in YCommandLineInfo are now signed
+ *
  * Revision 1.7  2002/08/20 18:52:05  leopoldo
  * Moved pseudofunctions support to ySCM.h
  *
@@ -550,6 +553,10 @@ public:
 public:
 	// attributes
 	LPCTSTR						operator[]				(int nIndex) const { return GetAt (nIndex); }
+
+public:
+	// operations
+	bool						Shift					();
 
 public:
 	// attributes
