@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2004/08/05 13:18:32  leopoldo
+ * Added more functionality to YArgPairParser
+ *
  * Revision 1.3  2004/08/02 10:04:03  leopoldo
  * Adjusted GetValueByNameOrPos
  *
@@ -330,6 +333,7 @@ bool YArgPairParser::RemoveAt (ITERATOR &pos)
 		// out of range
 		pos = NULL;
 	}
+	--m_argc;
 	return true;
 }
 
