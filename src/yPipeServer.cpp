@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:07  leo
  * Initial revision
  *
@@ -699,6 +702,7 @@ UINT YPipeServer::SyncLoop (_YPIPINST *lpPipe)
 			// not at least 2 instances left?
 			// maximum not reached?
 			if ( lpPipe[m_iCurInstances].Instantiate (m_szPipeName, m_iCurInstances, m_nMaxInstances, m_cbWriteBufferSize, m_cbReadBufferSize, m_nPipeTimeout, (m_lpSecurityAttributes) ? (m_lpSecurityAttributes) : (m_sa)) ) {
+				lpPipe[m_iCurInstances].ConnectToNewClient ();
 				++m_iCurInstances;
 			}
 		}
@@ -750,6 +754,7 @@ UINT YPipeServer::AsyncLoop (_YPIPINST *lpPipe)
 			// not at least 2 instances left?
 			// maximum not reached?
 			if ( lpPipe[iCurInstance].Instantiate (m_szPipeName, iCurInstance, m_nMaxInstances, m_cbWriteBufferSize, m_cbReadBufferSize, m_nPipeTimeout, (m_lpSecurityAttributes) ? (m_lpSecurityAttributes) : (m_sa)) ) {
+				lpPipe[m_iCurInstances].ConnectToNewClient ();
 				++iCurInstance;
 			}
 		}
