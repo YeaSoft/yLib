@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/04/26 10:37:46  leopoldo
+ * Fixed command line passing
+ *
  * Revision 1.3  2001/04/26 09:35:14  leopoldo
  * Added support for renamable services
  *
@@ -797,7 +800,7 @@ BOOL YServiceLogic::OnRemove (BOOL bStopped)
 
 void YServiceLogic::OnRemoveError (DWORD dwError, LPCTSTR pszCompName, LPCTSTR pszImagePath)
 {
-	_tprintf (_T("FAILURE: The %s service cannot be remove.\n"), GetAppDescription ());
+	_tprintf (_T("FAILURE: The %s service cannot be removed.\n"), GetAppDescription ());
 	_tprintf (_T("         System Error %u:\n"), dwError);
 	_tprintf (_T("         %s\n"), GetSysErrorString (dwError));
 }
