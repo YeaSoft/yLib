@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2000/08/22  16:01:43  leo
+ * Added the transfer methods
+ *
  * Revision 1.5  2000/08/22  15:41:01  leo
  * Added more oethods for path strings
  * Updated license
@@ -1011,13 +1014,6 @@ void YPathString::RemoveBackslash ()
 	if ( nLength && (m_pszString[nLength - 1] == _T('\\')) ) {
 		m_pszString[nLength - 1] = 0;
 	}
-}
-
-BOOL YPathString::IsDir () const
-{
-	YPathString	ysDirName = m_pszString;
-	ysDirName.RemoveBackslash ();
-	return YFileManager::IsDir (ysDirName);
 }
 
 BOOL YComputerName::GetCurrent ()

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2000/08/22  16:01:39  leo
+ * Added the transfer methods
+ *
  * Revision 1.3  2000/08/22  15:41:08  leo
  * Added more oethods for path strings
  * Updated license
@@ -464,6 +467,66 @@ YLB_INLINE void YPathString::StripExtension ()
 YLB_INLINE BOOL YPathString::IsFile () const
 {
 	return YFileManager::IsFile (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::IsDir () const
+{
+	return YFileManager::IsDir (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::IsDirWritable () const
+{
+	return YFileManager::IsDirWritable (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::IsDirCompressed () const
+{
+	return YFileManager::IsDirCompressed (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::IsDirEmpty () const
+{
+	return YFileManager::IsDirEmpty (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::CreateDirectoryTree () const
+{
+	return YFileManager::CreateDirectoryTree (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::DeleteFiles () const
+{
+	return YFileManager::DeleteFiles (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::RemoveDir () const
+{
+	return YFileManager::RemoveDir (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::KillDir () const
+{
+	return YFileManager::KillDir (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::CompressDir () const
+{
+	return YFileManager::CompressDir (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::UncompressDir () const
+{
+	return YFileManager::UncompressDir (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::CompressDirTree () const
+{
+	return YFileManager::CompressDirTree (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::UncompressDirTree () const
+{
+	return YFileManager::UncompressDirTree (m_pszString);
 }
 
 /*=============================================================================

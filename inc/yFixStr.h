@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2000/08/22  16:01:50  leo
+ * Added the transfer methods
+ *
  * Revision 1.5  2000/08/22  15:41:11  leo
  * Added more oethods for path strings
  * Updated license
@@ -641,6 +644,17 @@ public:
 	void						RemoveBackslash			();
 	BOOL						IsFile					() const;
 	BOOL						IsDir					() const;
+	BOOL						IsDirWritable			() const;
+	BOOL						IsDirCompressed			() const;
+	BOOL						IsDirEmpty				() const;
+	BOOL						CreateDirectoryTree		() const;
+	BOOL						DeleteFiles				() const;
+	BOOL						RemoveDir				() const;
+	BOOL						KillDir					() const;
+	BOOL						CompressDir				() const;
+	BOOL						UncompressDir			() const;
+	BOOL						CompressDirTree			() const;
+	BOOL						UncompressDirTree		() const;
 
 private:
 	// implementation
