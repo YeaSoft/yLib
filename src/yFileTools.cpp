@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/10/05 13:30:48  leopoldo
+ * Added harder delete options to file and directory delete functions
+ *
  * Revision 1.2  2000/08/23 10:02:42  leo
  * Improved file/dir detection methods
  * Updated license
@@ -774,7 +777,7 @@ BOOL YFileManager::TouchVa (LPCTSTR lpFile, va_list vaFile)
 	SYSTEMTIME	st;
 	FILETIME	ft;
 
-	GetLocalTime (&st);
+	GetSystemTime (&st);
 	SystemTimeToFileTime (&st, &ft);
 	return SetFileTimeVa (&ft, lpFile, vaFile);
 }
