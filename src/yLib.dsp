@@ -29,8 +29,8 @@ CFG=yLib - Win32 Dynamic Debug CRT Unicode
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "yLib"
+# PROP Scc_LocalPath ".."
 CPP=cl.exe
 RSC=rc.exe
 
@@ -239,6 +239,10 @@ SOURCE=.\_yState.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\yArray.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\yBuffer.cpp
 # End Source File
 # Begin Source File
@@ -280,45 +284,6 @@ SOURCE=.\yHandle.cpp
 # Begin Source File
 
 SOURCE=.\yLib.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\hlp\yLibHlp.mk
-
-!IF  "$(CFG)" == "yLib - Win32 Static Debug CRT"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Debug CRT"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "yLib - Win32 Static Release CRT"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Release CRT"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "yLib - Win32 Static Debug CRT Unicode"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Debug CRT Unicode"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "yLib - Win32 Static Release CRT Unicode"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Release CRT Unicode"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -392,6 +357,10 @@ SOURCE=.\internal.h
 SOURCE=.\StdInc.hpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\inc\yArray.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\inc\yBuffer.h
@@ -496,6 +465,10 @@ SOURCE=..\inc\yVersInfo.h
 # Begin Group "Inline Files"
 
 # PROP Default_Filter "inl"
+# Begin Source File
+
+SOURCE=..\inc\yArray.inl
+# End Source File
 # Begin Source File
 
 SOURCE=..\inc\yBuffer.inl
