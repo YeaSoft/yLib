@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.8  2001/05/24 15:17:31  leopoldo
+ * Added some new method
+ * Changed size variables to int
+ *
  * Revision 1.7  2001/05/22 16:57:59  leopoldo
  * Added more methods to YDynamicBuffer
  *
@@ -88,6 +92,27 @@ LPVOID YBuffer::Detach (LPINT lpcbSize)
 	m_lpPtr		= NULL;
 	m_cbSize	= 0;
 	return lpRet;
+}
+
+BOOL YBuffer::Alloc (const void *pData, int cbSize)
+{
+	if ( (cbSize < 0) || !pData ) {
+		return FALSE;
+	}
+
+	LPBYTE lpData = (LPBYTE) malloc (cbSize);
+	if ( !lpData ) {
+		return FALSE;
+	}
+
+	Free ();
+
+	m_lpPtr		= lpData;
+	m_cbSize	= cbSize;
+
+	memcpy (m_lpPtr, pData, cbSize);
+
+	return TRUE;
 }
 
 BOOL YBuffer::Alloc (int cbSize, BOOL fZeroInit)
@@ -148,24 +173,34 @@ void YBuffer::Free ()
 
 BOOL YBuffer::Copy (const YBuffer &srcBuffer, BOOL bDontReallocIfFits)
 {
-	if ( bDontReallocIfFits && (srcBuffer.m_cbSize <= m_cbSize) ) {
+	return Copy (srcBuffer.m_lpPtr, srcBuffer.m_cbSize, bDontReallocIfFits);
+}
+
+BOOL YBuffer::Copy (const void *pData, int cbSize, BOOL bDontReallocIfFits /* = TRUE */)
+{
+	if ( (cbSize < 0) || !pData ) {
+		return FALSE;
+	}
+
+	if ( bDontReallocIfFits && (cbSize <= m_cbSize) ) {
 		// avoid risk of failed allocation and avoid fragmentation
-		memcpy (m_lpPtr, srcBuffer.m_lpPtr, srcBuffer.m_cbSize);
+		memcpy (m_lpPtr, pData, cbSize);
 		return TRUE;
 	}
 
-	LPBYTE lpData = (LPBYTE) malloc (srcBuffer.m_cbSize);
+	LPBYTE lpData = (LPBYTE) malloc (cbSize);
 	if ( !lpData ) {
 		// fail without destroying previous content
 		return FALSE;
 	}
-	memcpy (lpData, srcBuffer.m_lpPtr, srcBuffer.m_cbSize);
+	memcpy (lpData, pData, cbSize);
 
 	// free previous
 	Free ();
+
 	// reassign
 	m_lpPtr		= lpData;
-	m_cbSize	= srcBuffer.m_cbSize;
+	m_cbSize	= cbSize;
 
 	return TRUE;
 }

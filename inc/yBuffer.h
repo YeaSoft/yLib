@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.7  2001/05/24 15:16:55  leopoldo
+ * Added some new method
+ * Changed size variables to int
+ *
  * Revision 1.6  2001/05/22 16:57:47  leopoldo
  * Added more methods to YDynamicBuffer
  *
@@ -90,11 +94,13 @@ public:
 	// operations
 	BOOL						Attach					(LPVOID lpBuffer, int cbSize);
 	LPVOID						Detach					(LPINT lpcbSize = NULL);
+	BOOL						Alloc					(const void *pData, int cbSize);
 	BOOL						Alloc					(int cbSize, BOOL fZeroInit = FALSE);
 	BOOL						Realloc					(int cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
 	void						Free					();
 	void						Clear					(int iFill = 0);
 	BOOL						Copy					(const YBuffer &srcBuffer, BOOL bDontReallocIfFits = TRUE);
+	BOOL						Copy					(const void *pData, int cbSize, BOOL bDontReallocIfFits = TRUE);
 
 public:
 	// operators
