@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.7  2001/05/22 16:57:59  leopoldo
+ * Added more methods to YDynamicBuffer
+ *
  * Revision 1.6  2001/05/21 18:53:05  leopoldo
  * Added more methods to YDynamicBuffer
  *
@@ -62,17 +65,21 @@
 /*=============================================================================
  * SIMPLE BUFFER IMPLEMENTATION
  *============================================================================*/
-void YBuffer::Attach (LPVOID lpBuffer, UINT cbSize)
+BOOL YBuffer::Attach (LPVOID lpBuffer, int cbSize)
 {
-	ASSERTY((!lpBuffer && !cbSize) || (lpBuffer && cbSize));
+	ASSERTY((!lpBuffer && !cbSize) || (lpBuffer && cbSize >= 0));
+	if ( cbSize < 0 ) {
+		return FALSE;
+	}
 	if ( lpBuffer != m_lpPtr ) {
 		Free ();
 	}
 	m_lpPtr		= (LPBYTE) lpBuffer;
 	m_cbSize	= cbSize;
+	return TRUE;
 }
 
-LPVOID YBuffer::Detach (LPUINT lpcbSize)
+LPVOID YBuffer::Detach (LPINT lpcbSize)
 {
 	if ( lpcbSize ) {
 		*lpcbSize = m_cbSize;
@@ -83,8 +90,11 @@ LPVOID YBuffer::Detach (LPUINT lpcbSize)
 	return lpRet;
 }
 
-BOOL YBuffer::Alloc (UINT cbSize, BOOL fZeroInit)
+BOOL YBuffer::Alloc (int cbSize, BOOL fZeroInit)
 {
+	if ( cbSize < 0 ) {
+		return FALSE;
+	}
 	LPBYTE lpData = (LPBYTE) malloc (cbSize);
 	if ( !lpData ) {
 		return FALSE;
@@ -98,8 +108,11 @@ BOOL YBuffer::Alloc (UINT cbSize, BOOL fZeroInit)
 	return TRUE;
 }
 
-BOOL YBuffer::Realloc (UINT cbSize, BOOL fAllocCopyFree, BOOL fNoCopy)
+BOOL YBuffer::Realloc (int cbSize, BOOL fAllocCopyFree, BOOL fNoCopy)
 {
+	if ( cbSize < 0 ) {
+		return FALSE;
+	}
 	LPBYTE lpData;
 
 	if ( !m_lpPtr || fAllocCopyFree || !cbSize ) {
@@ -160,7 +173,7 @@ BOOL YBuffer::Copy (const YBuffer &srcBuffer, BOOL bDontReallocIfFits)
 /*=============================================================================
  * DYNAMIC BUFFER IMPLEMENTATION
  *============================================================================*/
-LPVOID YDynamicBuffer::Detach (LPUINT lpcbContentSize /* = NULL */, LPUINT lpcbSize /* = NULL */)
+LPVOID YDynamicBuffer::Detach (LPINT lpcbContentSize /* = NULL */, LPINT lpcbSize /* = NULL */)
 {
 	if ( lpcbContentSize ) {
 		*lpcbContentSize = m_cbContentSize;
@@ -169,7 +182,7 @@ LPVOID YDynamicBuffer::Detach (LPUINT lpcbContentSize /* = NULL */, LPUINT lpcbS
 	return YBuffer::Detach (lpcbSize);
 }
 
-BOOL YDynamicBuffer::Alloc (UINT cbSize, BOOL fZeroInit)
+BOOL YDynamicBuffer::Alloc (int cbSize, BOOL fZeroInit)
 {
 	if ( YBuffer::Alloc (cbSize, fZeroInit) ) {
 		m_cbContentSize = 0;
@@ -178,8 +191,12 @@ BOOL YDynamicBuffer::Alloc (UINT cbSize, BOOL fZeroInit)
 	return FALSE;
 }
 
-BOOL YDynamicBuffer::Realloc (UINT cbSize, BOOL fAllocCopyFree, BOOL fNoCopy)
+BOOL YDynamicBuffer::Realloc (int cbSize, BOOL fAllocCopyFree, BOOL fNoCopy)
 {
+	if ( cbSize < 0 ) {
+		return FALSE;
+	}
+
 	LPBYTE lpData;
 
 	if ( !m_lpPtr || fAllocCopyFree || !cbSize ) {
@@ -234,13 +251,13 @@ BOOL YDynamicBuffer::Copy (const YDynamicBuffer &srcBuffer, BOOL bDontReallocIfF
 	return TRUE;
 }
 
-BOOL YDynamicBuffer::IncreaseSize (UINT cbIncrease)
+BOOL YDynamicBuffer::IncreaseSize (int cbIncrease)
 {
-	if ( !cbIncrease ) {
+	if ( cbIncrease < 1 ) {
 		return TRUE;
 	}
-	UINT cbNewSize = m_cbSize;
-	if ( m_nAllocationIncrease ) {
+	int cbNewSize = m_cbSize;
+	if ( m_nAllocationIncrease > 0 ) {
 		cbNewSize += (((cbIncrease / m_nAllocationIncrease) + 1) * m_nAllocationIncrease);
 	}
 	else {
@@ -259,11 +276,11 @@ BOOL YDynamicBuffer::IncreaseSize (UINT cbIncrease)
 	return TRUE;
 }
 
-BOOL YDynamicBuffer::PushData (LPCVOID lpData, UINT cbSize)
+BOOL YDynamicBuffer::PushData (LPCVOID lpData, int cbSize)
 {
 	// avoid useless calculations
-	if ( !cbSize ) {
-		return TRUE;
+	if ( cbSize < 1 ) {
+		return FALSE;
 	}
 
 	if ( (m_cbContentSize + cbSize) > m_cbSize ) {
@@ -276,14 +293,14 @@ BOOL YDynamicBuffer::PushData (LPCVOID lpData, UINT cbSize)
 	return TRUE;
 }
 
-BOOL YDynamicBuffer::InsertData (UINT nOffset, LPCVOID lpData, UINT cbSize)
+BOOL YDynamicBuffer::InsertData (int nOffset, LPCVOID lpData, int cbSize)
 {
 	// avoid useless calculations
-	if ( !cbSize ) {
-		return TRUE;
+	if ( (cbSize < 1) || (nOffset < 0) ) {
+		return FALSE;
 	}
 
-	UINT nIncrease = 0;
+	int nIncrease = 0;
 
 	// determine how much we need to increase the size
 	if ( nOffset >= m_cbContentSize ) {
@@ -318,17 +335,17 @@ BOOL YDynamicBuffer::InsertData (UINT nOffset, LPCVOID lpData, UINT cbSize)
 	return TRUE;
 }
 
-BOOL YDynamicBuffer::ExtractData (UINT nOffset, LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRead /* = NULL */)
+BOOL YDynamicBuffer::ExtractData (int nOffset, LPVOID lpData, int cbSize, LPINT pNumberOfBytesRead /* = NULL */)
 {
-	UINT nExtract;
+	int nExtract;
 	if ( !pNumberOfBytesRead ) {
 		pNumberOfBytesRead = &nExtract;
 	}
 	*pNumberOfBytesRead = 0;
 
 	// avoid useless calculations
-	if ( !cbSize ) {
-		return TRUE;
+	if ( (cbSize < 1) || (nOffset < 0) ) {
+		return FALSE;
 	}
 
 	// test if offset out of range
@@ -353,9 +370,9 @@ BOOL YDynamicBuffer::ExtractData (UINT nOffset, LPVOID lpData, UINT cbSize, UINT
 	return TRUE;
 }
 
-BOOL YDynamicBuffer::PopData (LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRead /* = NULL */)
+BOOL YDynamicBuffer::PopData (LPVOID lpData, int cbSize, LPINT pNumberOfBytesRead /* = NULL */)
 {
-	UINT nExtract;
+	int nExtract;
 	if ( !pNumberOfBytesRead ) {
 		pNumberOfBytesRead = &nExtract;
 	}
@@ -363,7 +380,7 @@ BOOL YDynamicBuffer::PopData (LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRe
 
 	// avoid useless calculations
 	if ( !cbSize ) {
-		return TRUE;
+		return FALSE;
 	}
 
 	// determine how much must be extracted
@@ -383,10 +400,10 @@ BOOL YDynamicBuffer::PopData (LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRe
 	return TRUE;
 }
 
-BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPSTR pszData, UINT cbSize)
+BOOL YDynamicBuffer::ExtractString (int nOffset, LPSTR pszData, int cbSize)
 {
-	if ( !pszData || ((m_cbContentSize - nOffset) < 1) || (cbSize < 2) ) {
-		if ( pszData && cbSize ) {
+	if ( !pszData || (nOffset < 0) || ((m_cbContentSize - nOffset) < 1) || (cbSize < 2) ) {
+		if ( pszData && (cbSize > 0) ) {
 			*pszData = 0;
 		}
 		return FALSE;
@@ -408,7 +425,7 @@ BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPSTR pszData, UINT cbSize)
 	}
 
 	// determine how much stuff we have extracted
-	UINT nExtracted = lpPtr - (LPSTR) (m_lpPtr + nOffset);
+	int nExtracted = lpPtr - (LPSTR) (m_lpPtr + nOffset);
 
 	if ( nExtracted ) {
 		// shift the rest back
@@ -420,9 +437,9 @@ BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPSTR pszData, UINT cbSize)
 	return TRUE;
 }
 
-BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPWSTR pszData, UINT cbSize)
+BOOL YDynamicBuffer::ExtractString (int nOffset, LPWSTR pszData, int cbSize)
 {
-	if ( !pszData || ((m_cbContentSize - nOffset) < sizeof(WCHAR)) || (cbSize < 2) ) {
+	if ( !pszData || (nOffset < 0) || ((m_cbContentSize - nOffset) < sizeof(WCHAR)) || (cbSize < 2) ) {
 		if ( pszData && cbSize ) {
 			*pszData = 0;
 		}
@@ -430,7 +447,7 @@ BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPWSTR pszData, UINT cbSize)
 	}
 
 	// determine how many chars to read (cbSize must be > 0)
-	cbSize = min ((m_cbContentSize - nOffset) / sizeof(WCHAR), cbSize - 1);
+	cbSize = min ((int) ((m_cbContentSize - nOffset) / sizeof(WCHAR)), (cbSize - 1));
 
 	// copy the stuff
 	for ( LPWSTR lpPtr = (LPWSTR) (m_lpPtr + nOffset); *lpPtr && cbSize; lpPtr++, cbSize-- ) {
@@ -454,6 +471,15 @@ BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPWSTR pszData, UINT cbSize)
 		m_cbContentSize -= nExtracted;
 	}
 
+	return TRUE;
+}
+
+BOOL YDynamicBuffer::SetContentSize (int cbContentSize)
+{
+	if ( (cbContentSize > m_cbSize) && !IncreaseSize (m_nAllocationIncrease + cbContentSize - m_cbSize) ) {
+		return FALSE;
+	}
+	m_cbContentSize = cbContentSize;
 	return TRUE;
 }
 

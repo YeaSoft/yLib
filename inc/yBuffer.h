@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2001/05/22 16:57:47  leopoldo
+ * Added more methods to YDynamicBuffer
+ *
  * Revision 1.5  2001/05/21 18:53:30  leopoldo
  * Added more methods to YDynamicBuffer
  *
@@ -80,15 +83,15 @@ private:
 public:
 	// construction/destruction
 	YBuffer						();
-	YBuffer						(LPVOID lpBuffer, UINT cbSize);
+	YBuffer						(LPVOID lpBuffer, int cbSize);
 	~YBuffer					();
 
 public:
 	// operations
-	void						Attach					(LPVOID lpBuffer, UINT cbSize);
-	LPVOID						Detach					(LPUINT lpcbSize = NULL);
-	BOOL						Alloc					(UINT cbSize, BOOL fZeroInit = FALSE);
-	BOOL						Realloc					(UINT cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
+	BOOL						Attach					(LPVOID lpBuffer, int cbSize);
+	LPVOID						Detach					(LPINT lpcbSize = NULL);
+	BOOL						Alloc					(int cbSize, BOOL fZeroInit = FALSE);
+	BOOL						Realloc					(int cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
 	void						Free					();
 	void						Clear					(int iFill = 0);
 	BOOL						Copy					(const YBuffer &srcBuffer, BOOL bDontReallocIfFits = TRUE);
@@ -99,11 +102,11 @@ public:
 
 public:
 	// attributes
-	UINT						GetSize					() const;
+	int							GetSize					() const;
 	LPVOID						GetBuffer				();
 	LPCVOID						GetBuffer				() const;
-	LPBYTE						GetByteBufferPtr		(UINT nOffset = 0);
-	const BYTE *				GetByteBufferPtr		(UINT nOffset = 0) const;
+	LPBYTE						GetByteBufferPtr		(int nOffset = 0);
+	const BYTE *				GetByteBufferPtr		(int nOffset = 0) const;
 	operator					LPVOID					();
 	operator					LPCVOID					() const;
 	operator					LPBYTE					();
@@ -111,7 +114,7 @@ public:
 
 protected:
 	// implementation
-	UINT						m_cbSize;
+	int							m_cbSize;
 	LPBYTE						m_lpPtr;
 };
 
@@ -123,36 +126,37 @@ private:
 
 public:
 	// construction/destruction
-	YDynamicBuffer				(UINT nAllocationIncrease = 0);
-	YDynamicBuffer				(LPVOID lpBuffer, UINT cbSize, UINT cbContentSize = 0);
+	YDynamicBuffer				(int nAllocationIncrease = 0);
+	YDynamicBuffer				(LPVOID lpBuffer, int cbSize, int cbContentSize = 0);
 
 public:
 	// operations
-	void						Attach					(LPVOID lpBuffer, UINT cbSize, UINT cbContentSize = 0);
-	LPVOID						Detach					(LPUINT lpcbContentSize = NULL, LPUINT lpcbSize = NULL);
-	BOOL						Alloc					(UINT cbSize, BOOL fZeroInit = FALSE);
-	BOOL						Realloc					(UINT cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
+	BOOL						Attach					(LPVOID lpBuffer, int cbSize, int cbContentSize = 0);
+	LPVOID						Detach					(LPINT lpcbContentSize = NULL, LPINT lpcbSize = NULL);
+	BOOL						Alloc					(int cbSize, BOOL fZeroInit = FALSE);
+	BOOL						Realloc					(int cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
 	void						Free					();
 	BOOL						FreeExtra				();
 	void						Clear					(int iFill = 0);
 	BOOL						Copy					(const YDynamicBuffer &srcBuffer, BOOL bDontReallocIfFits = TRUE);
+	void						Empty					(BOOL bFreeExtra = FALSE);
 
-	BOOL						PushData				(LPCVOID lpData, UINT cbSize);
-	BOOL						InsertData				(UINT nOffset, LPCVOID lpData, UINT cbSize);
-	BOOL						ExtractData				(UINT nOffset, LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRead = NULL);
-	BOOL						PopData					(LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRead = NULL);
+	BOOL						PushData				(LPCVOID lpData, int cbSize);
+	BOOL						InsertData				(int nOffset, LPCVOID lpData, int cbSize);
+	BOOL						ExtractData				(int nOffset, LPVOID lpData, int cbSize, LPINT pNumberOfBytesRead = NULL);
+	BOOL						PopData					(LPVOID lpData, int cbSize, LPINT pNumberOfBytesRead = NULL);
 
 	BOOL						PushString				(LPCSTR pszData);
 	BOOL						PushString				(LPCWSTR pszData);
-	BOOL						ExtractString			(UINT nOffset, LPSTR pszData, UINT cbSize);
-	BOOL						ExtractString			(UINT nOffset, LPWSTR pszData, UINT cbSize);
-	BOOL						PopString				(LPSTR pszData, UINT cbSize);
-	BOOL						PopString				(LPWSTR pszData, UINT cbSize);
+	BOOL						ExtractString			(int nOffset, LPSTR pszData, int cbSize);
+	BOOL						ExtractString			(int nOffset, LPWSTR pszData, int cbSize);
+	BOOL						PopString				(LPSTR pszData, int cbSize);
+	BOOL						PopString				(LPWSTR pszData, int cbSize);
 
 	BOOL						PushTerminatedString	(LPCSTR pszData);
 	BOOL						PushTerminatedString	(LPCWSTR pszData);
 
-	BOOL						IncreaseSize			(UINT cbIncrease);
+	BOOL						IncreaseSize			(int cbIncrease);
 
 public:
 	// operators
@@ -160,14 +164,16 @@ public:
 
 public:
 	// attributes
-	UINT						GetContentSize			() const;
-	UINT						GetAllocationIncrease	() const;
-	void						SetAllocationIncrease	(UINT nAllocationIncrease = 0);
+	BOOL						IsEmpty					() const;
+	int							GetContentSize			() const;
+	BOOL						SetContentSize			(int cbContentSize);
+	int							GetAllocationIncrease	() const;
+	void						SetAllocationIncrease	(int nAllocationIncrease = 0);
 
 protected:
 	// implementation
-	UINT						m_cbContentSize;
-	UINT						m_nAllocationIncrease;
+	int 						m_cbContentSize;
+	int							m_nAllocationIncrease;
 };
 
 #ifdef YLB_ENABLE_INLINE

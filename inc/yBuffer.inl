@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/05/22 16:57:47  leopoldo
+ * Added more methods to YDynamicBuffer
+ *
  * Revision 1.4  2001/05/21 18:53:30  leopoldo
  * Added more methods to YDynamicBuffer
  *
@@ -56,9 +59,9 @@ YLB_INLINE YBuffer::YBuffer ()
 	m_lpPtr		= NULL;
 }
 
-YLB_INLINE YBuffer::YBuffer (LPVOID lpBuffer, UINT cbSize)
+YLB_INLINE YBuffer::YBuffer (LPVOID lpBuffer, int cbSize)
 {
-	ASSERTY((!lpBuffer && !cbSize) || (lpBuffer && cbSize));
+	ASSERTY((!lpBuffer && !cbSize) || (lpBuffer && (cbSize >= 0)));
 	m_lpPtr		= (LPBYTE) lpBuffer;
 	m_cbSize	= cbSize;
 }
@@ -68,7 +71,7 @@ YLB_INLINE YBuffer::~YBuffer ()
 	Free ();
 }
 
-YLB_INLINE UINT YBuffer::GetSize () const
+YLB_INLINE int YBuffer::GetSize () const
 {
 	return m_cbSize;
 }
@@ -83,13 +86,15 @@ YLB_INLINE LPCVOID YBuffer::GetBuffer () const
 	return (LPCVOID) m_lpPtr;
 }
 
-YLB_INLINE LPBYTE YBuffer::GetByteBufferPtr (UINT nOffset /* = 0 */)
+YLB_INLINE LPBYTE YBuffer::GetByteBufferPtr (int nOffset /* = 0 */)
 {
+	ASSERTY(nOffset >= 0);
 	return (nOffset >= m_cbSize) ? (NULL) : (m_lpPtr + nOffset);
 }
 
-YLB_INLINE const BYTE * YBuffer::GetByteBufferPtr (UINT nOffset /* = 0 */) const
+YLB_INLINE const BYTE * YBuffer::GetByteBufferPtr (int nOffset /* = 0 */) const
 {
+	ASSERTY(nOffset >= 0);
 	return (nOffset >= m_cbSize) ? (NULL) : (m_lpPtr + nOffset);
 }
 
@@ -122,22 +127,28 @@ YLB_INLINE void YBuffer::Clear (int iFill)
 
 /////////////////////////////
 
-YLB_INLINE YDynamicBuffer::YDynamicBuffer (UINT nAllocationIncrease /* = 0 */)
+YLB_INLINE YDynamicBuffer::YDynamicBuffer (int nAllocationIncrease /* = 0 */)
 {
+	ASSERTY(nAllocationIncrease >= 0);
 	m_cbContentSize			= 0;
 	m_nAllocationIncrease	= nAllocationIncrease;
 }
 
-YLB_INLINE YDynamicBuffer::YDynamicBuffer (LPVOID lpBuffer, UINT cbSize, UINT cbContentSize /* = 0 */) : YBuffer (lpBuffer, cbSize)
+YLB_INLINE YDynamicBuffer::YDynamicBuffer (LPVOID lpBuffer, int cbSize, int cbContentSize /* = 0 */) : YBuffer (lpBuffer, cbSize)
 {
+	ASSERTY(cbContentSize >= 0);
 	m_cbContentSize			= (cbContentSize < cbSize) ? (cbContentSize) : (cbSize);
 	m_nAllocationIncrease	= 0;
 }
 
-YLB_INLINE void YDynamicBuffer::Attach (LPVOID lpBuffer, UINT cbSize, UINT cbContentSize /* = 0 */)
+YLB_INLINE BOOL YDynamicBuffer::Attach (LPVOID lpBuffer, int cbSize, int cbContentSize /* = 0 */)
 {
-	YBuffer::Attach (lpBuffer, cbSize);
+	ASSERTY(cbContentSize >= 0);
+	if ( !YBuffer::Attach (lpBuffer, cbSize) ) {
+		return FALSE;
+	}
 	m_cbContentSize = (cbContentSize < cbSize) ? (cbContentSize) : (cbSize);
+	return TRUE;
 }
 
 YLB_INLINE void YDynamicBuffer::Free ()
@@ -149,6 +160,11 @@ YLB_INLINE void YDynamicBuffer::Free ()
 YLB_INLINE BOOL YDynamicBuffer::FreeExtra ()
 {
 	return Realloc (m_cbContentSize, FALSE, FALSE);
+}
+
+YLB_INLINE void YDynamicBuffer::Empty (BOOL bFreeExtra /* = FALSE */)
+{
+	m_cbContentSize = 0;
 }
 
 YLB_INLINE BOOL YDynamicBuffer::PushString (LPCSTR pszData)
@@ -171,28 +187,34 @@ YLB_INLINE BOOL YDynamicBuffer::PushTerminatedString (LPCWSTR pszData)
 	return PushData (pszData, (wcslen (pszData) + 1) * sizeof (WCHAR));
 }
 
-YLB_INLINE BOOL YDynamicBuffer::PopString (LPSTR pszData, UINT cbSize)
+YLB_INLINE BOOL YDynamicBuffer::PopString (LPSTR pszData, int cbSize)
 {
 	return ExtractString (0, pszData, cbSize);
 }
 
-YLB_INLINE BOOL YDynamicBuffer::PopString (LPWSTR pszData, UINT cbSize)
+YLB_INLINE BOOL YDynamicBuffer::PopString (LPWSTR pszData, int cbSize)
 {
 	return ExtractString (0, pszData, cbSize);
 }
 
-YLB_INLINE UINT YDynamicBuffer::GetContentSize () const
+YLB_INLINE BOOL YDynamicBuffer::IsEmpty () const
+{
+	return m_cbContentSize != 0;
+}
+
+YLB_INLINE int YDynamicBuffer::GetContentSize () const
 {
 	return m_cbContentSize;
 }
 
-YLB_INLINE UINT YDynamicBuffer::GetAllocationIncrease () const
+YLB_INLINE int YDynamicBuffer::GetAllocationIncrease () const
 {
 	return m_nAllocationIncrease;
 }
 
-YLB_INLINE void YDynamicBuffer::SetAllocationIncrease (UINT nAllocationIncrease /* = 0 */)
+YLB_INLINE void YDynamicBuffer::SetAllocationIncrease (int nAllocationIncrease /* = 0 */)
 {
+	ASSERTY(nAllocationIncrease >= 0);
 	m_nAllocationIncrease = nAllocationIncrease;
 }
 
