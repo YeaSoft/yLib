@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:13  leo
  * Initial revision
  *
@@ -43,6 +46,7 @@
  * LIBRARY INCLUDES
  *============================================================================*/
 #include <yLibBase.h>
+#include <yArray.h>
 #include <yBuffer.h>
 #include <yConsole.h>
 #include <yCrc32.h>
