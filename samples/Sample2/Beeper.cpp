@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2001/05/16 17:16:42  leopoldo
+ * Added some printf message to demonstrate console reattachment
+ *
  * Revision 1.1  2000/05/26 14:07:38  leo
  * Initial revision
  *
@@ -43,20 +46,14 @@ BOOL CBeeper::PreCreateThread (BOOL &bSuspended, UINT &uStackSize, LPSECURITY_AT
 
 UINT CBeeper::OnRunThread ()
 {
-	YConsole::Allocate ();
-//	DebugBreak ();
-//	_osfhnd(1) = (long) ::GetStdHandle (STD_OUTPUT_HANDLE);
-//	_osfile(1) = (char)(FOPEN | FTEXT | FDEV);
-
+	// you will see this because of sonsole to RTL
+	// reattachment in YConsole::Attach
 	printf ("Hello World!\n");
-//	::_write (1, "Super Hello\r\n", 13);
-	
 
 	while ( m_evStop.Wait (1000) != WAIT_OBJECT_0 ) {
 		if ( !m_bSuspended ) {
 			MessageBeep (0);
 			printf ("Beep!\n");
-			//::_write (1, "Super Hello\r\n", 13);
 		}
 	}
 	return 0;
