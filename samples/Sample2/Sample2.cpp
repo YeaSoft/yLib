@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26 14:07:40  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -59,7 +62,19 @@ BOOL CBeeperApp::InitInstance (YCommandLineInfo *cli)
 {
 	// performs autoparsing
 	CBeeperParser	cliParser;
-	return !ProcessShellCommand (cliParser);
+
+	if ( !ProcessShellCommand (cliParser) ) {
+		// no interactive command specified.
+		if ( ::YlbIsAttachedToConsole () ) {
+			// not started by SCM
+			cliParser.ShowIntro ();
+			cliParser.ShowUsage (cliParser.GetCommands () & SCL_CMD_MASK);
+			cliParser.ShowExtro ();
+			return FALSE;
+		}
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /*=============================================================================
