@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:26  leo
  * Initial revision
  *
@@ -182,6 +185,11 @@ YLB_INLINE UINT YRegistry::MultiStringGet (LPCTSTR lpszValueName, LPTSTR pszBuff
 		}
 	}
 	return uRet;
+}
+
+YLB_INLINE LPCTSTR YRegistry::StringGet (LPCTSTR lpszValueName, YStringData &ysValue, LPCTSTR lpszDefault)
+{
+	return StringGet (lpszValueName, ysValue.GetBuffer (), ysValue.GetBufferSize (), lpszDefault);
 }
 
 YLB_INLINE UINT YRegistry::BinaryGet (LPCTSTR lpszValueName, LPVOID pBuffer, UINT cbBuffer) const

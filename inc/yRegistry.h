@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:25  leo
  * Initial revision
  *
@@ -49,6 +52,12 @@
 #ifndef __yLibBase_h__
 #include <yLibBase.h>
 #endif
+
+/*=============================================================================
+ * FORWARD CLASS DECLARATIONS
+ *============================================================================*/
+class YStringData;
+class YMultiString;
 
 /*=============================================================================
  * USEFUL MACROS
@@ -139,10 +148,14 @@ public:
 	DWORD						NumberGet				(LPCTSTR lpszValueName, DWORD dwDefault) const;
 	// @cmember Returns a string value
 	LPCTSTR						StringGet				(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPCTSTR lpszDefault = EMPTY_STRING);
+	// @cmember Returns a string value
+	LPCTSTR						StringGet				(LPCTSTR lpszValueName, YStringData &ysValue, LPCTSTR lpszDefault = EMPTY_STRING);
 	// @cmember Returns an expandable string value
 	LPCTSTR						ExpandableStringGet		(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPCTSTR lpszDefault = EMPTY_STRING);
 	// @cmember Returns a multiple string value
 	UINT						MultiStringGet			(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0) const;
+	// @cmember Returns a multiple string value
+	UINT						MultiStringGet			(LPCTSTR lpszValueName, YMultiString &ysValue) const;
 	// @cmember Returns a binary block of data
 	UINT						BinaryGet				(LPCTSTR lpszValueName, LPVOID pBuffer = NULL, UINT cbBuffer = 0) const;
 	// @cmember Returns a generic block of data

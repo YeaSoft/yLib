@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:08  leo
  * Initial revision
  *
@@ -747,6 +750,21 @@ UINT YRegistry::AnyGet (LPCTSTR lpszValueName, DWORD dwWantedType, LPVOID pBuffe
 		}
 	}
 	return min(dwSize,cbBuffer);
+}
+
+UINT YRegistry::MultiStringGet (LPCTSTR lpszValueName, YMultiString &ysValue) const
+{
+	DWORD dwValueSize = AnyGet (lpszValueName, REG_MULTI_SZ);
+	if ( dwValueSize < 2 ) {
+		ysValue.Empty ();
+		return 0;
+	}
+
+	if ( !ysValue.Prepare (dwValueSize) ) {
+		return 0;
+	}
+
+	return AnyGet (lpszValueName, REG_MULTI_SZ, ysValue.GetBuffer (), ysValue.GetBufferSizeInBytes ());
 }
 
 BOOL YRegistry::MultiStringSet (LPCTSTR lpszValueName, LPCTSTR lpszValue) const
