@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/05/06 18:32:16  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdInc.hpp"
@@ -39,12 +42,9 @@
 /*=============================================================================
  * @doc YLIB | yArray.h
  *============================================================================*/
-YPtrArray::YPtrArray (int nAllocationGranularity /* = -1 */)
+YPtrArray::YPtrArray (int nAllocationGranularity /* = -1 */) : YBaseArray (nAllocationGranularity)
 {
-	m_pData						= NULL;
-	m_nSize						= 0;
-	m_nAllocatedSize			= 0;
-	m_nAllocationGranularity	= (nAllocationGranularity >= 0) ? (nAllocationGranularity) : (1);
+	m_pData = NULL;
 }
 
 void YPtrArray::RemoveAll ()
@@ -57,10 +57,10 @@ void YPtrArray::RemoveAll ()
 	m_nAllocatedSize	= 0;
 }
 
-int YPtrArray::Find (LPVOID pElement) const
+int YPtrArray::Find (LPVOID theElement) const
 {
 	for ( int i = 0; i < m_nSize; i++ ) {
-		if ( m_pData[i] == pElement ) {
+		if ( m_pData[i] == theElement ) {
 			return i;
 		}
 	}
@@ -178,57 +178,39 @@ BOOL YPtrArray::Remove (LPVOID pElement)
 {
 	int nIndex = Find (pElement);
 	if ( nIndex != -1 ) {
-		return RemoveAt (nIndex);
+		return RemoveAt (nIndex) != -1;
 	}
 	return FALSE;
 }
 
 BOOL YPtrArray::SetSize (int nNewSize, int nAllocationGranularity /* = -1 */)
 {
-	// reset granularity
-	if ( nAllocationGranularity >= 0 ) {
-		m_nAllocationGranularity = nAllocationGranularity;
-	}
+	int nNewAllocated = SizeHeuristic (nNewSize, nAllocationGranularity);
 
-	if ( nNewSize < 0 ) {
-		// crap
-		return FALSE;
-	}
-	else if ( nNewSize == 0 ) {
-		// clear
+	switch ( nNewAllocated ) {
+	case SZHEU_CLEAR:
 		RemoveAll ();
+		// intended fallthrough
+	case SZHEU_DONOTHING:
 		return TRUE;
-	}
-	else if ( nNewSize == m_nSize ) {
-		// no change
-		return TRUE;
-	}
-	else if ( nNewSize > m_nAllocatedSize ) {
-		// determine how much to grow the array.
-		// if no granularity is specified, we grow dynamically:
-		// 1/8 of the array size, but not less than 4 elements
-		// and not more than 1024 elements.
-		int nAddElements	= (m_nAllocationGranularity > 0) ? (m_nAllocationGranularity) : (min (max (m_nSize / 8, 4), 1024));
-		int nNewAllocated	= m_nAllocatedSize + nAddElements;
-		if ( nNewAllocated < nNewSize ) {
-			// let's allocate exactly what the user wants.
-			nNewAllocated = nNewSize;
-		}
-		if ( nNewAllocated < m_nAllocatedSize ) {
-			// roll over...
-			return FALSE;
-		}
+
+	case SZHEU_NEGATIVE:
+	case SZHEU_OVERFLOW:
+		return FALSE;
+
+	default:
 		if ( !SetAllocatedSize (nNewAllocated) ) {
 			return FALSE;
 		}
-	}
-
-	if ( nNewSize > m_nSize ) {
+		// intended fallthrough
+	case SZHEU_BIGGER:
 		// initialize the added elements
 		memset (m_pData + m_nSize, 0, (nNewSize - m_nSize) * sizeof (LPVOID));
+		// intended fallthrough
+	case SZHEU_SMALLER:
+		m_nSize = nNewSize;
+		return TRUE;
 	}
-	m_nSize = nNewSize;
-	return TRUE;
 }
 
 BOOL YPtrArray::SetAllocatedSize (int nNewSize)

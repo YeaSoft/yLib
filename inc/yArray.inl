@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2001/05/06 18:31:31  leopoldo
+ * Improved arrays
+ * Added cardinal array types
+ *
  * Revision 1.1  2001/04/12 18:42:56  leopoldo
  * Initial revision
  *
@@ -283,11 +287,10 @@ YLB_INLINE char & YCharArray::operator[] (int nIndex)
 
 //////////////////////////////////////
 
-
-
-
-
-
+YLB_INLINE YPtrArray::YPtrArray (const YPtrArray &src) : YBaseArray (src)
+{
+	Copy (src);
+}
 
 YLB_INLINE YPtrArray::~YPtrArray ()
 {
@@ -326,6 +329,27 @@ YLB_INLINE LPVOID * YPtrArray::GetData ()
 	return (LPVOID *) m_pData;
 }
 
+YLB_INLINE BOOL YPtrArray::InsertAt (int nIndex, YPtrArray * pNewArray)
+{
+	return InsertAt (nIndex, *pNewArray);
+}
+
+YLB_INLINE YPtrArray & YPtrArray::operator= (const YPtrArray & src)
+{
+	Copy (src);
+	return *this;
+}
+
+YLB_INLINE YPtrArray::operator const LPVOID * () const
+{
+	return GetData ();
+}
+
+YLB_INLINE YPtrArray::operator LPVOID * ()
+{
+	return GetData ();
+}
+
 YLB_INLINE LPVOID YPtrArray::operator[] (int nIndex) const
 {
 	return GetAt(nIndex);
@@ -334,26 +358,6 @@ YLB_INLINE LPVOID YPtrArray::operator[] (int nIndex) const
 YLB_INLINE LPVOID & YPtrArray::operator[] (int nIndex)
 {
 	return ElementAt(nIndex);
-}
-
-YLB_INLINE BOOL YPtrArray::InsertAt (int nIndex, YPtrArray * pNewArray)
-{
-	return InsertAt (nIndex, *pNewArray);
-}
-
-YLB_INLINE int YPtrArray::GetSize () const
-{
-	return m_nSize;
-}
-
-YLB_INLINE int YPtrArray::GetAllocatedSize () const
-{
-	return m_nAllocatedSize;
-}
-
-YLB_INLINE int YPtrArray::GetUpperBound () const
-{
-	return m_nSize - 1;
 }
 
 //

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/05/09 23:12:02  leopoldo
+ * Added some inactive stuff
+ *
  * Revision 1.3  2001/05/06 18:31:31  leopoldo
  * Improved arrays
  * Added cardinal array types
@@ -282,21 +285,17 @@ public:
 	operator					TYPE *					() { return (TYPE *) BASE::operator int * (); }
 	TYPE						operator[]				(int nIndex) const { return (TYPE) BASE::operator[] (nIndex); }
 	TYPE &						operator[]				(int nIndex) { return (TYPE &) BASE::operator[] (nIndex); }
-
 };
 
 /*=============================================================================
  * POINTER ARRAYS
  *============================================================================*/
-class YPtrArray
+class YPtrArray : public YBaseArray
 {
-private:
-	// kill these construction methods & operators
-	YPtrArray					(const YPtrArray &);
-
 public:
 	// construction/destruction
 	YPtrArray					(int nAllocationGranularity = -1);
+	YPtrArray					(const YPtrArray &src);				// may fail...
 	~YPtrArray					();
 
 public:
@@ -304,7 +303,7 @@ public:
 	BOOL						FreeExtra				();
 	void						RemoveAll				();
 
-	int							Find					(LPVOID pElement) const;
+	int							Find					(LPVOID theElement) const;
 	LPVOID						GetAt					(int nIndex) const;
 	BOOL						SetAt					(int nIndex, LPVOID newElement);
 	BOOL						SetAtGrow				(int nIndex, LPVOID newElement);
@@ -317,29 +316,28 @@ public:
 	int							Append					(const YPtrArray & src);
 	BOOL						Copy					(const YPtrArray & src);
 
-	LPVOID						operator[]				(int nIndex) const;
-	LPVOID &					operator[]				(int nIndex);
-
 	BOOL						InsertAt				(int nIndex, YPtrArray * pNewArray);
 	BOOL						InsertAt				(int nIndex, const YPtrArray & src);
 	BOOL						InsertAt				(int nIndex, LPVOID newElement, int nCount = 1);
 	int							RemoveAt				(int nIndex, int nCount = 1);
-	BOOL						Remove					(LPVOID pElement);
+	BOOL						Remove					(LPVOID theElement);
+
+public:
+	// operators
+	YPtrArray &					operator=				(const YPtrArray & src);
+	operator					const LPVOID *			() const;
+	operator					LPVOID *				();
+	LPVOID						operator[]				(int nIndex) const;
+	LPVOID &					operator[]				(int nIndex);
 
 public:
 	// attributes
-	int							GetSize					() const;
 	BOOL						SetSize					(int nNewSize, int nAllocationGranularity = -1);
-	int							GetAllocatedSize		() const;
 	BOOL						SetAllocatedSize		(int nNewSize);
-	int							GetUpperBound			() const;
 
 protected:
 	// implementation
 	LPVOID *					m_pData;
-	int							m_nSize;
-	int							m_nAllocatedSize;
-	int							m_nAllocationGranularity;
 };
 
 template<class TYPE>
@@ -347,7 +345,8 @@ class YTypedPtrArray : public YPtrArray
 {
 public:
 	// construction/destruction
-	YTypedPtrArray<TYPE>		(int nAllocationGranularity = -1) : YPtrArray (nAllocationGranularity) { }
+	YTypedPtrArray<TYPE>								(int nAllocationGranularity = -1) : YPtrArray (nAllocationGranularity) { }
+	YTypedPtrArray<TYPE>								(const YTypedPtrArray<TYPE> &src) : YPtrArray (src) { }
 
 public:
 	// operations
@@ -361,11 +360,19 @@ public:
 	const TYPE *				GetData					() const { return (const TYPE) YPtrArray::GetData (); }
 	TYPE *						GetData					() { return (TYPE) YPtrArray::GetData (); }
 
+
+	BOOL						InsertAt				(int nIndex, YTypedPtrArray<TYPE> * pNewArray) { return YPtrArray::InsertAt (nIndex, pNewArray); }
+	BOOL						InsertAt				(int nIndex, const YTypedPtrArray<TYPE> & src) { return YPtrArray::InsertAt (nIndex, src); }
+	BOOL						InsertAt				(int nIndex, TYPE newElement, int nCount = 1) { return YPtrArray::InsertAt (nIndex, newElement, nCount); }
+	BOOL						Remove					(TYPE theElement) { return YPtrArray::Remove (theElement); }
+
+public:
+	// operators
+	YTypedPtrArray<TYPE> &		operator=				(const YTypedPtrArray<TYPE> & src) { Copy (src); return *this; }
+	operator					const TYPE *			() const { return (const TYPE *) YPtrArray::operator const LPVOID * (); }
+	operator					TYPE *					() { return (TYPE *) YPtrArray::operator LPVOID * (); }
 	TYPE						operator[]				(int nIndex) const { return (TYPE) YPtrArray::operator[] (nIndex); }
 	TYPE &						operator[]				(int nIndex) { return (TYPE &) YPtrArray::operator[] (nIndex); }
-
-	BOOL						InsertAt				(int nIndex, TYPE newElement, int nCount = 1) { return YPtrArray::InsertAt (nIndex, newElement, nCount); }
-	BOOL						Remove					(TYPE pElement) { return YPtrArray::Remove (pElement); }
 };
 
 template<class TYPE, class CREATIONTYPE>
@@ -373,8 +380,10 @@ class YTypedAllocatedPtrArray : public YPtrArray
 {
 public:
 	// construction/destruction
-	YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>			(int nAllocationGranularity = -1) : YPtrArray (nAllocationGranularity) { }
-	~YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>		() { RemoveAll (); }
+	YTypedAllocatedPtrArray<TYPE,CREATIONTYPE>			(int nAllocationGranularity = -1) : YPtrArray (nAllocationGranularity) { }
+//	YTypedAllocatedPtrArray<TYPE,CREATIONTYPE>			(const YTypedAllocatedPtrArray<TYPE,CREATIONTYPE> &src);
+	~YTypedAllocatedPtrArray<TYPE,CREATIONTYPE>			() { RemoveAll (); }
+
 
 public:
 	// operations
@@ -390,12 +399,20 @@ public:
 	const TYPE *				GetData					() const { return (const TYPE) YPtrArray::GetData (); }
 	TYPE *						GetData					() { return (TYPE) YPtrArray::GetData (); }
 
-	TYPE						operator[]				(int nIndex) const { return (TYPE) YPtrArray::operator[] (nIndex); }
-	TYPE &						operator[]				(int nIndex) { return (TYPE &) YPtrArray::operator[] (nIndex); }
 
+//	BOOL						InsertAt				(int nIndex, YTypedAllocatedPtrArray<TYPE,CREATIONTYPE> * pNewArray);
+//	BOOL						InsertAt				(int nIndex, const YTypedAllocatedPtrArray<TYPE,CREATIONTYPE> & src);
 	BOOL						InsertAt				(int nIndex, TYPE newElement, int nCount = 1) { return YPtrArray::InsertAt (nIndex, newElement, nCount); }
 	int							RemoveAt				(int nIndex, int nCount = 1, BOOL bFreeAllocated = TRUE);
 	BOOL						Remove					(TYPE pElement, BOOL bFreeAllocated = TRUE);
+
+public:
+	// operators
+//	YTypedAllocatedPtrArray<TYPE,CREATIONTYPE> &	operator=	(const YTypedAllocatedPtrArray<TYPE,CREATIONTYPE> & src) { Copy (src); return *this; }
+	operator					const TYPE *			() const { return (const TYPE *) YPtrArray::operator const LPVOID * (); }
+	operator					TYPE *					() { return (TYPE *) YPtrArray::operator LPVOID * (); }
+	TYPE						operator[]				(int nIndex) const { return (TYPE) YPtrArray::operator[] (nIndex); }
+	TYPE &						operator[]				(int nIndex) { return (TYPE &) YPtrArray::operator[] (nIndex); }
 };
 
 template<class TYPE, class CREATIONTYPE>
@@ -403,7 +420,10 @@ void YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>::RemoveAll (BOOL bFreeAllocated
 {
 	if ( bFreeAllocated ) {
 		for ( int i = 0; i < m_nSize; i++ ) {
-			delete GetAt (i);
+			TYPE lpPtr = GetAt (i);
+			if ( lpPtr ) {
+				delete lpPtr;
+			}
 		}
 	}
 
@@ -429,7 +449,10 @@ int YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>::RemoveAt (int nIndex, int nCoun
 	if ( bFreeAllocated ) {
 		int nTop = min(nIndex + nCount,m_nSize);
 		for ( int i = nIndex; (i >= 0) && (i < nTop); i++ ) {
-			delete GetAt (i);
+			TYPE lpPtr = GetAt (i);
+			if ( lpPtr ) {
+				delete lpPtr;
+			}
 		}
 	}
 	return YPtrArray::RemoveAt (nIndex, nCount);
@@ -645,7 +668,7 @@ BOOL YDataArray<TYPE>::Remove (TYPE theElement)
 {
 	int nIndex = Find (theElement);
 	if ( nIndex != -1 ) {
-		return RemoveAt (nIndex);
+		return RemoveAt (nIndex) != -1;
 	}
 	return FALSE;
 }

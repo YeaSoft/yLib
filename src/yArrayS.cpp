@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/05/06 18:32:16  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdInc.hpp"
@@ -175,7 +178,7 @@ BOOL YShortArray::Remove (short theElement)
 {
 	int nIndex = Find (theElement);
 	if ( nIndex != -1 ) {
-		return RemoveAt (nIndex);
+		return RemoveAt (nIndex) != -1;
 	}
 	return FALSE;
 }
