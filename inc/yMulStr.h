@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/28 15:29:00  leopoldo
+ * Added assignment methods
+ *
  * Revision 1.2  2001/05/24 15:20:11  leopoldo
  * First basic implementation
  *
@@ -88,8 +91,11 @@ public:
 
 	LPTSTR						GetBuffer				() { return (LPTSTR) m_dbStorage.GetBuffer (); }
 	LPCTSTR						GetBuffer				() const { return (LPCTSTR) m_dbStorage.GetBuffer (); }
-	UINT						GetBufferSize			() const { return m_dbStorage.GetContentSize () / sizeof (TCHAR); }
-	UINT						GetBufferSizeInBytes	() const { return m_dbStorage.GetContentSize (); }
+	UINT						GetBufferSize			() const { return m_dbStorage.GetSize () / sizeof (TCHAR); }
+	UINT						GetBufferSizeInBytes	() const { return m_dbStorage.GetSize (); }
+	UINT						GetContentSize			() const { return m_dbStorage.GetContentSize () / sizeof (TCHAR); }
+	UINT						GetContentSizeInBytes	() const { return m_dbStorage.GetContentSize (); }
+	void						SetContentSize			(int iContentSize) { m_dbStorage.SetContentSize (iContentSize * sizeof(TCHAR)); }
 
 public:
 	// operations
