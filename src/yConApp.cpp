@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/04/20 12:53:01  leopoldo
+ * Missed to call CommonConstructor in YConApp::YConApp(LPCTSTR...
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -223,7 +226,7 @@ void YConApp::CommonConstructor ()
 	m_pCLI			= &(_proc.m_cli);
 
 	// initialize members.
-	ASSERTY(::GetModuleFileName (NULL, m_szAppPath, _countof (m_szAppPath)));
+	::GetModuleFileName (NULL, m_szAppPath, _countof (m_szAppPath));
 	if ( (m_pszAppName = _tcsrchr (m_szAppPath, '\\')) != NULL ) {
 		m_pszAppPath = m_szAppPath;
 		*((LPTSTR) m_pszAppName) = 0;
