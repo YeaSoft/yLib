@@ -29,8 +29,8 @@ CFG=yAfc - Win32 Dynamic Debug CRT Unicode
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "yAfc"
+# PROP Scc_LocalPath ".."
 CPP=cl.exe
 RSC=rc.exe
 
