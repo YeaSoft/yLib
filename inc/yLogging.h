@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:03:15  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -59,6 +62,7 @@ typedef DWORD					LOG_FLAG;	// @type	LOG_FLAG | Logging message flags.
 #define LOG_F_XDBG3				0x00000080	// @flag	LOG_F_XDBG3 | extended debug message level 3
 #define LOG_F_XDBG4				0x00000100	// @flag	LOG_F_XDBG4 | extended debug message level 4
 #define LOG_F_ASSERT			0x00000200	// @flag	LOG_F_ASSERT | debug assertion
+#define LOG_F_TEXT				0x00000400	// @flag	LOG_F_TEXT | pure text
 
 /* compound logging flags */
 #define XMR_F_CFATAL			0x00040001	// @flag	LOG_F_CFATAL | fatal error with detailed error information appended

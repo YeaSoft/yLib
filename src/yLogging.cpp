@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:05:03  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdInc.hpp"
@@ -76,7 +79,7 @@ void YLogFileHandler::SetVerbosityLevel (int iLevel /* = 0 */)
 		SetFlags (LOG_F_DEBUG);
 	case 0:
 	default:
-		SetFlags (LOG_F_FATAL | LOG_F_ERROR | LOG_F_WARNING | LOG_F_INFO);
+		SetFlags (LOG_F_FATAL | LOG_F_ERROR | LOG_F_WARNING | LOG_F_INFO | LOG_F_TEXT);
 		break;
 	}
 }
@@ -130,30 +133,38 @@ BOOL YLogFileHandler::OutVa (LOG_FLAG logFlag, LPCTSTR lpszFormat, va_list va)
 	case LOG_F_XDBG4:
 		cFlag = _T('4');
 		break;
+	default:
+		cFlag = _T(' ');
+		break;
 	}
 
-	SYSTEMTIME	st;
-	GetLocalTime (&st);
-	_stprintf (
-		szLogString,
-		_T("%04.04d%02.02d%02.02d %02d:%02d:%02d:%03d %c "),
-		(int) st.wYear,
-		(int) st.wMonth,
-		(int) st.wDay,
-		(int) st.wHour,
-		(int) st.wMinute,
-		(int) st.wSecond,
-		(int) st.wMilliseconds,
-		cFlag
-	);
+	if ( logFlag == LOG_F_TEXT ) {
+		_sntprintf (szLogString, _countof (szLogString), lpszFormat, va);
+	}
+	else {
+		SYSTEMTIME	st;
+		GetLocalTime (&st);
+		_stprintf (
+			szLogString,
+			_T("%04.04d%02.02d%02.02d %02d:%02d:%02d:%03d %c "),
+			(int) st.wYear,
+			(int) st.wMonth,
+			(int) st.wDay,
+			(int) st.wHour,
+			(int) st.wMinute,
+			(int) st.wSecond,
+			(int) st.wMilliseconds,
+			cFlag
+		);
 
 
-	_vsntprintf (
-		szLogString + 24,
-		_countof (szLogString) - 24,
-		lpszFormat,
-		va
-	);
+		_vsntprintf (
+			szLogString + 24,
+			_countof (szLogString) - 24,
+			lpszFormat,
+			va
+		);
+	}
 	szLogString[_countof (szLogString) - 1] = 0;
 	DWORD dwRet;
 	if ( !m_bOpenOnDemand || (m_bOpenOnDemand && ReOpen (FALSE)) ) {
