@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:02:55  leo
  * Initial revision
  *
@@ -63,7 +66,6 @@ class YBuffer
 private:
 	// kill these construction methods & operators
 	YBuffer						(const YBuffer &);
-	YBuffer						&operator=				(const YBuffer &);
 
 public:
 	// construction/destruction
@@ -78,6 +80,11 @@ public:
 	BOOL						Realloc					(UINT cbSize, BOOL fAllocCopyFree = FALSE, BOOL fNoCopy = FALSE);
 	void						Free					();
 	void						Clear					(int iFill = 0);
+	BOOL						Copy					(const YBuffer &srcBuffer, BOOL bDontReallocIfFits = FALSE);
+
+public:
+	// operators
+	YBuffer &					operator=				(const YBuffer &srcBuffer) { Copy (srcBuffer, FALSE); return *this; }
 
 public:
 	// attributes

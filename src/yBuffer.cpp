@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:04:53  leo
  * Initial revision
  *
@@ -116,6 +119,30 @@ void YBuffer::Free ()
 		m_lpPtr = NULL;
 	}
 	m_cbSize = 0;
+}
+
+BOOL YBuffer::Copy (const YBuffer &srcBuffer, BOOL bDontReallocIfFits)
+{
+	if ( bDontReallocIfFits && (srcBuffer.m_cbSize <= m_cbSize) ) {
+		// avoid risk of failed allocation and avoid fragmentation
+		memcpy (m_lpPtr, srcBuffer.m_lpPtr, srcBuffer.m_cbSize);
+		return TRUE;
+	}
+
+	LPVOID lpData = malloc (srcBuffer.m_cbSize);
+	if ( !lpData ) {
+		// fail without destroying previous content
+		return FALSE;
+	}
+	memcpy (lpData, srcBuffer.m_lpPtr, srcBuffer.m_cbSize);
+
+	// free previous
+	Free ();
+	// reassign
+	m_lpPtr		= lpData;
+	m_cbSize	= srcBuffer.m_cbSize;
+
+	return TRUE;
 }
 
 #ifndef YLB_ENABLE_INLINE
