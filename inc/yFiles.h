@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:03:04  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -161,14 +164,11 @@ public:
 	virtual BOOL				Flush					();
 	virtual DWORD				Seek					(LONG lDistanceToMove, DWORD dwMoveMethod = FILE_BEGIN);
 	virtual DWORD				Seek					(LONG lDistanceToMove, LPLONG lpDistanceToMoveHigh, DWORD dwMoveMethod = FILE_BEGIN);
-	virtual BOOL				LockRange				(DWORD dwPos, DWORD dwCount);
-	virtual BOOL				UnlockRange				(DWORD dwPos, DWORD dwCount);
 
 public:
 	// attributes
 	virtual BOOL				IsValid					() const;
 	virtual DWORD				GetLength				(LPDWORD lpdwSizeHigh = NULL) const;
-	virtual BOOL				SetLength				(DWORD dwSize, DWORD dwSizeHigh = 0);
 	virtual DWORD				GetPosition				(LPDWORD lpdwPosHigh = NULL) const;
 
 protected:
