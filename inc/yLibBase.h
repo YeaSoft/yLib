@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/16 17:15:34  leopoldo
+ * Added support for reattachment of RTL output handles
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -52,6 +55,7 @@
  * Please use the following defines to change the behaviour of yLib:
  *
  * YLB_NO_PLATFORM_SDK:		Prevent from including our subset of windows.h
+ * YLB_NO_PLATFORM_SDKCFG:	Prevent from defining our subset of windows.h
  * YLB_NO_RUNTIME_LIBRARY:	Prevent from including the runtime library
  *============================================================================*/
 
@@ -122,7 +126,7 @@
 #endif
 
 #if defined(_WINDOWS_) || defined (__AFX_H__)
-#define YLB_NO_PLATFORM_SDK
+#define YLB_NO_PLATFORM_SDKCFG
 #endif
 
 /*=============================================================================
@@ -218,6 +222,8 @@
  *============================================================================*/
 #if !defined(YLB_NO_PLATFORM_SDK)
 
+#if !defined(YLB_NO_PLATFORM_SDKCFG)
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -262,10 +268,20 @@
 #define NODEFERWINDOWPOS		// - DeferWindowPos routines
 #define NOMCX					// - Modem Configuration Extensions
 
+#endif //!defined(YLB_NO_PLATFORM_SDKCFG)
+
+#ifndef _WINDOWS_
 #include <windows.h>
+#endif
+#ifndef __ACCESS_CONTROL__
 #include <accctrl.h>
+#endif
+#ifndef __ACCESS_CONTROL_API__
 #include <aclapi.h>
+#endif
+#ifndef NETCONS_INCLUDED
 #include <lmcons.h>
+#endif
 
 #endif //!defined(YLB_NO_PLATFORM_SDK)
 
