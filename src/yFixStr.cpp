@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.17  2001/05/18 16:00:02  leopoldo
+ * Moved YMultiString in it's own implementation files
+ *
  * Revision 1.16  2001/05/17 16:19:32  leopoldo
  * Fixed the misunderstanding between YStringData::GetSize and YStringData::GetBufferSize
  *
@@ -1036,7 +1039,7 @@ void YFixedString::BufferToHex (LPCVOID lpBuffer, UINT cbSize, TCHAR chDivisor /
 	cbSize = min ((m_cbSize - 1) / ((chDivisor) ? (3) : (2)), cbSize);
 
 	LPBYTE	lpEnd = ((LPBYTE) lpBuffer) + cbSize;
-	LPSTR	lpDst = m_pszString;
+	LPTSTR	lpDst = m_pszString;
 	for ( LPBYTE lpPtr = (LPBYTE) lpBuffer; cbSize; lpPtr++, cbSize-- ) {
 		BYTE hi = *lpPtr >> 4;
 		BYTE lo = *lpPtr & 0x0f;

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/16 17:15:53  leopoldo
+ * Added support for reattachment of RTL output handles
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -197,10 +200,10 @@ BOOL YLBAPI YlbReattachRTL ()
 	_proc.m_iStdOut = _open_osfhandle ((long) ::GetStdHandle (STD_OUTPUT_HANDLE), _O_TEXT);
 	_proc.m_iStdErr = _open_osfhandle ((long) ::GetStdHandle (STD_ERROR_HANDLE), _O_TEXT);
 	if ( _proc.m_iStdOut != -1 ) {
-		_proc.m_fpStdOut = _tfdopen (_proc.m_iStdOut, "wt");
+		_proc.m_fpStdOut = _tfdopen (_proc.m_iStdOut, _T("wt"));
 	}
 	if ( _proc.m_iStdErr != -1 ) {
-		_proc.m_fpStdErr = _tfdopen (_proc.m_iStdOut, "wt");
+		_proc.m_fpStdErr = _tfdopen (_proc.m_iStdOut, _T("wt"));
 	}
 	if ( _proc.m_fpStdOut ) {
 		*stdout = *_proc.m_fpStdOut;
