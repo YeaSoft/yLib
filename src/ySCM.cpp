@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:08  leo
  * Initial revision
  *
@@ -375,7 +378,7 @@ BOOL YServiceControlManager::EnumServices (ENUM_SERVICES_PROC lpEnumServicesFunc
 		if ( bSuccess ) {
 			BOOL bContinue = TRUE;
 			for ( DWORD dw = 0; (dw < dwServices) && bContinue; dw++ ) {
-				bContinue = lpEnumServicesFunc (dwUserData, *(LPENUM_SERVICE_STATUS) (lpESS + dw * sizeof (ENUM_SERVICE_STATUS)));
+				bContinue = lpEnumServicesFunc (dwUserData, lpESS[dw]);
 			}
 		}
 		free (lpESS);
