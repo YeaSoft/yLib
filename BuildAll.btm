@@ -1,0 +1,31 @@
+@echo off
+SetLocal
+
+set errFile=%_cwd\yLib.err
+
+for %yLibName in (yLib yAfc) (
+	for %yLibCRT in (Static Dynamic) (
+		for %yLibBuild in (Debug Release) (
+			gosub buildpair
+		)
+	)
+)
+goto end
+
+:buildpair
+set yLibCoding=CRT
+gosub builder
+set yLibCoding=CRT Unicode
+gosub builder
+return
+
+:builder
+(msdev yLib.dsw /MAKE "%yLibName% - Win32 %yLibCRT% %yLibBuild% %yLibCoding%" %1 %+ set yErr=%?)  | tee /A %errFile%
+iff %yErr NE 0 then
+	echo ERROR: Build was interrupted
+	quit %yErr
+endiff
+return
+
+:end
+Rem EoF
