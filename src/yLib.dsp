@@ -331,6 +331,10 @@ SOURCE=.\yPipeServer.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\yProfile.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\yRegistry.cpp
 # End Source File
 # Begin Source File
@@ -459,6 +463,10 @@ SOURCE=..\inc\yPipeServer.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\inc\yProfile.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\inc\yRegistry.h
 # End Source File
 # Begin Source File
@@ -564,6 +572,10 @@ SOURCE=..\inc\yPipes.inl
 # Begin Source File
 
 SOURCE=..\inc\yPipeServer.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yProfile.inl
 # End Source File
 # Begin Source File
 
