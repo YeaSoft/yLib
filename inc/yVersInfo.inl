@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2002/05/14 11:55:56  leopoldo
+ * Added YVersInfo::GetName
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -52,6 +55,12 @@ YLB_INLINE YVersInfo::YVersInfo ()
 YLB_INLINE LPCTSTR YVersInfo::GetName () const
 {
 	return m_szFileName;
+}
+
+YLB_INLINE const VS_FIXEDFILEINFO *	YVersInfo::GetFixedFileInfo ()
+{
+	LoadInfo ();
+	return m_pvsFixedInfo;
 }
 
 YLB_INLINE WORD YVersInfo::GetFileMajorVersion ()

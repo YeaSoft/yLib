@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2002/05/14 11:55:56  leopoldo
+ * Added YVersInfo::GetName
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -76,10 +79,13 @@ public:
 	// @access Operations
 	// @cmember Sets the filename for all subsequent requests
 	void						SetName						(LPCTSTR lpszFileName, ...);
-	LPCTSTR						GetName						() const;
 
 public:
 	// @access Attributes
+	// @cmember Gets the filename
+	LPCTSTR						GetName						() const;
+	// @cmember Gets the fixed version information structure
+	const VS_FIXEDFILEINFO *	GetFixedFileInfo			();
 	// @cmember Gets the file major version number
 	WORD						GetFileMajorVersion			();
 	// @cmember Gets the file minor version number
