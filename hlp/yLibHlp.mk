@@ -6,7 +6,7 @@ PROJ		= yLib
 PTITLE		= yLib SDK Help
 INTDIR		= Help
 TARGETDIR	= ..\hlp
-AD			= ..\..\tools\AutoDuck\AutoDuck.exe
+AD			= ..\..\..\build\AutoDuck\AutoDuck.exe
 #ADLOG		= /l$(INTDIR)\$(PROJ).LOG /N
 ADLOG		= /rh /n /l$(INTDIR)\$(PROJ).LOG /c$(INTDIR)\$(PROJ).LOG
 ADHLP		= /rh /C$(INTDIR)\$(PROJ).LOG /O$(INTDIR)\$(PROJ).RTF /d "title=$(PTITLE) Help File"
