@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/23  11:55:42  leo
+ * Added more file open modes
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:04:57  leo
  * Initial revision
  *
@@ -295,11 +299,14 @@ BOOL YStdioFile::Open (LPCTSTR pszFileName, UINT nOpenFlags)
 
 BOOL YStdioFile::Close ()
 {
-	if ( YBaseFile::Close () ) {
-		m_pStream = NULL;
-		return TRUE;
+	BOOL bRet = TRUE;
+
+	if ( m_pStream ) {
+		bRet = fclose (m_pStream) == 0;
 	}
-	return FALSE;
+	m_pStream	= NULL;
+	m_hHandle	= NULL;
+	return bRet;
 }
 
 BOOL YStdioFile::Read (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead)
