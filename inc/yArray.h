@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/06 18:31:31  leopoldo
+ * Improved arrays
+ * Added cardinal array types
+ *
  * Revision 1.2  2001/04/19 17:30:20  leopoldo
  * Added new template YTypedAllocatedPtrArray
  *
@@ -430,6 +434,584 @@ int YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>::RemoveAt (int nIndex, int nCoun
 	}
 	return YPtrArray::RemoveAt (nIndex, nCount);
 }
+
+/*=============================================================================
+ * GENERIC DATA ARRAY
+ *============================================================================*/
+template<class TYPE>
+class YDataArray : public YBaseArray
+{
+
+public:
+	// construction/destruction
+	YDataArray<TYPE>			(int nAllocationGranularity = -1) : YBaseArray (nAllocationGranularity) { m_pData = NULL; }
+	YDataArray<TYPE>			(const YDataArray<TYPE> &src) { m_pData = NULL; Copy (src); }	// may fail...
+	~YDataArray<TYPE>			() { RemoveAll (); }
+
+public:
+	// operations
+	BOOL						FreeExtra				() { return SetAllocatedSize (m_nSize); }
+	void						RemoveAll				();
+
+	int							Find					(TYPE theElement) const;
+	TYPE						GetAt					(int nIndex) const;
+	BOOL						SetAt					(int nIndex, TYPE newElement);
+	BOOL						SetAtGrow				(int nIndex, TYPE newElement);
+	int							Add						(TYPE newElement) { return (SetAtGrow (m_nSize, newElement)) ? (m_nSize - 1) : (-1); }
+
+	TYPE &						ElementAt				(int nIndex);
+	const TYPE *				GetData					() const { return (const TYPE *) m_pData; }
+	TYPE *						GetData					() { return (TYPE *) m_pData; }
+
+	int							Append					(const YDataArray<TYPE> & src);
+	BOOL						Copy					(const YDataArray<TYPE> & src);
+
+	BOOL						InsertAt				(int nIndex, YDataArray<TYPE> * pNewArray) { return InsertAt (nIndex, *pNewArray); }
+	BOOL						InsertAt				(int nIndex, const YDataArray<TYPE> & src);
+	BOOL						InsertAt				(int nIndex, TYPE newElement, int nCount = 1);
+	int							RemoveAt				(int nIndex, int nCount = 1);
+	BOOL						Remove					(TYPE theElement);
+
+public:
+	// operators
+	YDataArray<TYPE> &			operator=				(const YDataArray<TYPE> & src) { Copy (src); return *this; }
+	operator					const TYPE *			() const { return GetData (); }
+	operator					TYPE *					() { return GetData (); }
+	TYPE						operator[]				(int nIndex) const { return GetAt (nIndex); }
+	TYPE &						operator[]				(int nIndex) { return ElementAt (nIndex); }
+
+public:
+	// attributes
+	BOOL						SetSize					(int nNewSize, int nAllocationGranularity = -1);
+	BOOL						SetAllocatedSize		(int nNewSize);
+
+protected:
+	// implementation
+	TYPE *						m_pData;
+};
+
+template<class TYPE>
+void YDataArray<TYPE>::RemoveAll ()
+{
+	if ( m_pData ) {
+		free (m_pData);
+	}
+	m_pData				= NULL;
+	m_nSize				= 0;
+	m_nAllocatedSize	= 0;
+}
+
+template<class TYPE>
+int YDataArray<TYPE>::Find (TYPE theElement) const
+{
+	for ( int i = 0; i < m_nSize; i++ ) {
+		if ( !memcmp (&(m_pData[i]), &theElement, sizeof(TYPE)) ) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+template<class TYPE>
+TYPE YDataArray<TYPE>::GetAt (int nIndex) const
+{
+	ASSERTY((nIndex >= 0) && (nIndex < m_nSize));
+	return m_pData[nIndex];
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::SetAt (int nIndex, TYPE newElement)
+{
+	if ( (nIndex >= 0) && (nIndex < m_nSize) ) {
+		m_pData[nIndex] = newElement;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::SetAtGrow (int nIndex, TYPE newElement)
+{
+	if ( (nIndex < 0) || ((nIndex >= m_nSize) && !SetSize (nIndex + 1)) ) {
+		return FALSE;
+	}
+	m_pData[nIndex] = newElement;
+	return TRUE;
+}
+
+template<class TYPE>
+TYPE & YDataArray<TYPE>::ElementAt (int nIndex)
+{
+	ASSERTY((nIndex >= 0) && (nIndex < m_nSize));
+	return m_pData[nIndex];
+}
+
+template<class TYPE>
+int YDataArray<TYPE>::Append (const YDataArray<TYPE> & src)
+{
+	int nOldSize = m_nSize;
+	if ( ((m_nSize + src.m_nSize) > m_nAllocatedSize) && !SetAllocatedSize (m_nSize + src.m_nSize) ) {
+		return -1;
+	}
+	memcpy (m_pData + m_nSize, src.m_pData, src.m_nSize * sizeof (TYPE));
+	m_nSize += src.m_nSize;
+	return nOldSize;
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::Copy (const YDataArray<TYPE> & src)
+{
+	if ( (src.m_nSize > m_nAllocatedSize) && !SetAllocatedSize (src.m_nSize) ) {
+		return FALSE;
+	}
+	memcpy (m_pData, src.m_pData, src.m_nSize * sizeof (TYPE));
+	m_nSize = src.m_nSize;
+	return TRUE;
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::InsertAt (int nIndex, const YDataArray<TYPE> & src)
+{
+	// compute new size
+	int nNewSize = (nIndex < m_nSize) ? (m_nSize + src.m_nSize) : (nIndex + src.m_nSize);
+	// in case resize....
+	if ( (nNewSize > m_nAllocatedSize) && !SetAllocatedSize (nNewSize) ) {
+		return FALSE;
+	}
+	if ( nIndex < m_nSize ) {
+		// shift up the remaining stuff
+		memmove (m_pData + nIndex + src.m_nSize, m_pData + nIndex, (m_nSize - nIndex) * sizeof (TYPE));
+	}
+	else if ( nIndex > m_nSize ) {
+		// initialize newly created but unused elements
+		memset (m_pData + m_nSize, 0, (nIndex - m_nSize) * sizeof (TYPE));
+	}
+	// copy the stuff
+	memcpy (m_pData + nIndex, src.m_pData, src.m_nSize * sizeof (TYPE));
+	m_nSize = nNewSize;
+	return TRUE;
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::InsertAt (int nIndex, TYPE newElement, int nCount /* = 1 */)
+{
+	// compute new size
+	int nNewSize = (nIndex < m_nSize) ? (m_nSize + nCount) : (nIndex + nCount);
+	// in case resize....
+	if ( (nNewSize > m_nAllocatedSize) && !SetAllocatedSize (nNewSize) ) {
+		return FALSE;
+	}
+	if ( nIndex < m_nSize ) {
+		// shift up the remaining stuff
+		memmove (m_pData + nIndex + nCount, m_pData + nIndex, (m_nSize - nIndex) * sizeof (TYPE));
+	}
+	else if ( nIndex > m_nSize ) {
+		// initialize newly created but unused elements
+		memset (m_pData + m_nSize, 0, (nIndex - m_nSize) * sizeof (TYPE));
+	}
+	// set values
+	for ( int * lpPtr = m_pData + nIndex; nCount; lpPtr++, nCount-- ) {
+		*lpPtr = newElement;
+	}
+	m_nSize = nNewSize;
+	return TRUE;
+}
+
+template<class TYPE>
+int YDataArray<TYPE>::RemoveAt (int nIndex, int nCount /* = 1 */)
+{
+	if ( (nIndex < 0) || (nIndex >= m_nSize) ) {
+		// bad param
+		return -1;
+	}
+	else if ( nCount == 0 ) {
+		// nothing to do
+		return m_nSize;
+	}
+	// compute the real remove count
+	if ( (nIndex + nCount) > m_nSize ) {
+		nCount = m_nSize - nIndex;
+	}
+	else if ( (nIndex + nCount) < m_nSize ) {
+		// we must shift
+		memmove (m_pData + nIndex, m_pData + nIndex + nCount, (m_nSize - (nIndex + nCount)) * sizeof (TYPE));
+	}
+	m_nSize -= nCount;
+	return m_nSize;
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::Remove (TYPE theElement)
+{
+	int nIndex = Find (theElement);
+	if ( nIndex != -1 ) {
+		return RemoveAt (nIndex);
+	}
+	return FALSE;
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::SetSize (int nNewSize, int nAllocationGranularity /* = -1 */)
+{
+	int nNewAllocated = SizeHeuristic (nNewSize, nAllocationGranularity);
+
+	switch ( nNewAllocated ) {
+	case SZHEU_CLEAR:
+		RemoveAll ();
+		// intended fallthrough
+	case SZHEU_DONOTHING:
+		return TRUE;
+
+	case SZHEU_NEGATIVE:
+	case SZHEU_OVERFLOW:
+		return FALSE;
+
+	default:
+		if ( !SetAllocatedSize (nNewAllocated) ) {
+			return FALSE;
+		}
+		// intended fallthrough
+	case SZHEU_BIGGER:
+		// initialize the added elements
+		memset (m_pData + m_nSize, 0, (nNewSize - m_nSize) * sizeof (TYPE));
+		// intended fallthrough
+	case SZHEU_SMALLER:
+		m_nSize = nNewSize;
+		return TRUE;
+	}
+}
+
+template<class TYPE>
+BOOL YDataArray<TYPE>::SetAllocatedSize (int nNewSize)
+{
+	if ( nNewSize <= 0 ) {
+		RemoveAll ();
+	}
+	else if ( m_nAllocatedSize != nNewSize ) {
+		if ( nNewSize > (SIZE_T_MAX/sizeof (TYPE)) ) {
+			// allocation too big (would exceed memory boundaries)
+			return FALSE;
+		}
+		TYPE *pData = NULL;
+		int nByteSize = nNewSize * sizeof (TYPE);
+		if ( (pData = (TYPE *) malloc (nByteSize)) == NULL ) {
+			return FALSE;
+		}
+		memcpy (pData, m_pData, min (m_nSize, nNewSize) * sizeof (TYPE));
+		free (m_pData);
+		m_pData				= pData;
+		m_nSize				= min (m_nSize, nNewSize);
+		m_nAllocatedSize	= nNewSize;
+	}
+	return TRUE;
+}
+
+#if (0)
+/*=============================================================================
+ * GENERIC OBJECT ARRAY
+ *============================================================================*/
+template<class TYPE>
+YLB_INLINE void YLBAPI ConstructElements (TYPE *pElements, int nCount)
+{
+	ASSERT(!nCount || YlbIsValidAddress(pElements, nCount * sizeof (TYPE)));
+
+	memset ((LPVOID) pElements, 0, nCount * sizeof (TYPE));
+
+	for ( /*TUNIX*/; nCount--; pElements++ ) {
+		::new ((LPVOID) pElements) TYPE;
+	}
+}
+
+template<class TYPE>
+YLB_INLINE void YLBAPI DestructElements (TYPE *pElements, int nCount)
+{
+	ASSERT(!nCount || YlbIsValidAddress(pElements, nCount * sizeof (TYPE)));
+
+	for ( /*TUNIX*/; nCount--; pElements++ ) {
+		pElements->~TYPE ();
+	}
+}
+
+template<class TYPE>
+YLB_INLINE void YLBAPI CopyElements (TYPE *pDest, const TYPE *pSrc, int nCount)
+{
+	ASSERT(!nCount || YlbIsValidAddress (pDest, nCount * sizeof (TYPE)));
+	ASSERT(!nCount || YlbIsValidAddress (pSrc,  nCount * sizeof (TYPE)));
+
+	while ( nCount-- ) {
+		*pDest++ = *pSrc++;
+	}
+}
+
+template<class TYPE,ARG_TYPE>
+class YObjectArray : public YBaseArray
+{
+
+public:
+	// construction/destruction
+	YObjectArray<TYPE,ARG_TYPE>	(int nAllocationGranularity = -1) : YBaseArray (nAllocationGranularity) { m_pData = NULL; }
+	YObjectArray<TYPE,ARG_TYPE>	(const YObjectArray<TYPE,ARG_TYPE> &src) { m_pData = NULL; Copy (src); }	// may fail...
+	~YObjectArray<TYPE,ARG_TYPE>() { RemoveAll (); }
+
+public:
+	// operations
+	BOOL						FreeExtra				() { return SetAllocatedSize (m_nSize); }
+	void						RemoveAll				();
+
+	int							Find					(ARG_TYPE theElement) const;
+	TYPE						GetAt					(int nIndex) const;
+	BOOL						SetAt					(int nIndex, ARG_TYPE newElement);
+	BOOL						SetAtGrow				(int nIndex, ARG_TYPE newElement);
+	int							Add						(ARG_TYPE newElement) { return (SetAtGrow (m_nSize, newElement)) ? (m_nSize - 1) : (-1); }
+
+	TYPE &						ElementAt				(int nIndex);
+	const TYPE *				GetData					() const { return (const TYPE *) m_pData; }
+	TYPE *						GetData					() { return (TYPE *) m_pData; }
+
+	int							Append					(const YObjectArray<TYPE,ARG_TYPE> & src);
+	BOOL						Copy					(const YObjectArray<TYPE,ARG_TYPE> & src);
+
+	BOOL						InsertAt				(int nIndex, YObjectArray<TYPE,ARG_TYPE> * pNewArray) { return InsertAt (nIndex, *pNewArray); }
+	BOOL						InsertAt				(int nIndex, const YObjectArray<TYPE,ARG_TYPE> & src);
+	BOOL						InsertAt				(int nIndex, ARG_TYPE newElement, int nCount = 1);
+	int							RemoveAt				(int nIndex, int nCount = 1);
+	BOOL						Remove					(ARG_TYPE theElement);
+
+public:
+	// operators
+	YObjectArray<TYPE,ARG_TYPE> &operator=				(const YObjectArray<TYPE,ARG_TYPE> & src) { Copy (src); return *this; }
+	operator					const TYPE *			() const { return GetData (); }
+	operator					TYPE *					() { return GetData (); }
+	TYPE						operator[]				(int nIndex) const { return GetAt (nIndex); }
+	TYPE &						operator[]				(int nIndex) { return ElementAt (nIndex); }
+
+public:
+	// attributes
+	BOOL						SetSize					(int nNewSize, int nAllocationGranularity = -1);
+	BOOL						SetAllocatedSize		(int nNewSize);
+
+protected:
+	// implementation
+	TYPE *						m_pData;
+};
+
+template<class TYPE,ARG_TYPE>
+void YObjectArray<TYPE,ARG_TYPE>::RemoveAll ()
+{
+	if ( m_pData ) {
+		delete m_pData;
+	}
+	m_pData				= NULL;
+	m_nSize				= 0;
+	m_nAllocatedSize	= 0;
+}
+
+template<class TYPE,ARG_TYPE>
+int YObjectArray<TYPE,ARG_TYPE>::Find (ARG_TYPE theElement) const
+{
+	for ( int i = 0; i < m_nSize; i++ ) {
+		if ( m_pData[i] != theElement ) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+template<class TYPE,ARG_TYPE>
+TYPE YObjectArray<TYPE,ARG_TYPE>::GetAt (int nIndex) const
+{
+	ASSERTY((nIndex >= 0) && (nIndex < m_nSize));
+	return m_pData[nIndex];
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::SetAt (int nIndex, ARG_TYPE newElement)
+{
+	if ( (nIndex >= 0) && (nIndex < m_nSize) ) {
+		m_pData[nIndex] = newElement;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::SetAtGrow (int nIndex, ARG_TYPE newElement)
+{
+	if ( (nIndex < 0) || ((nIndex >= m_nSize) && !SetSize (nIndex + 1)) ) {
+		return FALSE;
+	}
+	m_pData[nIndex] = newElement;
+	return TRUE;
+}
+
+template<class TYPE,ARG_TYPE>
+TYPE & YObjectArray<TYPE,ARG_TYPE>::ElementAt (int nIndex)
+{
+	ASSERTY((nIndex >= 0) && (nIndex < m_nSize));
+	return m_pData[nIndex];
+}
+
+template<class TYPE,ARG_TYPE>
+int YObjectArray<TYPE,ARG_TYPE>::Append (const YObjectArray<TYPE,ARG_TYPE> & src)
+{
+	int nOldSize = m_nSize;
+	if ( ((m_nSize + src.m_nSize) > m_nAllocatedSize) && !SetAllocatedSize (m_nSize + src.m_nSize) ) {
+		return -1;
+	}
+	memcpy (m_pData + m_nSize, src.m_pData, src.m_nSize * sizeof (TYPE));
+	m_nSize += src.m_nSize;
+	return nOldSize;
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::Copy (const YObjectArray<TYPE,ARG_TYPE> & src)
+{
+	if ( (src.m_nSize > m_nAllocatedSize) && !SetAllocatedSize (src.m_nSize) ) {
+		return FALSE;
+	}
+	memcpy (m_pData, src.m_pData, src.m_nSize * sizeof (TYPE));
+	m_nSize = src.m_nSize;
+	return TRUE;
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::InsertAt (int nIndex, const YObjectArray<TYPE,ARG_TYPE> & src)
+{
+	// compute new size
+	int nNewSize = (nIndex < m_nSize) ? (m_nSize + src.m_nSize) : (nIndex + src.m_nSize);
+	// in case resize....
+	if ( (nNewSize > m_nAllocatedSize) && !SetAllocatedSize (nNewSize) ) {
+		return FALSE;
+	}
+	if ( nIndex < m_nSize ) {
+		// shift up the remaining stuff
+		memmove (m_pData + nIndex + src.m_nSize, m_pData + nIndex, (m_nSize - nIndex) * sizeof (TYPE));
+	}
+	else if ( nIndex > m_nSize ) {
+		// initialize newly created but unused elements
+		memset (m_pData + m_nSize, 0, (nIndex - m_nSize) * sizeof (TYPE));
+	}
+	// copy the stuff
+	memcpy (m_pData + nIndex, src.m_pData, src.m_nSize * sizeof (TYPE));
+	m_nSize = nNewSize;
+	return TRUE;
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::InsertAt (int nIndex, TYPE newElement, int nCount /* = 1 */)
+{
+	// compute new size
+	int nNewSize = (nIndex < m_nSize) ? (m_nSize + nCount) : (nIndex + nCount);
+	// in case resize....
+	if ( (nNewSize > m_nAllocatedSize) && !SetAllocatedSize (nNewSize) ) {
+		return FALSE;
+	}
+	if ( nIndex < m_nSize ) {
+		// shift up the remaining stuff
+		memmove (m_pData + nIndex + nCount, m_pData + nIndex, (m_nSize - nIndex) * sizeof (TYPE));
+	}
+	else if ( nIndex > m_nSize ) {
+		// initialize newly created but unused elements
+		memset (m_pData + m_nSize, 0, (nIndex - m_nSize) * sizeof (TYPE));
+	}
+	// set values
+	for ( int * lpPtr = m_pData + nIndex; nCount; lpPtr++, nCount-- ) {
+		*lpPtr = newElement;
+	}
+	m_nSize = nNewSize;
+	return TRUE;
+}
+
+template<class TYPE,ARG_TYPE>
+int YObjectArray<TYPE,ARG_TYPE>::RemoveAt (int nIndex, int nCount /* = 1 */)
+{
+	if ( (nIndex < 0) || (nIndex >= m_nSize) ) {
+		// bad param
+		return -1;
+	}
+	else if ( nCount == 0 ) {
+		// nothing to do
+		return m_nSize;
+	}
+	// compute the real remove count
+	if ( (nIndex + nCount) > m_nSize ) {
+		nCount = m_nSize - nIndex;
+	}
+	else if ( (nIndex + nCount) < m_nSize ) {
+		// we must shift
+		memmove (m_pData + nIndex, m_pData + nIndex + nCount, (m_nSize - (nIndex + nCount)) * sizeof (TYPE));
+	}
+	m_nSize -= nCount;
+	return m_nSize;
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::Remove (TYPE theElement)
+{
+	int nIndex = Find (theElement);
+	if ( nIndex != -1 ) {
+		return RemoveAt (nIndex);
+	}
+	return FALSE;
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::SetSize (int nNewSize, int nAllocationGranularity /* = -1 */)
+{
+	int nNewAllocated = SizeHeuristic (nNewSize, nAllocationGranularity);
+
+	switch ( nNewAllocated ) {
+	case SZHEU_CLEAR:
+		RemoveAll ();
+		// intended fallthrough
+	case SZHEU_DONOTHING:
+		return TRUE;
+
+	case SZHEU_NEGATIVE:
+	case SZHEU_OVERFLOW:
+		return FALSE;
+
+	default:
+		if ( !SetAllocatedSize (nNewAllocated) ) {
+			return FALSE;
+		}
+		// intended fallthrough
+	case SZHEU_BIGGER:
+		// initialize the added elements
+		memset (m_pData + m_nSize, 0, (nNewSize - m_nSize) * sizeof (TYPE));
+		// intended fallthrough
+	case SZHEU_SMALLER:
+		m_nSize = nNewSize;
+		return TRUE;
+	}
+}
+
+template<class TYPE,ARG_TYPE>
+BOOL YObjectArray<TYPE,ARG_TYPE>::SetAllocatedSize (int nNewSize)
+{
+	if ( nNewSize <= 0 ) {
+		RemoveAll ();
+	}
+	else if ( m_nAllocatedSize != nNewSize ) {
+		if ( nNewSize > (SIZE_T_MAX/sizeof (TYPE)) ) {
+			// allocation too big (would exceed memory boundaries)
+			return FALSE;
+		}
+		TYPE *pData = NULL;
+		int nByteSize = nNewSize * sizeof (TYPE);
+		if ( (pData = (TYPE *) malloc (nByteSize)) == NULL ) {
+			return FALSE;
+		}
+		memcpy (pData, m_pData, min (m_nSize, nNewSize) * sizeof (TYPE));
+		free (m_pData);
+		m_pData				= pData;
+		m_nSize				= min (m_nSize, nNewSize);
+		m_nAllocatedSize	= nNewSize;
+	}
+	return TRUE;
+}
+#endif
+
 
 #ifdef YLB_ENABLE_INLINE
 #include <yArray.inl>
