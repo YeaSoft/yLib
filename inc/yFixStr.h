@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.22  2002/08/08 15:57:16  leopoldo
+ * Modified the visibility of an Assign method
+ *
  * Revision 1.21  2002/05/09 14:27:39  leopoldo
  * Added new methods for directory manipulation
  *
@@ -192,7 +195,8 @@ public:
 	TCHAR						GetAt					(int nIndex) const;
 	LPTSTR						GetPtrAt				(int nIndex);
 	LPCTSTR						GetPtrAt				(int nIndex) const;
-//	TCHAR &						operator[]				(int nIndex);
+	TCHAR &						operator[]				(int nIndex);
+	const TCHAR &				operator[]				(int nIndex) const;
 	void						SetAt					(int nIndex, TCHAR ch);
 
 	// transfer
@@ -219,6 +223,7 @@ public:
 	void						Assign					(LPCTSTR lpsz, UINT nCount);
 
 	// overloaded assignment
+	const YFixedString &		operator=				(const YFixedString& stringSrc);
 	const YFixedString &		operator=				(const YStringData& stringSrc);
 	const YFixedString &		operator=				(TCHAR ch);
 	const YFixedString &		operator=				(LPCSTR lpsz);

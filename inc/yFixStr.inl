@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.15  2001/10/05 13:29:56  leopoldo
+ * Added harder delete options to file and directory delete functions
+ *
  * Revision 1.14  2001/09/17 17:14:15  leopoldo
  * Implemented YFixedString::GetPtrAt
  *
@@ -186,11 +189,17 @@ YLB_INLINE LPCTSTR YFixedString::GetPtrAt (int nIndex) const
 	return ((nIndex >= 0) && (nIndex < (int) m_cbSize)) ? (m_pszString + nIndex) : (NULL);
 }
 
-//YLB_INLINE TCHAR & YFixedString::operator[] (int nIndex)
-//{
-//	ASSERTY((nIndex >= 0) && (nIndex < m_cbSize));
-//	return m_pszString[nIndex];
-//}
+YLB_INLINE TCHAR & YFixedString::operator[] (int nIndex)
+{
+	ASSERTY((nIndex >= 0) && (nIndex < (int) m_cbSize));
+	return m_pszString[nIndex];
+}
+
+YLB_INLINE const TCHAR & YFixedString::operator[] (int nIndex) const
+{
+	ASSERTY((nIndex >= 0) && (nIndex < (int) m_cbSize));
+	return m_pszString[nIndex];
+}
 
 YLB_INLINE void YFixedString::SetAt (int nIndex, TCHAR ch)
 {
@@ -230,6 +239,12 @@ YLB_INLINE void YFixedString::Assign (LONG lValue)
 YLB_INLINE void YFixedString::Assign (DWORD dwValue)
 {
 	_yxtot ((DWORD) dwValue, m_pszString, m_cbSize, FALSE);
+}
+
+YLB_INLINE const YFixedString & YFixedString::operator= (const YFixedString& stringSrc)
+{
+	Assign (stringSrc);
+	return *this;
 }
 
 YLB_INLINE const YFixedString & YFixedString::operator= (const YStringData& stringSrc)
