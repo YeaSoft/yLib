@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/04/26 09:35:14  leopoldo
+ * Added support for renamable services
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -1350,17 +1353,14 @@ BOOL YServiceLogic::PerformStart (UINT nIndex, YServiceCmdLineParser &cliParser)
 	YCmdLineParam *pParam = cliParser.FindParamByMeaning (SCL_CMD_START);
 	ASSERTY(pParam);
 
-	DWORD		dwArgC = _proc.m_cli.GetParamCount () - pParam->GetCliIndex ();
-	LPTSTR	*	lpArgV = _proc.m_cli.m_argv + pParam->GetCliIndex () - 1;
+	DWORD		dwArgC = _proc.m_cli.GetParamCount () - pParam->GetCliIndex () - 1;
+	LPTSTR	*	lpArgV = _proc.m_cli.m_argv + pParam->GetCliIndex () + 1;
 
-	if ( cliParser.CanBeRenamed () && (dwArgC > 1) ) {
+	if ( cliParser.CanBeRenamed () && dwArgC ) {
 		--dwArgC;
 		++lpArgV;
 	}
-	if ( dwArgC ) {
-		lpArgV[0] = (LPTSTR) GetAppName ();
-	}
-	else {
+	if ( !dwArgC ) {
 		lpArgV = NULL;
 	}
 
@@ -1656,7 +1656,7 @@ BOOL YServiceLogic::PerformSimulation (UINT nIndex, YServiceCmdLineParser &cliPa
 	ASSERTY(pParam);
 
 	int			argc = _proc.m_cli.GetParamCount () - pParam->GetCliIndex ();
-	LPTSTR *	argv = _proc.m_cli.m_argv + pParam->GetCliIndex () - 1;
+	LPTSTR *	argv = _proc.m_cli.m_argv + pParam->GetCliIndex ();
 
 	if ( cliParser.CanBeRenamed () && (argc > 1) ) {
 		--argc;
