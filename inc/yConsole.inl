@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:02:59  leo
  * Initial revision
  *
@@ -42,44 +45,30 @@
  *============================================================================*/
 YLB_INLINE YConsole::YConsole ()
 {
-	LoadHandles ();
 }
 
 YLB_INLINE YConsole::~YConsole ()
 {
 }
 
-YLB_INLINE BOOL YConsole::LoadHandles ()
-{
-	m_hStdIn	= ::GetStdHandle (STD_INPUT_HANDLE);
-	m_hStdOut	= ::GetStdHandle (STD_OUTPUT_HANDLE);
-	m_hStdErr	= ::GetStdHandle (STD_ERROR_HANDLE);
-	return AreHandlesValid ();
-}
-
-YLB_INLINE void YConsole::ClearHandles ()
-{
-	m_hStdIn = m_hStdOut = m_hStdErr = NULL;
-}
-
 YLB_INLINE BOOL YConsole::WriteVa (LPCTSTR pszFormat, va_list va) const
 {
-	return OutVa (m_hStdOut, FALSE, pszFormat, va);
+	return OutVa (FALSE, pszFormat, va);
 }
 
 YLB_INLINE BOOL YConsole::WriteLnVa (LPCTSTR pszFormat, va_list va) const
 {
-	return OutVa (m_hStdOut, TRUE, pszFormat, va);
+	return OutVa (TRUE, pszFormat, va);
 }
 
 YLB_INLINE BOOL YConsole::ErrorVa (LPCTSTR pszFormat, va_list va) const
 {
-	return OutVa (m_hStdErr, FALSE, pszFormat, va);
+	return ErrVa (FALSE, pszFormat, va);
 }
 
 YLB_INLINE BOOL YConsole::ErrorLnVa (LPCTSTR pszFormat, va_list va) const
 {
-	return OutVa (m_hStdErr, TRUE, pszFormat, va);
+	return ErrVa (TRUE, pszFormat, va);
 }
 
 
@@ -87,7 +76,7 @@ YLB_INLINE BOOL YConsole::Write (LPCTSTR pszFormat, ...) const
 {
 	va_list va;
 	va_start (va, pszFormat);
-	BOOL bRet = OutVa (m_hStdOut, FALSE, pszFormat, va);
+	BOOL bRet = OutVa (FALSE, pszFormat, va);
 	va_end (va);
 	return bRet;
 }
@@ -96,7 +85,7 @@ YLB_INLINE BOOL YConsole::WriteLn (LPCTSTR pszFormat, ...) const
 {
 	va_list va;
 	va_start (va, pszFormat);
-	BOOL bRet = OutVa (m_hStdOut, TRUE, pszFormat, va);
+	BOOL bRet = OutVa (TRUE, pszFormat, va);
 	va_end (va);
 	return bRet;
 }
@@ -105,7 +94,7 @@ YLB_INLINE BOOL YConsole::Error (LPCTSTR pszFormat, ...) const
 {
 	va_list va;
 	va_start (va, pszFormat);
-	BOOL bRet = OutVa (m_hStdErr, FALSE, pszFormat, va);
+	BOOL bRet = ErrVa (FALSE, pszFormat, va);
 	va_end (va);
 	return bRet;
 }
@@ -114,7 +103,7 @@ YLB_INLINE BOOL YConsole::ErrorLn (LPCTSTR pszFormat, ...) const
 {
 	va_list va;
 	va_start (va, pszFormat);
-	BOOL bRet = OutVa (m_hStdErr, TRUE, pszFormat, va);
+	BOOL bRet = ErrVa (TRUE, pszFormat, va);
 	va_end (va);
 	return bRet;
 }
@@ -122,7 +111,7 @@ YLB_INLINE BOOL YConsole::ErrorLn (LPCTSTR pszFormat, ...) const
 YLB_INLINE YConsole& YConsole::operator<< (LPCTSTR lpsz)
 {
 	if ( lpsz ) {
-		Out (m_hStdOut, FALSE, lpsz);
+		Out (FALSE, lpsz);
 	}
 	return *this;
 }
@@ -131,7 +120,7 @@ YLB_INLINE YConsole& YConsole::operator<< (const void* lp)
 {
 	TCHAR szBuffer[16];
 	int iLen = _sntprintf (szBuffer, _countof (szBuffer), _T("0x%08x"), lp);
-	Out (m_hStdOut, FALSE, szBuffer, iLen);
+	Out (FALSE, szBuffer, iLen);
 	return *this;
 }
 
@@ -139,7 +128,7 @@ YLB_INLINE YConsole& YConsole::operator<< (BYTE by)
 {
 	TCHAR szBuffer[32];
 	_itot ((int) by, szBuffer, 10);
-	Out (m_hStdOut, FALSE, szBuffer);
+	Out (FALSE, szBuffer);
 	return *this;
 }
 
@@ -147,7 +136,7 @@ YLB_INLINE YConsole& YConsole::operator<< (WORD w)
 {
 	TCHAR szBuffer[32];
 	_ultot ((unsigned long) w, szBuffer, 10);
-	Out (m_hStdOut, FALSE, szBuffer);
+	Out (FALSE, szBuffer);
 	return *this;
 }
 
@@ -155,7 +144,7 @@ YLB_INLINE YConsole& YConsole::operator<< (UINT u)
 {
 	TCHAR szBuffer[32];
 	_ultot (u, szBuffer, 10);
-	Out (m_hStdOut, FALSE, szBuffer);
+	Out (FALSE, szBuffer);
 	return *this;
 }
 
@@ -163,7 +152,7 @@ YLB_INLINE YConsole& YConsole::operator<< (LONG l)
 {
 	TCHAR szBuffer[32];
 	_ltot (l, szBuffer, 10);
-	Out (m_hStdOut, FALSE, szBuffer);
+	Out (FALSE, szBuffer);
 	return *this;
 }
 
@@ -171,7 +160,7 @@ YLB_INLINE YConsole& YConsole::operator<< (DWORD dw)
 {
 	TCHAR szBuffer[32];
 	_ultot (dw, szBuffer, 10);
-	Out (m_hStdOut, FALSE, szBuffer);
+	Out (FALSE, szBuffer);
 	return *this;
 }
 
@@ -179,7 +168,7 @@ YLB_INLINE YConsole& YConsole::operator<< (float f)
 {
 	TCHAR szBuffer[256];
 	int iLen = _sntprintf (szBuffer, _countof (szBuffer), _T("%f"), f);
-	Out (m_hStdOut, FALSE, szBuffer, iLen);
+	Out (FALSE, szBuffer, iLen);
 	return *this;
 }
 
@@ -187,7 +176,7 @@ YLB_INLINE YConsole& YConsole::operator<< (double d)
 {
 	TCHAR szBuffer[256];
 	int iLen = _sntprintf (szBuffer, _countof (szBuffer), _T("%f"), d);
-	Out (m_hStdOut, FALSE, szBuffer, iLen);
+	Out (FALSE, szBuffer, iLen);
 	return *this;
 }
 
@@ -195,31 +184,26 @@ YLB_INLINE YConsole& YConsole::operator<< (int n)
 {
 	TCHAR szBuffer[32];
 	_itot (n, szBuffer, 10);
-	Out (m_hStdOut, FALSE, szBuffer);
+	Out (FALSE, szBuffer);
 	return *this;
 }
 
-YLB_INLINE BOOL YConsole::AreHandlesValid () const
+YLB_INLINE BOOL YConsole::IsAllocated ()
 {
-	return m_hStdIn || m_hStdOut || m_hStdErr;
+	return YlbIsAttachedToConsole ();
 }
 
-YLB_INLINE BOOL YConsole::IsAllocated () const
-{
-	return ::GetStdHandle (STD_OUTPUT_HANDLE) != NULL;
-}
-
-YLB_INLINE BOOL YConsole::SetConsoleTitle (LPCTSTR lpConsoleTitle) const
+YLB_INLINE BOOL YConsole::SetConsoleTitle (LPCTSTR lpConsoleTitle)
 {
 	return ::SetConsoleTitle (lpConsoleTitle);
 }
 
-YLB_INLINE DWORD YConsole::GetConsoleTitle (LPTSTR lpConsoleTitle, DWORD nSize) const
+YLB_INLINE DWORD YConsole::GetConsoleTitle (LPTSTR lpConsoleTitle, DWORD nSize)
 {
 	return ::GetConsoleTitle (lpConsoleTitle, nSize);
 }
 
-YLB_INLINE YString256 YConsole::GetConsoleTitle () const
+YLB_INLINE YString256 YConsole::GetConsoleTitle ()
 {
 	YString256 ysBuffer;
 	::GetConsoleTitle (ysBuffer.GetBuffer (), ysBuffer.GetBufferSize ());

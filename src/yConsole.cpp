@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:04:54  leo
  * Initial revision
  *
@@ -46,32 +49,49 @@
 /*=============================================================================
  * IMPLEMENTATION
  *============================================================================*/
-BOOL YConsole::Allocate ()
+BOOL YConsole::Allocate (BOOL bReattachRTL /* = TRUE */)
 {
 	if ( IsAllocated () ) {
-		if ( !AreHandlesValid () ) {
-			return LoadHandles ();
-		}
 		return TRUE;
 	}
 	if ( ::AllocConsole () ) {
-		return LoadHandles ();
+		if ( IsAllocated () && bReattachRTL ) {
+			::YlbReattachRTL ();
+		}
+		return IsAllocated ();
 	}
-	ClearHandles ();
 	return FALSE;
 }
 
 BOOL YConsole::Free ()
 {
 	if ( IsAllocated () ) {
-		if ( FreeConsole () ) {
-			ClearHandles ();
-			return TRUE;
+		if ( ::FreeConsole () ) {
+			return !IsAllocated ();
 		}
 		return FALSE;
 	}
-	ClearHandles ();
 	return TRUE;
+}
+
+BOOL YConsole::Err (BOOL fAppendLF, LPCTSTR pszString, int cbLength /* = -1 */) const
+{
+	return Out (_proc.m_hStdErr, fAppendLF, pszString, cbLength);
+}
+
+BOOL YConsole::ErrVa (BOOL fAppendLF, LPCTSTR pszFormat, va_list va) const
+{
+	return OutVa (_proc.m_hStdErr, fAppendLF, pszFormat, va);
+}
+
+BOOL YConsole::Out (BOOL fAppendLF, LPCTSTR pszString, int cbLength /* = -1 */) const
+{
+	return Out (_proc.m_hStdOut, fAppendLF, pszString, cbLength);
+}
+
+BOOL YConsole::OutVa (BOOL fAppendLF, LPCTSTR pszFormat, va_list va) const
+{
+	return OutVa (_proc.m_hStdOut, fAppendLF, pszFormat, va);
 }
 
 BOOL YConsole::Out (HANDLE hHandle, BOOL fAppendLF, LPCTSTR pszString, int cbLength) const
@@ -112,9 +132,9 @@ BOOL YConsole::OutVa (HANDLE hHandle, BOOL fAppendLF, LPCTSTR pszFormat, va_list
 
 YConsole & YConsole::operator<< (LPCSTR lpsz)
 {
-	if ( m_hStdOut && lpsz ) {
+	if ( _proc.m_hStdOut && lpsz ) {
 		DWORD dwWritten;
-		WriteConsoleA (m_hStdOut, lpsz, _mbclen ((const unsigned char *) lpsz), &dwWritten, NULL);
+		WriteConsoleA (_proc.m_hStdOut, lpsz, _mbclen ((const unsigned char *) lpsz), &dwWritten, NULL);
 	}
 	return *this;
 }
@@ -123,9 +143,9 @@ YConsole & YConsole::operator<< (LPCSTR lpsz)
 
 YConsole & YConsole::operator<< (LPCWSTR lpsz)
 {
-	if ( m_hStdOut && lpsz ) {
+	if ( _proc.m_hStdOut && lpsz ) {
 		DWORD dwWritten;
-		WriteConsoleW (m_hStdOut, lpsz, wcslen (lpsz), &dwWritten, NULL);
+		WriteConsoleW (_proc.m_hStdOut, lpsz, wcslen (lpsz), &dwWritten, NULL);
 	}
 	return *this;
 }

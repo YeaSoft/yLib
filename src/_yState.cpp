@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:16  leo
  * Initial revision
  *
@@ -65,6 +68,13 @@ PROC_ENV::PROC_ENV()
 	m_hResHandle		= (HINSTANCE) GetModuleHandle (NULL);
 	m_hProcessHandle	= NULL;
 	m_hThreadHandle		= NULL;
+	m_hStdIn			= ::GetStdHandle (STD_INPUT_HANDLE);
+	m_hStdOut			= ::GetStdHandle (STD_OUTPUT_HANDLE);
+	m_hStdErr			= ::GetStdHandle (STD_ERROR_HANDLE);
+	m_iStdOut			= -1;
+	m_iStdErr			= -1;
+	m_fpStdOut			= NULL;
+	m_fpStdErr			= NULL;
 	DuplicateHandle (
 		::GetCurrentProcess (),
 		::GetCurrentThread (),

@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/23 10:01:41  leo
+ * Added inlined format function
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:04:48  leo
  * Initial revision
  *
@@ -73,6 +77,13 @@ public:
 	HANDLE						m_hThreadHandle;
 	HINSTANCE					m_hInstance;
 	HINSTANCE					m_hResHandle;
+	HANDLE						m_hStdIn;
+	HANDLE						m_hStdOut;
+	HANDLE						m_hStdErr;
+	int							m_iStdOut;
+	int							m_iStdErr;
+	FILE *						m_fpStdOut;
+	FILE *						m_fpStdErr;
 };
 
 #define FLG_APP_YCONAPP			0x00000001

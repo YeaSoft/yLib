@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:14  leo
  * Initial revision
  *
@@ -384,7 +387,9 @@ HINSTANCE YLBAPI				YlbGetInstanceHandle	();
 HANDLE YLBAPI					YlbGetProcessHandle		();
 HANDLE YLBAPI					YlbGetThreadHandle		();
 int YLBAPI						YlbLoadString			(UINT nID, LPTSTR lpszBuf, UINT nMaxBuf);
-BOOL							YlbGetSysErrorString	(DWORD dwError, LPTSTR lpszBuf, UINT nMaxBuf);
+BOOL YLBAPI						YlbGetSysErrorString	(DWORD dwError, LPTSTR lpszBuf, UINT nMaxBuf);
+BOOL YLBAPI						YlbIsAttachedToConsole	();
+BOOL YLBAPI						YlbReattachRTL			();
 
 /*=============================================================================
  * Diagnostic memory management routines

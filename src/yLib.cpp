@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:02  leo
  * Initial revision
  *
@@ -41,6 +44,9 @@
  * @doc YLIB | yLibBase.h
  *============================================================================*/
 #include "StdInc.hpp"
+
+#include <fcntl.h>
+#include <io.h>
 
 #ifdef _DEBUG
 #undef HERE
@@ -142,7 +148,7 @@ int YLBAPI YlbLoadString (UINT nID, LPTSTR lpszBuf, UINT nMaxBuf)
 	return nLen;
 }
 
-BOOL YlbGetSysErrorString (DWORD dwError, LPTSTR lpszBuf, UINT nMaxBuf)
+BOOL YLBAPI YlbGetSysErrorString (DWORD dwError, LPTSTR lpszBuf, UINT nMaxBuf)
 {
 	return FormatMessage (
 		FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -153,6 +159,56 @@ BOOL YlbGetSysErrorString (DWORD dwError, LPTSTR lpszBuf, UINT nMaxBuf)
 		nMaxBuf,
 		NULL 
 	) != 0;
+}
+
+BOOL YLBAPI YlbIsAttachedToConsole ()
+{
+	if ( _proc.m_hStdOut != ::GetStdHandle (STD_OUTPUT_HANDLE) ) {
+		_proc.m_hStdIn	= ::GetStdHandle (STD_INPUT_HANDLE);
+		_proc.m_hStdOut	= ::GetStdHandle (STD_OUTPUT_HANDLE);
+		_proc.m_hStdErr	= ::GetStdHandle (STD_ERROR_HANDLE);
+	}
+	return _proc.m_hStdOut != NULL;
+}
+
+BOOL YLBAPI YlbReattachRTL ()
+{
+	if ( !YlbIsAttachedToConsole () ) {
+		return FALSE;
+	}
+
+	if ( _proc.m_fpStdOut ) {
+		fclose (_proc.m_fpStdOut);
+		_proc.m_fpStdOut = NULL;
+	}
+	if ( _proc.m_fpStdErr ) {
+		fclose (_proc.m_fpStdErr);
+		_proc.m_fpStdErr = NULL;
+	}
+	if ( _proc.m_iStdOut != -1 ) {
+		_close (_proc.m_iStdOut);
+		_proc.m_iStdOut = -1;
+	}
+	if ( _proc.m_iStdErr != -1 ) {
+		_close (_proc.m_iStdErr);
+		_proc.m_iStdErr = -1;
+	}
+
+	_proc.m_iStdOut = _open_osfhandle ((long) ::GetStdHandle (STD_OUTPUT_HANDLE), _O_TEXT);
+	_proc.m_iStdErr = _open_osfhandle ((long) ::GetStdHandle (STD_ERROR_HANDLE), _O_TEXT);
+	if ( _proc.m_iStdOut != -1 ) {
+		_proc.m_fpStdOut = _tfdopen (_proc.m_iStdOut, "wt");
+	}
+	if ( _proc.m_iStdErr != -1 ) {
+		_proc.m_fpStdErr = _tfdopen (_proc.m_iStdOut, "wt");
+	}
+	if ( _proc.m_fpStdOut ) {
+		*stdout = *_proc.m_fpStdOut;
+	}
+	if ( _proc.m_fpStdErr ) {
+		*stderr = *_proc.m_fpStdErr;
+	}
+	return _proc.m_fpStdOut && _proc.m_fpStdErr;
 }
 
 HINSTANCE YLBAPI YlbGetResourceHandle ()

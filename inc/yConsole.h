@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:02:58  leo
  * Initial revision
  *
@@ -72,10 +75,8 @@ public:
 
 public:
 	// operations
-	BOOL						Allocate				();
-	BOOL						Free					();
-	BOOL						LoadHandles				();
-	void						ClearHandles			();
+	static BOOL					Allocate				(BOOL bReattachRTL = TRUE);
+	static BOOL					Free					();
 
 	BOOL						WriteVa					(LPCTSTR pszFormat, va_list va) const;
 	BOOL						WriteLnVa				(LPCTSTR pszFormat, va_list va) const;
@@ -105,24 +106,24 @@ public:
 
 public:
 	// attributes
-	BOOL						IsAllocated				() const;
-	BOOL						AreHandlesValid			() const;
+	static BOOL					IsAllocated				();
 
-	BOOL						SetConsoleTitle			(LPCTSTR lpConsoleTitle) const;
-	DWORD						GetConsoleTitle			(LPTSTR lpConsoleTitle, DWORD nSize) const;
-	YString256					GetConsoleTitle			() const;
+	static BOOL					SetConsoleTitle			(LPCTSTR lpConsoleTitle);
+	static DWORD				GetConsoleTitle			(LPTSTR lpConsoleTitle, DWORD nSize);
+	static YString256			GetConsoleTitle			();
 
 
 protected:
 	// implementation
+	BOOL						Err						(BOOL fAppendLF, LPCTSTR pszString, int cbLength = -1) const;
+	BOOL						ErrVa					(BOOL fAppendLF, LPCTSTR pszFormat, va_list va) const;
+	BOOL						Out						(BOOL fAppendLF, LPCTSTR pszString, int cbLength = -1) const;
+	BOOL						OutVa					(BOOL fAppendLF, LPCTSTR pszFormat, va_list va) const;
 	BOOL						Out						(HANDLE hHandle, BOOL fAppendLF, LPCTSTR pszString, int cbLength = -1) const;
 	BOOL						OutVa					(HANDLE hHandle, BOOL fAppendLF, LPCTSTR pszFormat, va_list va) const;
 
 protected:
 	// implementation
-	HANDLE						m_hStdIn;
-	HANDLE						m_hStdOut;
-	HANDLE						m_hStdErr;
 };
 
 #ifdef YLB_ENABLE_INLINE
