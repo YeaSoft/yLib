@@ -1,23 +1,30 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Inc.
+ * Copyright (C) 1998-2000 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation. In addition, you may also charge for any
- * application using yLib, and are under no obligation to supply source
- * code. You must accredit YEAsoft Inc. in the "About Box", or banner
- * of your application. 
+ * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * This software is provided 'as-is', without any express or implied warranty.
+ * In no event will the authors be held liable for any damages arising from the
+ * use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software in
+ *    a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source distribution.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should also have received a copy of the GNU General Public License
- * with this software, also indicating additional rights you have when using
- * yLib.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *=============================================================================
  * FILENAME		:	yFixStr.h
  * PURPOSE		:	Declaration of the fixed length string classes
@@ -25,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2000/07/25  09:06:12  leo
+ * Added pointer based find methods
+ *
  * Revision 1.3  2000/07/05  13:46:46  leo
  * Added the YUserName class
  *
@@ -98,6 +108,7 @@ private:
 
 	friend class				YFixedString;
 	friend class				YHeapString;
+	friend class				YPathString;
 	friend class				YMultiString;
 };
 
@@ -603,6 +614,21 @@ public:
 #ifdef _UNICODE
 	const YPathString &			operator+=				(char ch) { Concat (ch); return *this; };
 #endif
+
+public:
+	// special operations and attributes
+	LPCTSTR						GetFileName				() const;
+	LPCTSTR						GetFileExtension		() const;
+	void						AddFileName				(LPCTSTR pszFileName);
+	void						AddFileExtension		(LPCTSTR pszFileExtension);
+	void						SubstFileName			(LPCTSTR pszFileName);
+	void						SubstFileExtension		(LPCTSTR pszFileExtension);
+	void						StripFileName			(BOOL bToValidPath = FALSE);
+	void						StripExtension			();
+	void						AppendBackslash			(BOOL bToValidPath = FALSE);
+	void						RemoveBackslash			();
+	BOOL						IsFile					() const;
+	BOOL						IsDir					() const;
 
 private:
 	// implementation
