@@ -1,9 +1,9 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Int'l.
+ * Copyright (C) 1998-2004 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * Copyright (c) 1998-2004 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the
  * use of this software.
@@ -27,11 +27,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *=============================================================================
  * FILENAME		:	yLib.h
- * PURPOSE		:	The Y Class Library
- * SCOPE		:	yLib
+ * PURPOSE		:	Full include file
+ * SCOPE		:	yLib - The Y Application Framework Class Library
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/09/14 16:17:43  leopoldo
+ * Added yProfile.h
+ *
  * Revision 1.4  2001/05/18 16:00:19  leopoldo
  * Moved YMultiString in it's own implementation files
  *
@@ -52,6 +55,7 @@
  * LIBRARY INCLUDES
  *============================================================================*/
 #include <yLibBase.h>
+#include <yArgParser.h>
 #include <yArray.h>
 #include <yBuffer.h>
 #include <yConsole.h>
