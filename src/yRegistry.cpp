@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/09/14 16:22:41  leopoldo
+ * Made string default handling more typical
+ *
  * Revision 1.3  2001/05/24 15:20:43  leopoldo
  * Added support for YStringData and YMultiString
  *
@@ -830,22 +833,27 @@ BOOL YRegistry::MultiStringAdd (LPCTSTR lpszValueName, LPCTSTR lpszValue, BOOL b
 		free (lpBuffer);
 		return FALSE;
 	}
-	// find the string
-	if ( bCaseSensitive ) {
-		for ( lpPtr = lpBuffer; *lpPtr; lpPtr += (_tcslen (lpPtr) + 1) ) {
-			if ( !_tcscmp (lpPtr, lpszValue) ) {
-				// value found. nothing to do
-				free (lpBuffer);
-				return TRUE;
-			}
-		}
+	if ( !dwRetSize ) {
+		lpPtr = lpBuffer;
 	}
 	else {
-		for ( lpPtr = lpBuffer; *lpPtr; lpPtr += (_tcslen (lpPtr) + 1) ) {
-			if ( !_tcsicmp (lpPtr, lpszValue) ) {
-				// value found. nothing to do
-				free (lpBuffer);
-				return TRUE;
+		// find the string
+		if ( bCaseSensitive ) {
+			for ( lpPtr = lpBuffer; *lpPtr; lpPtr += (_tcslen (lpPtr) + 1) ) {
+				if ( !_tcscmp (lpPtr, lpszValue) ) {
+					// value found. nothing to do
+					free (lpBuffer);
+					return TRUE;
+				}
+			}
+		}
+		else {
+			for ( lpPtr = lpBuffer; *lpPtr; lpPtr += (_tcslen (lpPtr) + 1) ) {
+				if ( !_tcsicmp (lpPtr, lpszValue) ) {
+					// value found. nothing to do
+					free (lpBuffer);
+					return TRUE;
+				}
 			}
 		}
 	}
