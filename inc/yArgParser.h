@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2004/08/02 10:03:49  leopoldo
+ * Adjusted GetValueByNameOrPos
+ *
  * Revision 1.2  2004/08/02 09:47:54  leopoldo
  * Added new methods
  *
@@ -103,7 +106,14 @@ public:
 public:
 	// attributes
 	const YArgPair *			GetAt					(int nIndex) const { return ((nIndex >= 0) && (nIndex < m_argc)) ? (&m_argv[nIndex]) : (NULL); }
-	int							GetParamCount			() const { return m_argc; }
+	int							GetCount				() const { return m_argc; }
+
+	LPCTSTR						GetCommandAt			(int nIndex) const { return ((nIndex >= 0) && (nIndex < m_cmdc)) ? (m_cmdv[nIndex]) : (NULL); }
+	int							GetCommandCount			() const { return m_cmdc; }
+
+	const YArgPair *			GetNamedValueAt			(int nIndex) const { return ((nIndex >= 0) && (nIndex < m_valc)) ? (&m_valv[nIndex]) : (NULL); }
+	int							GetNamedValueCount		() const { return m_valc; }
+
 	ITERATOR					GetHeadPosition			() const { return (m_argc) ? ((ITERATOR) &(m_argv[0])) : (NULL); }
 	ITERATOR					GetTailPosition			() const { return (m_argc) ? ((ITERATOR) &(m_argv[m_argc - 1])) : (NULL); }
 	const YArgPair *			GetNext					(ITERATOR &pos) const;
@@ -124,12 +134,16 @@ public:
 	bool						Remove					(LPCTSTR pszParam, bool bCaseSensitive = false);
 
 protected:
-	static void					ParseCmdLine			(LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR pszArgs, int &iNumArgs, int &iNumChars);
-	static void					ParseCmdLine			(int argc, TCHAR **argv, YArgPair *argp, LPTSTR pszArgs, int &iNumArgs, int &iNumChars);
+	static void					ParseCmdLine			(LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR *cmdp, YArgPair *valp, LPTSTR pszArgs, int &iNumArgs, int &iNumCmds, int &iNumVals, int &iNumChars);
+	static void					ParseCmdLine			(int argc, TCHAR **argv, YArgPair *argp, LPTSTR *cmdp, YArgPair *valp, LPTSTR pszArgs, int &iNumArgs, int &iNumCmds, int &iNumVals, int &iNumChars);
 
 private:
 	int							m_argc;
+	int							m_cmdc;
+	int							m_valc;
 	YArgPair					*m_argv;
+	LPTSTR						*m_cmdv;
+	YArgPair					*m_valv;
 };
 
 #ifdef YLB_ENABLE_INLINE

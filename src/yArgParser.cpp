@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2004/08/02 10:04:03  leopoldo
+ * Adjusted GetValueByNameOrPos
+ *
  * Revision 1.2  2004/08/02 09:48:12  leopoldo
  * Added new methods
  *
@@ -88,25 +91,36 @@ bool YArgPair::HasNamedValue (LPCTSTR pszTest, bool bCaseSensitive) const
 bool YArgPairParser::Create (LPCTSTR pszCmdLine)
 {
 	int			iNumArgs;
+	int			iNumCmds;
+	int			iNumVals;
 	int			iNumChars;
 	YArgPair	*argp;
+	YArgPair	*valp;
+	LPTSTR		*cmdp;
 	LPTSTR		args;
 	
-	ParseCmdLine (pszCmdLine, NULL, NULL, iNumArgs, iNumChars);
+	// compute sizes
+	ParseCmdLine (pszCmdLine, NULL, NULL, NULL, NULL, iNumArgs, iNumCmds, iNumVals, iNumChars);
 
-	if ( NULL == (argp = (YArgPair *) malloc (iNumArgs * sizeof (YArgPair) + iNumChars * sizeof (TCHAR))) ) {
+	if ( NULL == (argp = (YArgPair *) malloc ((iNumArgs + iNumVals) * sizeof (YArgPair) + iNumCmds * sizeof (LPCTSTR) + iNumChars  * sizeof (TCHAR))) ) {
 		return false;
 	}
-	args = (LPTSTR) &(argp[iNumArgs]);
+	valp = (YArgPair *)	&(argp[iNumArgs]);
+	cmdp = (LPTSTR *)	&(valp[iNumVals]);
+	args = (LPTSTR)		&(cmdp[iNumCmds]);
 
-	ParseCmdLine (pszCmdLine, argp, args, iNumArgs, iNumChars);
+	ParseCmdLine (pszCmdLine, argp, cmdp, valp, args, iNumArgs, iNumCmds, iNumVals, iNumChars);
 	
 	if ( m_argv ) {
 		free (m_argv);
 	}
 
 	m_argc = iNumArgs - 1;
+	m_cmdc = iNumCmds - 1;
+	m_valc = iNumVals - 1;
 	m_argv = argp;
+	m_cmdv = cmdp;
+	m_valv = valp;
 
 	return true;
 }
@@ -114,25 +128,35 @@ bool YArgPairParser::Create (LPCTSTR pszCmdLine)
 bool YArgPairParser::Create (int argc, TCHAR **argv)
 {
 	int			iNumArgs;
+	int			iNumCmds;
+	int			iNumVals;
 	int			iNumChars;
 	YArgPair	*argp;
+	YArgPair	*valp;
+	LPTSTR		*cmdp;
 	LPTSTR		args;
 	
-	ParseCmdLine (argc, argv, NULL, NULL, iNumArgs, iNumChars);
+	ParseCmdLine (argc, argv, NULL, NULL, NULL, NULL, iNumArgs, iNumCmds, iNumVals, iNumChars);
 
-	if ( NULL == (argp = (YArgPair *) malloc (iNumArgs * sizeof (YArgPair) + iNumChars * sizeof (TCHAR))) ) {
+	if ( NULL == (argp = (YArgPair *) malloc ((iNumArgs + iNumVals) * sizeof (YArgPair) + iNumCmds * sizeof (LPCTSTR) + iNumChars  * sizeof (TCHAR))) ) {
 		return false;
 	}
-	args = (LPTSTR) &(argp[iNumArgs]);
+	valp = (YArgPair *)	&(argp[iNumArgs]);
+	cmdp = (LPTSTR *)	&(valp[iNumVals]);
+	args = (LPTSTR)		&(cmdp[iNumCmds]);
 
-	ParseCmdLine (argc, argv, argp, args, iNumArgs, iNumChars);
+	ParseCmdLine (argc, argv, argp, cmdp, valp, args, iNumArgs, iNumCmds, iNumVals, iNumChars);
 
 	if ( m_argv ) {
 		free (m_argv);
 	}
 
 	m_argc = iNumArgs - 1;
+	m_cmdc = iNumCmds - 1;
+	m_valc = iNumVals - 1;
 	m_argv = argp;
+	m_cmdv = cmdp;
+	m_valv = valp;
 
 	return true;
 }
@@ -319,17 +343,21 @@ bool YArgPairParser::Remove (LPCTSTR pszParam, bool bCaseSensitive)
 	return false;
 }
 
-void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR pszArgs, int &iNumArgs, int &iNumChars)
+void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR *cmdp, YArgPair *valp, LPTSTR pszArgs, int &iNumArgs, int &iNumCmds, int &iNumVals, int &iNumChars)
 {
 	LPCTSTR		pSrc;
+	bool		bIsNamed;
 	bool		bInQuote;
 	bool		bCopyChar;
 	int			iNumSlash;
 
 	// initialize the parser...
 	iNumArgs	= 0;
+	iNumCmds	= 0;
+	iNumVals	= 0;
 	iNumChars	= 0;
 	pSrc		= pszCmdLine;
+	bIsNamed	= false;
 	bInQuote	= false;
 
 	// loop through arguments
@@ -348,6 +376,14 @@ void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR ps
 			argp->m_pszName		= pszArgs;
 			argp->m_pszValue	= NULL;
 		}
+		if ( valp ) {
+			valp->m_pszName		= pszArgs;
+		}
+		if ( cmdp ) {
+			*cmdp				= pszArgs;
+		}
+
+		bIsNamed = false;
 
 		// loop through scanning one argument
 		while ( true ) {
@@ -358,8 +394,8 @@ void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR ps
 			 * 2N+1 backslashes + " ==> N backslashes + literal "
 			 * N backslashes ==> N backslashes
 			 *============================================*/
-			bCopyChar = true;
-			iNumSlash = 0;
+			bCopyChar	= true;
+			iNumSlash	= 0;
 			// count number of backslashes
 			while ( *pSrc == cSLASH ) {
 				++pSrc;
@@ -410,8 +446,12 @@ void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR ps
 				if ( pszArgs ) {
 					*pszArgs++ = cNUL;
 				}
+				bIsNamed = true;
 				if ( argp ) {
 					argp->m_pszValue = pszArgs;
+				}
+				if ( valp ) {
+					valp->m_pszValue = pszArgs;
 				}
 				++pSrc;
 				++iNumChars;
@@ -459,7 +499,20 @@ void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR ps
 		if ( argp ) {
 			++argp;
 		}
+		// adjust counters
 		++iNumArgs;
+		if ( bIsNamed ) {
+			++iNumVals;
+			if ( valp ) {
+				++valp;
+			}
+		}
+		else {
+			++iNumCmds;
+			if ( cmdp ) {
+				++cmdp;
+			}
+		}
 	} // commandline loop
 
 	// We put one last argument in -- a null pair
@@ -467,33 +520,86 @@ void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR ps
 		argp->m_pszName		= NULL;
 		argp->m_pszValue	= NULL;
 	}
+	if ( valp ) {
+		valp->m_pszName		= NULL;
+		valp->m_pszValue	= NULL;
+	}
+	if ( cmdp ) {
+		*cmdp				= NULL;
+	}
+
 	++iNumArgs;
+	++iNumCmds;
+	++iNumVals;
 }
 
-void YArgPairParser::ParseCmdLine (int argc, TCHAR **argv, YArgPair *argp, LPTSTR pszArgs, int &iNumArgs, int &iNumChars)
+void YArgPairParser::ParseCmdLine (int argc, TCHAR **argv, YArgPair *argp, LPTSTR *cmdp, YArgPair *valp, LPTSTR pszArgs, int &iNumArgs, int &iNumCmds, int &iNumVals, int &iNumChars)
 {
 	// initialize the parser...
 	iNumChars	= 0;
+	iNumCmds	= 0;
+	iNumVals	= 0;
 
 	for ( int i = 0; i < argc; i++ ) {
 		// scan an argument
 		if ( argp ) {
-			argp->m_pszName		= pszArgs;
+			argp->m_pszName = pszArgs;
 		}
 		if ( pszArgs ) {
 			_tcscpy (pszArgs, argv[i]);
 			pszArgs += (_tcslen (pszArgs) + 1);
 		}
 		iNumChars += (int) (_tcslen (argv[i]) + 1);
-		if ( argp ) {
-			argp->m_pszValue = _tcschr (argp->m_pszName, cEQUAL);
-			if ( argp->m_pszValue ) {
+		
+		LPTSTR pEqual = _tcschr (argv[i], cEQUAL);
+		if ( pEqual ) {
+			++iNumVals;
+			if ( argp ) {
+				argp->m_pszValue	= argp->m_pszName + (pEqual - argv[i]);
 				*((LPTSTR) argp->m_pszValue) = 0;
 				++argp->m_pszValue;
 			}
+			if ( valp ) {
+				// set and increment
+				valp->m_pszName		= pszArgs;
+				valp->m_pszValue	= argp->m_pszName + (pEqual - argv[i]);
+				*((LPTSTR) valp->m_pszValue) = 0;
+				++valp->m_pszValue;
+				++valp;
+			}
+		}
+		else {
+			// it's a command
+			++iNumCmds;
+			if ( cmdp ) {
+				// set and increment
+				*cmdp = pszArgs;
+				++cmdp;
+			}
+		}
+
+		// increment arguments
+		if ( argp ) {
+			++argp;
 		}
 	}
-	iNumArgs = argc;
+
+	// We put one last argument in -- a null pair
+	if ( argp ) {
+		argp->m_pszName		= NULL;
+		argp->m_pszValue	= NULL;
+	}
+	if ( valp ) {
+		valp->m_pszName		= NULL;
+		valp->m_pszValue	= NULL;
+	}
+	if ( cmdp ) {
+		*cmdp				= NULL;
+	}
+
+	iNumArgs = argc + 1;
+	++iNumCmds;
+	++iNumVals;
 }
 
 #ifndef YLB_ENABLE_INLINE
