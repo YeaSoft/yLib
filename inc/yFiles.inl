@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/23  11:56:02  leo
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:03:05  leo
  * Initial revision
  *
@@ -132,6 +135,11 @@ YLB_INLINE YStdioFile::YStdioFile ()
 {
 	Set (FLG_DAT_FILE);
 	m_pStream = NULL;
+}
+
+YLB_INLINE YStdioFile::~YStdioFile ()
+{
+	Close ();
 }
 
 YLB_INLINE HANDLE YStdioFile::Detach ()

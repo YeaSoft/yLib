@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/08/23  11:55:49  leo
+ * Added more file open modes
+ * Updated license
+ *
  * Revision 1.2  2000/05/30  10:58:08  leo
  * Removed unused methods from YStdioFile
  *
@@ -163,6 +167,7 @@ private:
 public:
 	// construction
 	YStdioFile					();
+	~YStdioFile					();
 
 public:
 	// operations
