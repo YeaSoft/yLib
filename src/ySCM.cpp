@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/05/25 14:28:32  leopoldo
+ * Improved YServiceControlManager::StatusGet
+ *
  * Revision 1.3  2001/05/25 12:04:15  leopoldo
  * Fixed a pointer error in YServiceControlManager::EnumServices
  *
@@ -204,7 +207,7 @@ BOOL  YServiceControlManager::Start (LPCTSTR pszServiceName) const
 	SC_HANDLE schService = ::OpenService (
 		m_hSCM,
 		pszServiceName,
-		SERVICE_ALL_ACCESS
+		GENERIC_READ|GENERIC_EXECUTE
 	);
 	if ( !schService ) {
 		return FALSE;
@@ -232,7 +235,7 @@ BOOL  YServiceControlManager::Stop (LPCTSTR pszServiceName) const
 	SC_HANDLE schService = ::OpenService (
 		m_hSCM,
 		pszServiceName,
-		SERVICE_ALL_ACCESS
+		GENERIC_READ|GENERIC_EXECUTE
 	);
 	if ( !schService ) {
 		return FALSE;
@@ -260,7 +263,7 @@ BOOL  YServiceControlManager::Pause (LPCTSTR pszServiceName) const
 	SC_HANDLE schService = ::OpenService (
 		m_hSCM,
 		pszServiceName,
-		SERVICE_ALL_ACCESS
+		GENERIC_READ|GENERIC_EXECUTE
 	);
 	if ( !schService ) {
 		return FALSE;
@@ -288,7 +291,7 @@ BOOL  YServiceControlManager::Resume (LPCTSTR pszServiceName) const
 	SC_HANDLE schService = ::OpenService (
 		m_hSCM,
 		pszServiceName,
-		SERVICE_ALL_ACCESS
+		GENERIC_READ|GENERIC_EXECUTE
 	);
 	if ( !schService ) {
 		return FALSE;
