@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/05/18 16:00:19  leopoldo
+ * Moved YMultiString in it's own implementation files
+ *
  * Revision 1.3  2001/04/12 18:48:25  leopoldo
  * Added the array classes
  *
@@ -57,6 +60,7 @@
 #include <yFixStr.h>
 #include <yMulStr.h>
 #include <yRegistry.h>
+#include <yProfile.h>
 #include <yFileTools.h>
 #include <yLogging.h>
 #include <yTokens.h>
