@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:12  leo
  * Initial revision
  *
@@ -49,7 +52,7 @@ const DWORD		FLG_THRD_FINISHED			= 0x80000000;
 
 YWorkerThread::YWorkerThread (LPCTSTR pszName /* = _T("<noname>") */)
 {
-	pCommonConstructor ();
+	CommonConstructor ();
 	_tcsncpy (m_szThreadName, pszName, YLB_MAX_THREADNAME - 1);
 	m_szThreadName[YLB_MAX_THREADNAME - 1] = 0;
 }
@@ -57,7 +60,7 @@ YWorkerThread::YWorkerThread (LPCTSTR pszName /* = _T("<noname>") */)
 YWorkerThread::~YWorkerThread ()
 {
 	Terminate (10000, 0);
-	pCommonConstructor ();
+	CommonConstructor ();
 }
 
 BOOL YWorkerThread::Create (BOOL bSuspended /* = FALSE */, UINT uStackSize /* = 0 */, LPSECURITY_ATTRIBUTES lpThreadAttributes /* = NULL */)
@@ -74,7 +77,7 @@ BOOL YWorkerThread::Create (BOOL bSuspended /* = FALSE */, UINT uStackSize /* = 
 		return FALSE;
 	}
 
-	pCommonConstructor ();
+	CommonConstructor ();
 
 	if ( !PreCreateThread (bSuspended, uStackSize, lpThreadAttributes) ) {
 		return FALSE;
@@ -83,14 +86,14 @@ BOOL YWorkerThread::Create (BOOL bSuspended /* = FALSE */, UINT uStackSize /* = 
 	m_hHandle = (HANDLE) _beginthreadex (
 		(void *) lpThreadAttributes,
 		uStackSize,
-		_yLibThread,
+		WorkerThread,
 		(void *) this,
 		CREATE_SUSPENDED,
 		&m_uThreadID
 	);
 	if ( m_hHandle == (HANDLE) -1 ) {
 		// error!
-		pCommonConstructor ();
+		CommonConstructor ();
 		SetLastSysError ();
 		return FALSE;
 	}
@@ -204,7 +207,7 @@ BOOL YWorkerThread::Resume ()
 	}
 }
 
-void YWorkerThread::pCommonConstructor ()
+void YWorkerThread::CommonConstructor ()
 {
 	SetLastError (NOERROR);
 
@@ -215,27 +218,30 @@ void YWorkerThread::pCommonConstructor ()
 	m_dwExitCode		= 0;
 }
 
-extern "C" static unsigned __stdcall _yLibThread (void *pParam)
+unsigned __stdcall YWorkerThread::WorkerThread (void *pParam)
 {
-	YWorkerThread *pThread = (YWorkerThread *) pParam;
+	return ((YWorkerThread *) pParam)->WorkerThread ();
+}
 
-	pThread->m_csControl.Enter ();
-	if ( pThread->TestFlags (FLG_THRD_RUNOUT) ) {
-		pThread->m_csControl.Leave ();
+unsigned YWorkerThread::WorkerThread ()
+{
+	m_csControl.Enter ();
+	if ( TestFlags (FLG_THRD_RUNOUT) ) {
+		m_csControl.Leave ();
 		return 0;
 	}
-	pThread->m_dwExitCode = 0;
-	pThread->SetFlags (FLG_THRD_DIRTY);
-	pThread->m_csControl.Leave ();
-	if ( pThread && pThread->OnInitThread () ) {
-		pThread->m_dwExitCode = (UINT) pThread->OnRunThread ();
-		pThread->OnExitThread (TRUE);
+	m_dwExitCode = 0;
+	SetFlags (FLG_THRD_DIRTY);
+	m_csControl.Leave ();
+	if ( OnInitThread () ) {
+		m_dwExitCode = OnRunThread ();
+		OnExitThread (TRUE);
 	}
-	pThread->m_csControl.Enter ();
-	pThread->ClearFlags (FLG_THRD_DIRTY);
-	pThread->m_flags.SetFlags (FLG_THRD_FINISHED);
-	pThread->m_csControl.Leave ();
-	return pThread->m_dwExitCode;
+	m_csControl.Enter ();
+	ClearFlags (FLG_THRD_DIRTY);
+	m_flags.SetFlags (FLG_THRD_FINISHED);
+	m_csControl.Leave ();
+	return m_dwExitCode;
 }
 
 #ifndef YLB_ENABLE_INLINE

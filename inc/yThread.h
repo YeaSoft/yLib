@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:36  leo
  * Initial revision
  *
@@ -78,11 +81,6 @@ class YBaseHandle;
  * CONSTANTS
  *============================================================================*/
 #define YLB_MAX_THREADNAME				16
-
-/*=============================================================================
- * THE INTERNAL THREAD PROCEDURE
- *============================================================================*/
-extern "C" unsigned __stdcall _yLibThread (void *pParam);
 
 /*=============================================================================
  * THE THREAD BASE CLASS
@@ -223,8 +221,6 @@ public:
 	YWorkerThread				(LPCTSTR pszName = _T("<noname>"));
 	~YWorkerThread				();
 
-	friend unsigned __stdcall _yLibThread (void *pParam);
-
 public:
 	// operations
 	BOOL						Open					(DWORD dwThreadId, DWORD dwDesiredAccess = THREAD_ALL_ACCESS, BOOL bInheritHandle = FALSE);
@@ -253,7 +249,9 @@ protected:
 
 private:
 	// internals
-	void						pCommonConstructor		(void);
+	void						CommonConstructor		(void);
+	static unsigned __stdcall	WorkerThread			(void *pParam);
+	unsigned					WorkerThread			();
 
 private:
 	// implementation
