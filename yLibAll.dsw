@@ -23,6 +23,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Sample4
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Sample5
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -58,6 +61,21 @@ Package=<4>
 ###############################################################################
 
 Project: "Sample3"=.\samples\Sample3\Sample3.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name yAfc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Sample5"=.\samples\Sample5\Sample5.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
