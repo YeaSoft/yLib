@@ -116,7 +116,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "RelDllA1"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G5 /MT /W3 /GX /O1 /I "\src\sdk\yLib\inc" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX"StdInc.hpp" /FD /c
-# ADD CPP /nologo /G5 /MD /W3 /GX /O1 /I "..\inc" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX"StdInc.hpp" /FD /c
+# ADD CPP /nologo /G5 /MD /W3 /GX /Zd /O1 /I "..\inc" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX"StdInc.hpp" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -208,7 +208,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "RelDllU1"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G5 /MD /W3 /GX /O1 /I "..\inc" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX"StdInc.hpp" /FD /c
-# ADD CPP /nologo /G5 /MD /W3 /GX /O1 /I "..\inc" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_UNICODE" /YX"StdInc.hpp" /FD /c
+# ADD CPP /nologo /G5 /MD /W3 /GX /Zd /O1 /I "..\inc" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_UNICODE" /YX"StdInc.hpp" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
