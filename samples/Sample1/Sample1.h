@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:07:28  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -53,6 +56,7 @@ public:
 	static const DWORD			CMD_NPCLIENT;
 	static const DWORD			CMD_MSSERVER;
 	static const DWORD			CMD_MSCLIENT;
+	static const DWORD			CMD_TEXTTO;
 
 	static const DWORD			CMD_ACTIVITY_MASK;
 
@@ -92,5 +96,6 @@ protected:
 	void						RunNPClient				(YCmdLineParam *cliPar);
 	void						RunMSServer				(YCmdLineParam *cliPar);
 	void						RunMSClient				(YCmdLineParam *cliPar);
+	void						TextTo					(YCmdLineParam *cliPar);
 };
 

@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:07:26  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -54,6 +57,7 @@ const DWORD CMyCliParser::CMD_NPSERVER		= 0x00000400;
 const DWORD CMyCliParser::CMD_NPCLIENT		= 0x00000800;
 const DWORD CMyCliParser::CMD_MSSERVER		= 0x00001000;
 const DWORD CMyCliParser::CMD_MSCLIENT		= 0x00002000;
+const DWORD CMyCliParser::CMD_TEXTTO		= 0x00004000;
 
 const DWORD CMyCliParser::CMD_ACTIVITY_MASK	= 0xfffffffc;
 
@@ -128,6 +132,13 @@ BOOL CMyCliParser::OnProcessParam (BOOL &bTerminate, YCmdLineParam &cliPar)
 		SetCommandFlags (CMD_MSCLIENT);
 		return TRUE;
 	}
+	else if ( !_tcsicmp (cliPar.m_pszParam, _T("TextTo")) ) {
+		// remember since it gets parameters
+		cliPar.SetParamCount (1);
+		cliPar.m_dwMeaning	= (DWORD) CMD_TEXTTO;
+		SetCommandFlags (CMD_TEXTTO);
+		return TRUE;
+	}
 	else {
 		// unknown!
 		SetCommandFlags (CMD_UNKNOWN);
@@ -199,6 +210,9 @@ void Sample1::Run ()
 	case CMyCliParser::CMD_MSCLIENT:
 		RunMSClient (myParser.FindParamByMeaning (CMyCliParser::CMD_MSCLIENT));
 		break;
+	case CMyCliParser::CMD_TEXTTO:
+		TextTo (myParser.FindParamByMeaning (CMyCliParser::CMD_TEXTTO));
+		break;
 	default:
 		// more than one command specified
 		_tprintf (_T("ERROR: illegal combination of commands specified\n\n"));
@@ -209,6 +223,55 @@ void Sample1::Run ()
 		break;
 	}
 }
+
+void Sample1::TextTo (YCmdLineParam *cliPar)
+{
+	SetReturnCode (-1);
+	if ( !cliPar ) {
+		_tprintf (_T("ERROR: No parameters\n"));
+		return;
+	}
+	if ( cliPar->GetParamCount () != 1 ) {
+		_tprintf (_T("ERROR: wrong param count\n"));
+		return;
+	}
+	YPathString ysName = cliPar->GetAt (ZERO);
+	if ( !ysName.IsFile () ) {
+		_tprintf (_T("ERROR: source file not found\n"));
+		return;
+	}
+	YPathString ysDest = ysName;
+	ysDest.ReverseTerminateAfter (_T('.'));
+	YString32 ysExt = ysName.GetFileExtension ();
+	if ( ysExt.Right (2).Compare (_T("~v")) ) {
+		_tprintf (_T("ERROR: bad extension '%s'\n"), (LPCTSTR) ysExt.Right (2));
+		return;
+	}
+	ysExt.Replace (_T('~'), _T(','));
+	ysDest += ysExt;
+
+	YStdioFile	ysSrc, ysDst;
+	YHeapString	ysBuffer;
+
+	if ( !ysBuffer.Alloc (64*1024) ) {
+		_tprintf (_T("ERROR: memory error\n"));
+		return;
+	}
+
+	if ( !ysSrc.Open (ysName, YFile::modeRead|YFile::shareDenyWrite|YFile::typeText) ) {
+		_tprintf (_T("ERROR: cant open source\n"));
+		return;
+	}
+	if ( !ysDst.Open (ysDest, YFile::modeCreate|YFile::modeWrite|YFile::typeBinary) ) {
+		_tprintf (_T("ERROR: cant create dest\n"));
+		return;
+	}
+	while ( ysSrc.ReadString (ysBuffer) ) {
+		ysDst.WriteString (ysBuffer);
+	}
+	SetReturnCode (0);
+}
+
 
 void Sample1::ShowHelp (DWORD dwCmd)
 {
