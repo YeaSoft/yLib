@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/05/17 15:13:17  leopoldo
+ * Fixed a typo
+ *
  * Revision 1.4  2001/04/26 10:37:46  leopoldo
  * Fixed command line passing
  *
@@ -367,7 +370,7 @@ void YServiceCmdLineParser::ShowServices (YSrvApp *pApp, BOOL bSingle)
 		for ( UINT nCnt = 1; nCnt <= pApp->GetServiceCount (); nCnt++ ) {
 			YServiceLogic *pSL = pApp->GetService (nCnt);
 			if ( pSL ) {
-				_tprintf (_T("       %-16.16s  %s\n"), pSL->GetAppName (), pSL->GetAppDescription ());
+				_tprintf (_T("       %-20.20s  %s\n"), pSL->GetAppName (), pSL->GetAppDescription ());
 			}
 		}
 	}
