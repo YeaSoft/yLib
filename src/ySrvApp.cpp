@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2001/05/31 09:47:32  leopoldo
+ * Increased application name size
+ *
  * Revision 1.5  2001/05/17 15:13:17  leopoldo
  * Fixed a typo
  *
@@ -910,14 +913,14 @@ void YServiceLogic::ServiceMain (UINT nIndex, YCommandLineInfo *cli, BOOL bRunAs
 			throw YException (::GetLastError ());
 		}
 
-		// discard the termination event
-		m_evTerm.Close ();
-
 		// perform cleanup
 		OnServiceEnd (m_bShutDown, TRUE);
 
 		// OK! That was it
 		SetNewState (SERVICE_STOPPED);
+
+		// discard the termination event
+		m_evTerm.Close ();
 
 	}
 	catch ( YException e ) {
