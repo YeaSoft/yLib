@@ -1,23 +1,30 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-1999 YEAsoft Inc.
+ * Copyright (C) 1998-2000 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation. In addition, you may also charge for any
- * application using yLib, and are under no obligation to supply source
- * code. You must accredit YEAsoft Inc. in the "About Box", or banner
- * of your application. 
+ * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * This software is provided 'as-is', without any express or implied warranty.
+ * In no event will the authors be held liable for any damages arising from the
+ * use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software in
+ *    a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source distribution.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should also have received a copy of the GNU General Public License
- * with this software, also indicating additional rights you have when using
- * yLib.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *=============================================================================
  * FILENAME		:	yFileTools.inl
  * PURPOSE		:	Pseudo classes for file utility functions
@@ -25,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:03:07  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -81,6 +91,26 @@ YLB_INLINE BOOL YFileManager::IsFile (FILETIME *lpFileTime, LPDWORD lpFileAttr, 
 	return bRet;
 }
 
+YLB_INLINE UINT YFileManager::CountFiles (LPCTSTR lpFile, ...)
+{
+	va_list			va;
+
+	va_start (va, lpFile);
+	UINT uRet = YFileManager::CountFilesVa (lpFile, va);
+	va_end (va);
+	return uRet;
+}
+
+YLB_INLINE UINT YFileManager::CountFiles (FILETIME *lpFileTime, LPDWORD lpFileAttr, LPDWORD lpFileSizeHi, LPDWORD lpFileSizeLo, LPTSTR lpFileName, LPCTSTR lpFile, ...)
+{
+	va_list			va;
+
+	va_start (va, lpFile);
+	UINT uRet = YFileManager::CountFilesVa (lpFileTime, lpFileAttr, lpFileSizeHi, lpFileSizeLo, lpFileName, lpFile, va);
+	va_end (va);
+	return uRet;
+}
+
 YLB_INLINE BOOL YFileManager::IsDir (LPCTSTR lpDir, ...)
 {
 	va_list			va;
@@ -89,6 +119,16 @@ YLB_INLINE BOOL YFileManager::IsDir (LPCTSTR lpDir, ...)
 	BOOL bRet = YFileManager::IsDirVa (lpDir, va);
 	va_end (va);
 	return bRet;
+}
+
+YLB_INLINE UINT YFileManager::CountDirs (LPCTSTR lpFile, ...)
+{
+	va_list			va;
+
+	va_start (va, lpFile);
+	UINT uRet = YFileManager::CountDirsVa (lpFile, va);
+	va_end (va);
+	return uRet;
 }
 
 YLB_INLINE BOOL YFileManager::IsDirEmpty (LPCTSTR lpDir, ...)
@@ -131,14 +171,14 @@ YLB_INLINE BOOL YFileManager::CreateDirectoryTree (LPCTSTR lpDir, ...)
 	return bRet;
 }
 
-YLB_INLINE BOOL YFileManager::DeleteFiles (LPCTSTR lpFile, ...)
+YLB_INLINE UINT YFileManager::DeleteFiles (LPCTSTR lpFile, ...)
 {
 	va_list			va;
 
 	va_start (va, lpFile);
-	BOOL bRet = YFileManager::DeleteFilesVa (lpFile, va);
+	UINT uRet = YFileManager::DeleteFilesVa (lpFile, va);
 	va_end (va);
-	return bRet;
+	return uRet;
 }
 
 YLB_INLINE BOOL YFileManager::RemoveDir (LPCTSTR lpDir, ...)

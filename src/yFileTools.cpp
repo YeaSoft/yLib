@@ -1,23 +1,30 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Inc.
+ * Copyright (C) 1998-2000 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation. In addition, you may also charge for any
- * application using yLib, and are under no obligation to supply source
- * code. You must accredit YEAsoft Inc. in the "About Box", or banner
- * of your application. 
+ * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * This software is provided 'as-is', without any express or implied warranty.
+ * In no event will the authors be held liable for any damages arising from the
+ * use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software in
+ *    a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source distribution.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should also have received a copy of the GNU General Public License
- * with this software, also indicating additional rights you have when using
- * yLib.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *=============================================================================
  * FILENAME		:	yFileTools.cpp
  * PURPOSE		:	Pseudo classes for file utility functions
@@ -25,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:04:58  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -252,25 +262,12 @@ LPCTSTR YFileNameHandler::IntegratePath (LPCTSTR lpMaster, LPCTSTR lpAdd, LPTSTR
 // file / directory management methods
 BOOL YFileManager::IsFileVa (LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR			szPathName[MAX_PATH];
-	WIN32_FIND_DATA	wfd;
+	TCHAR	szPathName[MAX_PATH];
+	DWORD	dwAttributes;
 
-	_vstprintf (szPathName, lpFile, vaFile);
-
-	HANDLE	hFind = ::FindFirstFile (szPathName, &wfd);
-	if ( hFind == INVALID_HANDLE_VALUE ) {
-		return FALSE;
-	}
-
-	while ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
-		if ( !::FindNextFile (hFind, &wfd) ) {
-			::FindClose (hFind);
-			return FALSE;
-		}
-	}
-
-	::FindClose (hFind);
-	return (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+	dwAttributes = ::GetFileAttributes (szPathName);
+	return (dwAttributes != FILE_ATTRIBUTE_INVALID) && ((dwAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0);
 }
 
 BOOL YFileManager::IsFileVa (FILETIME *lpFileTime, LPDWORD lpFileAttr, LPDWORD lpFileSizeHi, LPDWORD lpFileSizeLo, LPTSTR lpFileName, LPCTSTR lpFile, va_list vaFile)
@@ -278,17 +275,18 @@ BOOL YFileManager::IsFileVa (FILETIME *lpFileTime, LPDWORD lpFileAttr, LPDWORD l
 	TCHAR			szPathName[MAX_PATH];
 	WIN32_FIND_DATA	wfd;
 
-	_vstprintf (szPathName, lpFile, vaFile);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+	wfd.dwFileAttributes = ::GetFileAttributes (szPathName);
+
+	if (  (wfd.dwFileAttributes == FILE_ATTRIBUTE_INVALID) || (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
+		// file not exists or directory
+		return FALSE;
+	}
 
 	HANDLE	hFind = ::FindFirstFile (szPathName, &wfd);
 	if ( hFind == INVALID_HANDLE_VALUE ) {
+		// SNH
 		return FALSE;
-	}
-	while ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
-		if ( !::FindNextFile (hFind, &wfd) ) {
-			::FindClose (hFind);
-			return FALSE;
-		}
 	}
 	::FindClose (hFind);
 
@@ -303,16 +301,80 @@ BOOL YFileManager::IsFileVa (FILETIME *lpFileTime, LPDWORD lpFileAttr, LPDWORD l
 	return FALSE;
 }
 
+UINT YFileManager::CountFilesVa (LPCTSTR lpFile, va_list vaFile)
+{
+	TCHAR			szPathName[MAX_PATH];
+	WIN32_FIND_DATA	wfd;
+	UINT			nCount = 0;
+
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+
+	HANDLE	hFind = ::FindFirstFile (szPathName, &wfd);
+	if ( hFind == INVALID_HANDLE_VALUE ) {
+		return 0;
+	}
+
+	do {
+		if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 ) {
+			++nCount;
+		}
+	} while ( ::FindNextFile (hFind, &wfd) );
+	::FindClose (hFind);
+
+	return nCount;
+}
+
+UINT YFileManager::CountFilesVa (FILETIME *lpFileTime, LPDWORD lpFileAttr, LPDWORD lpFileSizeHi, LPDWORD lpFileSizeLo, LPTSTR lpFileName, LPCTSTR lpFile, va_list vaFile)
+{
+	TCHAR			szPathName[MAX_PATH];
+	WIN32_FIND_DATA	wfd;
+	UINT			nCount = 0;
+
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+
+	HANDLE	hFind = ::FindFirstFile (szPathName, &wfd);
+	if ( hFind == INVALID_HANDLE_VALUE ) {
+		return 0;
+	}
+
+	do {
+		if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 ) {
+			if ( !nCount ) {
+				// first file found
+				if ( lpFileName )	_tcscpy (lpFileName, wfd.cFileName);
+				if ( lpFileTime )	memcpy (lpFileTime, &wfd.ftLastWriteTime, sizeof (FILETIME));
+				if ( lpFileAttr )	*lpFileAttr = wfd.dwFileAttributes;
+				if ( lpFileSizeHi )	*lpFileSizeHi = wfd.nFileSizeHigh;
+				if ( lpFileSizeLo )	*lpFileSizeLo = wfd.nFileSizeLow;
+			}
+			++nCount;
+		}
+	} while ( ::FindNextFile (hFind, &wfd) );
+	::FindClose (hFind);
+
+	return nCount;
+}
+
+BOOL YFileManager::IsDirVa (LPCTSTR lpFile, va_list vaFile)
+{
+	TCHAR	szPathName[MAX_PATH];
+	DWORD	dwAttributes;
+
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+	dwAttributes = ::GetFileAttributes (szPathName);
+	return (dwAttributes != FILE_ATTRIBUTE_INVALID) && ((dwAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+}
+
+#if (0)
 BOOL YFileManager::IsDirVa (LPCTSTR lpDir, va_list vaDir)
 {
-//	WIN32_FIND_DATA	wfd;
-	TCHAR			szBuffer[MAX_PATH];
+	TCHAR			szPathName[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
-	YFileNameHandler::StripBSL (szBuffer);
+	_ylb_formatv (szPathName, _countof (szPathName), lpDir, vaDir);
+	YFileNameHandler::StripBSL (szPathName);
 
 	HANDLE hDirectory = ::CreateFile (
-		szBuffer,
+		szPathName,
 		GENERIC_READ,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		NULL,
@@ -323,10 +385,11 @@ BOOL YFileManager::IsDirVa (LPCTSTR lpDir, va_list vaDir)
 	if ( hDirectory == INVALID_HANDLE_VALUE ) {
 		return FALSE;
 	}
-	CloseHandle (hDirectory);
+	::CloseHandle (hDirectory);
 	return TRUE;
 
 
+//	WIN32_FIND_DATA	wfd;
 //	_tcscat (szBuffer, _T("\\*.*"));
 
 //	HANDLE	hFind = ::FindFirstFile (szBuffer, &wfd);
@@ -336,15 +399,44 @@ BOOL YFileManager::IsDirVa (LPCTSTR lpDir, va_list vaDir)
 //	::FindClose (hFind);
 //	return TRUE;
 }
+#endif
+
+// 
+// This does not enumerate shares or computers
+//
+UINT YFileManager::CountDirsVa (LPCTSTR lpFile, va_list vaFile)
+{
+	TCHAR			szPathName[MAX_PATH];
+	WIN32_FIND_DATA	wfd;
+	UINT			nCount = 0;
+
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+	YFileNameHandler::StripBSL (szPathName);
+
+	HANDLE	hFind = ::FindFirstFile (szPathName, &wfd);
+	if ( hFind == INVALID_HANDLE_VALUE ) {
+		return 0;
+	}
+
+	do {
+		if ( wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
+			++nCount;
+		}
+	} while ( ::FindNextFile (hFind, &wfd) );
+	::FindClose (hFind);
+
+	return nCount;
+}
 
 BOOL YFileManager::IsDirWritableVa (LPCTSTR lpDir, va_list vaDir)
 {
-	TCHAR			szBuffer[MAX_PATH];
+	TCHAR			szPathName[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
-	YFileNameHandler::StripBSL (szBuffer);
-	_tcscat (szBuffer, _T("\\~dirtst~.tmp"));
-	HANDLE	hFile = ::CreateFile	(szBuffer,
+	_ylb_formatv (szPathName, _countof (szPathName) - 13, lpDir, vaDir);
+	YFileNameHandler::StripBSL (szPathName);
+	_tcscat (szPathName, _T("\\~dirtst~.tmp"));
+	HANDLE	hFile = ::CreateFile (
+		szPathName,
 		GENERIC_WRITE,
 		0,
 		NULL,
@@ -356,22 +448,27 @@ BOOL YFileManager::IsDirWritableVa (LPCTSTR lpDir, va_list vaDir)
 		return FALSE;
 	}
 	::CloseHandle (hFile);
-	::DeleteFile (szBuffer);
+	::DeleteFile (szPathName);
 	return TRUE;
 }
 
 BOOL YFileManager::IsDirCompressedVa (LPCTSTR lpDir, va_list vaDir)
 {
-	TCHAR		szBuffer[MAX_PATH];
+	TCHAR		szPathName[MAX_PATH];
 	HANDLE		hDir;
 	USHORT		uCompressFlag;
 	DWORD		dwRet;
 	BOOL		bRet;
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szPathName, _countof (szPathName), lpDir, vaDir);
+
+	dwRet = ::GetFileAttributes (szPathName);
+	if ( (dwRet == FILE_ATTRIBUTE_INVALID) || ((dwRet & FILE_ATTRIBUTE_DIRECTORY) == 0) ) {
+		return FALSE;
+	}
 
 	hDir = CreateFile (
-		szBuffer,
+		szPathName,
 		GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		NULL,
@@ -380,6 +477,7 @@ BOOL YFileManager::IsDirCompressedVa (LPCTSTR lpDir, va_list vaDir)
 		NULL
 	);
 	if ( hDir == INVALID_HANDLE_VALUE ) {
+		// SNH
 		return FALSE;
 	}
 
@@ -399,7 +497,7 @@ BOOL YFileManager::IsDirEmptyVa (LPCTSTR lpDir, va_list vaDir)
 	WIN32_FIND_DATA	wfd;
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	YFileNameHandler::StripBSL (szBuffer);
 	_tcscat (szBuffer, _T("\\*.*"));
 
@@ -431,7 +529,7 @@ BOOL YFileManager::CreateDirectoryTreeVa (LPCTSTR lpDir, va_list vaDir)
 
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	YFileNameHandler::StripBSL (szBuffer);
 
 	return sfMakeTree (szBuffer);
@@ -461,39 +559,42 @@ BOOL YFileManager::CreatePartialDirectoryTree (LPCTSTR lpBase, LPCTSTR lpDir)
 	return ::CreateDirectory (szPath, NULL);
 }
 
-BOOL YFileManager::DeleteFilesVa (LPCTSTR lpFile, va_list vaFile)
+UINT YFileManager::DeleteFilesVa (LPCTSTR lpFile, va_list vaFile)
 {
 	TCHAR			szFileName[MAX_PATH];
-	TCHAR			szPath[MAX_PATH];
+	TCHAR			szPath[MAX_PATH * 2];
 	HANDLE			hFind;
 	WIN32_FIND_DATA	wfd;
+	UINT			nCount = 0;
 
-	_vstprintf (szFileName, lpFile, vaFile);
+	_ylb_formatv (szFileName, _countof (szFileName), lpFile, vaFile);
 
 	_tcscpy (szPath, szFileName);
 	LPTSTR lpPtr = _tcsrchr (szPath, _T('\\'));
 	if ( !lpPtr ) {
-		return FALSE;
+		return 0;
 	}
 	*lpPtr = 0;
 
 	hFind = ::FindFirstFile (szFileName, &wfd);
 	if ( hFind == INVALID_HANDLE_VALUE ) {
-		return FALSE;
+		return 0;
 	}
 	do {
 		_stprintf (szFileName, _T("%s\\%s"), szPath, wfd.cFileName);
-		::DeleteFile (szFileName);
+		if ( ::DeleteFile (szFileName) ) {
+			++nCount;
+		}
 	} while ( ::FindNextFile (hFind, &wfd) );
 	::FindClose (hFind);
-	return TRUE;
+	return nCount;
 }
 
 BOOL YFileManager::RemoveDirVa (LPCTSTR lpDir, va_list vaDir)
 {
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	YFileNameHandler::StripBSL (szBuffer);
 	return ::RemoveDirectory (szBuffer);
 }
@@ -502,11 +603,11 @@ BOOL YFileManager::KillDirVa (LPCTSTR lpDir, va_list vaDir)
 {
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer) - 4, lpDir, vaDir);
 	YFileNameHandler::StripBSL (szBuffer);
 	_tcscat (szBuffer, _T("\\*.*"));
 	DeleteFiles (szBuffer);
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	YFileNameHandler::StripBSL (szBuffer);
 	return ::RemoveDirectory (szBuffer);
 }
@@ -515,7 +616,7 @@ BOOL YFileManager::CompressDirVa (LPCTSTR lpDir, va_list vaDir)
 {
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	return sfCompressTree (szBuffer, TRUE, FALSE);
 }
 
@@ -523,7 +624,7 @@ BOOL YFileManager::UncompressDirVa (LPCTSTR lpDir, va_list vaDir)
 {
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	return sfCompressTree (szBuffer, FALSE, FALSE);
 }
 
@@ -531,7 +632,7 @@ BOOL YFileManager::CompressDirTreeVa (LPCTSTR lpDir, va_list vaDir)
 {
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	return sfCompressTree (szBuffer, TRUE, TRUE);
 }
 
@@ -539,7 +640,7 @@ BOOL YFileManager::UncompressDirTreeVa (LPCTSTR lpDir, va_list vaDir)
 {
 	TCHAR			szBuffer[MAX_PATH];
 
-	_vstprintf (szBuffer, lpDir, vaDir);
+	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	return sfCompressTree (szBuffer, FALSE, TRUE);
 }
 
@@ -548,7 +649,7 @@ DWORD YFileManager::GetFilesSizesVa (LPDWORD lpdwRetHi, LPCTSTR lpFile, va_list 
 	TCHAR			szPathName[MAX_PATH];
 	WIN32_FIND_DATA	wfd;
 
-	_vstprintf (szPathName, lpFile, vaFile);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
 
 	HANDLE	hFind = FindFirstFile (szPathName, &wfd);
 	if ( hFind == INVALID_HANDLE_VALUE ) {
@@ -583,11 +684,11 @@ DWORD YFileManager::GetFilesSizesVa (LPDWORD lpdwRetHi, LPCTSTR lpFile, va_list 
 
 BOOL YFileManager::IsReadOnlyVa (LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR			szFileName[MAX_PATH];
+	TCHAR			szPathName[MAX_PATH];
 	DWORD			dwAttr;
 
-	_vstprintf (szFileName, lpFile, vaFile);
-	if ( (dwAttr = ::GetFileAttributes (szFileName)) == FILE_ATTRIBUTE_INVALID ) {
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+	if ( (dwAttr = ::GetFileAttributes (szPathName)) == FILE_ATTRIBUTE_INVALID ) {
 		return FALSE;
 	}
 	else {
@@ -597,30 +698,30 @@ BOOL YFileManager::IsReadOnlyVa (LPCTSTR lpFile, va_list vaFile)
 
 BOOL YFileManager::SetReadOnlyVa (LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR	szFile[MAX_PATH];
+	TCHAR	szPathName[MAX_PATH];
 
-	_vstprintf (szFile, lpFile, vaFile);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
 
-	DWORD dwAttr = ::GetFileAttributes (szFile);
+	DWORD dwAttr = ::GetFileAttributes (szPathName);
 	if ( dwAttr == FILE_ATTRIBUTE_INVALID ) {
 		return FALSE;
 	}
 	dwAttr |= FILE_ATTRIBUTE_READONLY;
-	return ::SetFileAttributes (szFile, dwAttr);
+	return ::SetFileAttributes (szPathName, dwAttr);
 }
 
 BOOL YFileManager::SetReadWriteVa (LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR	szFile[MAX_PATH];
+	TCHAR	szPathName[MAX_PATH];
 
-	_vstprintf (szFile, lpFile, vaFile);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
 
-	DWORD dwAttr = ::GetFileAttributes (szFile);
+	DWORD dwAttr = ::GetFileAttributes (szPathName);
 	if ( dwAttr == FILE_ATTRIBUTE_INVALID ) {
 		return FALSE;
 	}
 	dwAttr &= ~((DWORD) FILE_ATTRIBUTE_READONLY);
-	return ::SetFileAttributes (szFile, dwAttr);
+	return ::SetFileAttributes (szPathName, dwAttr);
 }
 
 BOOL YFileManager::SetFileTimeVa (const FILETIME *lpFileTime, LPCTSTR lpFile, va_list vaFile)
@@ -628,7 +729,7 @@ BOOL YFileManager::SetFileTimeVa (const FILETIME *lpFileTime, LPCTSTR lpFile, va
 	TCHAR	szPathName[MAX_PATH];
 	HANDLE	hFile;
 
-	_vstprintf (szPathName, lpFile, vaFile);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
 
 	hFile = CreateFile (
 		szPathName,
@@ -660,46 +761,46 @@ BOOL YFileManager::TouchVa (LPCTSTR lpFile, va_list vaFile)
 
 BOOL YFileManager::AddFileAttributesVa (DWORD dwAttrMask, LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR	szFile[MAX_PATH];
+	TCHAR	szPathName[MAX_PATH];
 
-	_vstprintf (szFile, lpFile, vaFile);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
 
-	DWORD dwAttr = ::GetFileAttributes (szFile);
+	DWORD dwAttr = ::GetFileAttributes (szPathName);
 	if ( dwAttr == (DWORD) -1 ) {
 		return FALSE;
 	}
 	dwAttr |= dwAttrMask;
-	return SetFileAttributes (szFile, dwAttr);
+	return SetFileAttributes (szPathName, dwAttr);
 }
 
 BOOL YFileManager::ClearFileAttributesVa (DWORD dwAttrMask, LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR	szFile[MAX_PATH];
+	TCHAR	szPathName[MAX_PATH];
 
-	_vstprintf (szFile, lpFile, vaFile);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
 
-	DWORD dwAttr = ::GetFileAttributes (szFile);
+	DWORD dwAttr = ::GetFileAttributes (szPathName);
 	if ( dwAttr == (DWORD) -1 ) {
 		return FALSE;
 	}
 	dwAttr &= ~((DWORD) dwAttrMask);
-	return ::SetFileAttributes (szFile, dwAttr);
+	return ::SetFileAttributes (szPathName, dwAttr);
 }
 
 BOOL YFileManager::CompressFileVa (LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR	szFile[MAX_PATH];
+	TCHAR	szPathName[MAX_PATH];
 
-	_vstprintf (szFile, lpFile, vaFile);
-	return sfSetCompressState (szFile, FALSE, TRUE);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+	return sfSetCompressState (szPathName, FALSE, TRUE);
 }
 
 BOOL YFileManager::UncompressFileVa (LPCTSTR lpFile, va_list vaFile)
 {
-	TCHAR	szFile[MAX_PATH];
+	TCHAR	szPathName[MAX_PATH];
 
-	_vstprintf (szFile, lpFile, vaFile);
-	return sfSetCompressState (szFile, FALSE, FALSE);
+	_ylb_formatv (szPathName, _countof (szPathName), lpFile, vaFile);
+	return sfSetCompressState (szPathName, FALSE, FALSE);
 }
 
 /*=============================================================================
@@ -708,7 +809,7 @@ BOOL YFileManager::UncompressFileVa (LPCTSTR lpFile, va_list vaFile)
 void YDirEnumerator::StartVa (LPCTSTR pszPattern, va_list vaPattern)
 {
 	End ();
-	_vstprintf (m_szPathComponent, pszPattern, vaPattern);
+	_ylb_formatv (m_szPathComponent, _countof (m_szPathComponent), pszPattern, vaPattern);
 }
 
 BOOL YDirEnumerator::GetNext ()
