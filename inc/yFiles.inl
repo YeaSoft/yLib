@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/08/24 17:16:08  leo
+ * Added missing destructor to YStdioFile
+ *
  * Revision 1.2  2000/08/23  11:56:02  leo
  * Updated license
  *
@@ -157,6 +160,16 @@ YLB_INLINE BOOL YStdioFile::Flush ()
 YLB_INLINE BOOL YStdioFile::IsValid () const
 {
 	return YBaseFile::IsValid () && m_pStream;
+}
+
+YLB_INLINE BOOL YStdioFile::WriteString (LPCTSTR pszString, ...)
+{
+	va_list va;
+
+	va_start (va, pszString);
+	BOOL bRet = WriteStringVa (pszString, va);
+	va_end (va);
+	return bRet;
 }
 
 //

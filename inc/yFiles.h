@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2000/08/24 17:15:46  leo
+ * Added missing destructor to YStdioFile
+ *
  * Revision 1.3  2000/08/23  11:55:49  leo
  * Added more file open modes
  * Updated license
@@ -180,7 +183,8 @@ public:
 	virtual BOOL				Write					(LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite);
 	virtual BOOL				Write					(LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPDWORD lpNumberOfBytesWritten);
 
-	virtual BOOL				WriteString				(LPCTSTR pszString);
+	virtual BOOL				WriteString				(LPCTSTR pszString, ...);
+	virtual BOOL				WriteStringVa			(LPCTSTR pszString, va_list va);
 	virtual LPTSTR				ReadString				(LPTSTR pszString, UINT nMax);
 	virtual BOOL				ReadString				(YFixedString& rString);
 

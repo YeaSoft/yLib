@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/08/24 16:52:45  leo
+ * Fixed the close method and added autoclose to the destructor
+ *
  * Revision 1.2  2000/08/23  11:55:42  leo
  * Added more file open modes
  * Updated license
@@ -336,14 +339,13 @@ BOOL YStdioFile::Write (LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPDWORD l
 	return (tWrite == *lpNumberOfBytesWritten);
 }
 
-BOOL YStdioFile::WriteString (LPCTSTR pszString)
+BOOL YStdioFile::WriteStringVa (LPCTSTR pszString, va_list va)
 {
 	ASSERTY(pszString);
 	if ( !IsValid () ) {
 		return FALSE;
 	}
-
-	return _fputts (pszString, m_pStream) != _TEOF;
+	return _vftprintf (m_pStream, pszString, va);
 }
 
 LPTSTR YStdioFile::ReadString (LPTSTR pszString, UINT nMax)
