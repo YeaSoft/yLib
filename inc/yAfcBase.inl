@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/22 11:40:26  leo
+ * Added more access methods
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:02:53  leo
  * Initial revision
  *
@@ -68,9 +72,11 @@ YLB_INLINE void YCmdLineParam::SetMeaning (DWORDLONG dwMeaning)
 	m_dwMeaning = dwMeaning;
 }
 
-YLB_INLINE void YCmdLineParam::SetParamCount (UINT nCount)
+YLB_INLINE void YCmdLineParam::SetCount (int nCount)
 {
-	m_argc = nCount;
+	if ( nCount > 0 ) {
+		m_argc = nCount;
+	}
 }
 
 YLB_INLINE TCHAR YCmdLineOption::GetOption () const

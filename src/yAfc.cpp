@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/04/26 10:37:29  leopoldo
+ * Fixed the command line index
+ *
  * Revision 1.2  2000/08/22 11:40:34  leo
  * Added more access methods
  * Updated license
@@ -99,7 +102,7 @@ YCmdLineParam *YCmdLineParser::FindParamByMeaning (DWORDLONG dwMeaning)
 
 BOOL YCmdLineParser::Parse ()
 {
-	if ( !_proc.m_cli.GetParamCount () ) {
+	if ( !_proc.m_cli.GetCount () ) {
 		return FALSE;
 	}
 
@@ -120,7 +123,7 @@ BOOL YCmdLineParser::Parse ()
 				// it's an option
 				if ( m_nNumOptions < YLB_MAX_OPTIONS ) {
 					++pszArg;	// skip the option char
-					UINT nAddArgs = CountAdditionalArgs (pos);
+					int nAddArgs = CountAdditionalArgs (pos);
 					while ( *pszArg ) {
 						YCmdLineOption *cliOpt = &(m_cliOptions[m_nNumOptions]);
 						cliOpt->m_cOption	= *pszArg;
@@ -166,7 +169,7 @@ BOOL YCmdLineParser::Parse ()
 			else {
 				// it's a parameter
 				if ( m_nNumParams < YLB_MAX_PARAMS ) {
-					UINT nAddArgs = CountAdditionalArgs (pos);
+					int nAddArgs = CountAdditionalArgs (pos);
 					YCmdLineParam *cliPar = &(m_cliParams[m_nNumParams]);
 					cliPar->m_dwMeaning	= 0;
 					cliPar->m_pszParam	= pszArg;
@@ -199,9 +202,9 @@ BOOL YCmdLineParser::Parse ()
 	return m_bParsingResult = OnFinalCheck ();
 }
 
-UINT YCmdLineParser::CountAdditionalArgs (ITERATOR pos)
+int YCmdLineParser::CountAdditionalArgs (ITERATOR pos)
 {
-	UINT	nCount = 0;
+	int	nCount = 0;
 
 	for ( LPCTSTR pszArg = _proc.m_cli.GetNext (pos); pszArg; pszArg = _proc.m_cli.GetNext (pos) ) {
 		// check if it is an option

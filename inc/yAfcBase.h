@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/22 11:40:41  leo
+ * Added more access methods
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:02:48  leo
  * Initial revision
  *
@@ -120,7 +124,7 @@ public:
 	DWORDLONG					GetMeaning				() const;
 	UINT						GetCliIndex				() const;
 	void						SetMeaning				(DWORDLONG dwMeaning);
-	void						SetParamCount			(UINT nCount);
+	void						SetCount				(int nCount);
 
 public:
 	DWORDLONG					m_dwMeaning;
@@ -193,7 +197,7 @@ public:
 
 protected:
 	// implementation
-	UINT						CountAdditionalArgs		(ITERATOR pos);
+	int							CountAdditionalArgs		(ITERATOR pos);
 
 protected:
 	// implementation

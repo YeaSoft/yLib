@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.8  2003/02/17 11:48:48  leopoldo
+ * Fixed bad message output
+ *
  * Revision 1.7  2001/09/24 12:49:10  leopoldo
  * Moved destruction of termination event
  *
@@ -126,16 +129,16 @@ BOOL YServiceCmdLineParser::OnProcessOption (BOOL &bTerminate, LPCTSTR &pszOptSt
 	case _T('u'):
 		SetOptionFlags (SCL_OPT_USER_NAME);
 		cliOpt.SetMeaning (SCL_OPT_USER_NAME);
-		if ( cliOpt.GetParamCount () > 1 )  {
-			cliOpt.SetParamCount (1);
+		if ( cliOpt.GetCount () > 1 )  {
+			cliOpt.SetCount (1);
 		}
 		++pszOptString;
 		return TRUE;
 	case _T('p'):
 		SetOptionFlags (SCL_OPT_USER_PWD);
 		cliOpt.SetMeaning (SCL_OPT_USER_PWD);
-		if ( cliOpt.GetParamCount () > 1 )  {
-			cliOpt.SetParamCount (1);
+		if ( cliOpt.GetCount () > 1 )  {
+			cliOpt.SetCount (1);
 		}
 		++pszOptString;
 		return TRUE;
@@ -260,7 +263,7 @@ BOOL YServiceCmdLineParser::OnFinalCheck ()
 	}
 
 	if ( TestOptionFlags (SCL_OPT_USER_PWD) ) {
-		if ( !FindOptionByMeaning (SCL_OPT_USER_PWD)->GetParamCount () ) {
+		if ( !FindOptionByMeaning (SCL_OPT_USER_PWD)->GetCount () ) {
 			ShowIntro ();
 			_tprintf (_T("ERROR: no password was specified with -p\n\n"));
 			ShowUsage (GetCommands () & SCL_CMD_MASK);
@@ -277,7 +280,7 @@ BOOL YServiceCmdLineParser::OnFinalCheck ()
 	}
 
 	if ( TestOptionFlags (SCL_OPT_USER_NAME) ) {
-		if ( !FindOptionByMeaning (SCL_OPT_USER_NAME)->GetParamCount () ) {
+		if ( !FindOptionByMeaning (SCL_OPT_USER_NAME)->GetCount () ) {
 			ShowIntro ();
 			_tprintf (_T("ERROR: no user was specified with -u\n\n"));
 			ShowUsage (GetCommands () & SCL_CMD_MASK);
@@ -1365,7 +1368,7 @@ BOOL YServiceLogic::PerformStart (UINT nIndex, YServiceCmdLineParser &cliParser)
 	YCmdLineParam *pParam = cliParser.FindParamByMeaning (SCL_CMD_START);
 	ASSERTY(pParam);
 
-	DWORD		dwArgC = _proc.m_cli.GetParamCount () - pParam->GetCliIndex () - 1;
+	DWORD		dwArgC = _proc.m_cli.GetCount () - pParam->GetCliIndex () - 1;
 	LPTSTR	*	lpArgV = _proc.m_cli.m_argv + pParam->GetCliIndex () + 1;
 
 	if ( cliParser.CanBeRenamed () && dwArgC ) {
@@ -1667,7 +1670,7 @@ BOOL YServiceLogic::PerformSimulation (UINT nIndex, YServiceCmdLineParser &cliPa
 	YCmdLineParam *pParam = cliParser.FindParamByMeaning (SCL_CMD_SIMULATE);
 	ASSERTY(pParam);
 
-	int			argc = _proc.m_cli.GetParamCount () - pParam->GetCliIndex ();
+	int			argc = _proc.m_cli.GetCount () - pParam->GetCliIndex ();
 	LPTSTR *	argv = _proc.m_cli.m_argv + pParam->GetCliIndex ();
 
 	if ( cliParser.CanBeRenamed () && (argc > 1) ) {
@@ -1772,7 +1775,7 @@ BOOL YSrvApp::ProcessShellCommand (YServiceCmdLineParser &cliParser)
 	// got it!
 	if ( IsOwnService () && cliParser.CanBeRenamed () ) {
 		YCmdLineParam *pParam = cliParser.FindParamByMeaning (dwCmd);
-		if ( pParam && pParam->GetParamCount () && pParam->GetAt (ZERO) && *pParam->GetAt (ZERO) ) {
+		if ( pParam && pParam->GetCount () && pParam->GetAt (ZERO) && *pParam->GetAt (ZERO) ) {
 			// service will be internally renamed....
 			pSL->OnServiceRename (FALSE, pParam->GetAt (ZERO));
 		}
@@ -1887,7 +1890,7 @@ UINT YSrvApp::GetRequestedService (YServiceCmdLineParser &cliParser, DWORDLONG d
 		return 0;
 	}
 
-	if ( !pParm->GetParamCount () ) {
+	if ( !pParm->GetCount () ) {
 		cliParser.ShowIntro ();
 		_tprintf (_T("ERROR: no service name specified\n\n"));
 		cliParser.ShowUsage (cliParser.GetCommands () & SCL_CMD_MASK);

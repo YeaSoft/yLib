@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.7  2002/08/20 18:52:05  leopoldo
+ * Moved pseudofunctions support to ySCM.h
+ *
  * Revision 1.6  2002/06/03 11:31:45  leopoldo
  * Added support for YLB_NATIVE_NT_LINKING
  *
@@ -542,16 +545,16 @@ class YCommandLineInfo
 {
 public:
 	YCommandLineInfo			() { m_argc = 0; m_argv = NULL; }
-	YCommandLineInfo			(int argc, TCHAR **argv) { m_argc = (UINT) argc; m_argv = argv; }
+	YCommandLineInfo			(int argc, TCHAR **argv) { m_argc = argc; m_argv = argv; }
 
 public:
 	// attributes
-	LPCTSTR						operator[]				(UINT nIndex) const { return GetAt (nIndex); }
+	LPCTSTR						operator[]				(int nIndex) const { return GetAt (nIndex); }
 
 public:
 	// attributes
-	LPCTSTR						GetAt					(UINT nIndex) const { return ((nIndex >= 0) && (nIndex < m_argc)) ? (m_argv[nIndex]) : (NULL); }
-	UINT						GetParamCount			() const { return m_argc; }
+	LPCTSTR						GetAt					(int nIndex) const { return ((nIndex >= 0) && (nIndex < m_argc)) ? (m_argv[nIndex]) : (NULL); }
+	int							GetCount				() const { return m_argc; }
 	ITERATOR					GetHeadPosition			() const { return (m_argc) ? ((ITERATOR) &(m_argv[0])) : (NULL); }
 	ITERATOR					GetTailPosition			() const { return (m_argc) ? ((ITERATOR) &(m_argv[m_argc - 1])) : (NULL); }
 	LPCTSTR						GetNext					(ITERATOR &pos) const;
@@ -560,7 +563,7 @@ public:
 	LPCTSTR						Skip					(ITERATOR &pos, UINT nSkip = 1) const;
 
 public:
-	UINT						m_argc;
+	int							m_argc;
 	TCHAR						**m_argv;
 };
 
