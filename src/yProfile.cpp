@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2002/08/04 14:53:13  leopoldo
+ * Added new functionality
+ *
  * Revision 1.2  2001/09/15 12:41:11  leopoldo
  * Added YProfile::NumberSet and YProfile::NumberGet for 'double' Values
  *
@@ -166,23 +169,30 @@ LPCTSTR YProfile::GetPrevValue (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBu
 
 ITERATOR YProfile::GetFirstSectionPosition ()
 {
+	DWORD dwSize;
+
 	if ( !m_ysSecEnum.GetBuffer () && !m_ysSecEnum.Alloc (16384) ) {
 		return NULL;
 	}
-	if ( !::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile) ) {
+	if ( !(dwSize = ::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile)) ) {
 		return NULL;
 	}
+	m_ysSecEnum.SetContentSize (dwSize + 1);
 	return m_ysSecEnum.GetFirstStringPosition ();
 }
 
 ITERATOR YProfile::GetLastSectionPosition ()
 {
+	DWORD dwSize;
+
 	if ( !m_ysSecEnum.GetBuffer () && !m_ysSecEnum.Alloc (16384) ) {
 		return NULL;
 	}
-	if ( !::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile) ) {
+	if ( !(dwSize = ::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile)) ) {
 		return NULL;
 	}
+	m_ysSecEnum.SetContentSize (dwSize + 1);
+
 	return m_ysSecEnum.GetLastStringPosition ();
 }
 
