@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2002/06/03 11:37:08  leopoldo
+ * Added support for YLB_NATIVE_NT_LINKING
+ *
  * Revision 1.3  2001/05/16 17:15:53  leopoldo
  * Added support for reattachment of RTL output handles
  *
@@ -139,6 +142,17 @@ extern "C" BOOL WINAPI			_ylb_console_handler	(DWORD dwCtrlType);
 /*=============================================================================
  * INLINED HELPERS
  *============================================================================*/
+inline void						_ylb_format			(LPTSTR pszBuffer, UINT cbSize, LPCTSTR pszFormat, ...)
+{
+	va_list argList;
+
+	va_start(argList, pszFormat);
+	if ( _vsntprintf (pszBuffer, cbSize - 1, pszFormat, argList) < 0 ) {
+		pszBuffer[cbSize - 1] = 0;
+	}
+	va_end(argList);
+}
+
 inline void						_ylb_formatv			(LPTSTR pszBuffer, UINT cbSize, LPCTSTR pszFormat, va_list argList)
 {
 	if ( _vsntprintf (pszBuffer, cbSize - 1, pszFormat, argList) < 0 ) {
@@ -146,8 +160,35 @@ inline void						_ylb_formatv			(LPTSTR pszBuffer, UINT cbSize, LPCTSTR pszForma
 	}
 }
 
+/*=============================================================================
+ * NON NT SUPPORT
+ *============================================================================*/
 #ifndef YLB_NATIVE_NT_LINKING
 
+//
+// From KERNEL32.DLL
+//
+typedef BOOL (WINAPI* LPFN_ENCFILA) (
+	LPCSTR		lpFileName
+);
+
+typedef BOOL (WINAPI* LPFN_ENCFILW) (
+	LPCWSTR		lpFileName
+);
+
+typedef BOOL (WINAPI* LPFN_DECFILA) (
+	LPCSTR		lpFileName,
+	DWORD		dwReserved
+);
+
+typedef BOOL (WINAPI* LPFN_DECFILW) (
+	LPCWSTR		lpFileName,
+	DWORD		dwReserved
+);
+
+//
+// From ADVAPI32.DLL
+//
 typedef BOOL  (WINAPI * LPFN_CSCA) (
 	SC_HANDLE	hService,
 	DWORD		dwServiceType,

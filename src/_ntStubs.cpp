@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2002/06/03 15:20:30  leopoldo
+ * Fixed UniCode Stuff
+ *
  * Revision 1.1  2002/06/03 11:38:26  leopoldo
  * Initial revision
  *
@@ -70,6 +73,13 @@ private:
 
 public:
 	static HINSTANCE			m_hAdvAPI;
+	static HINSTANCE			m_hKernel;
+
+	static LPFN_ENCFILA			m_lpfnEncryptFileA;
+	static LPFN_ENCFILW			m_lpfnEncryptFileW;
+	static LPFN_DECFILA			m_lpfnDecryptFileA;
+	static LPFN_DECFILW			m_lpfnDecryptFileW;
+
 	static LPFN_CSCA			m_lpfnChangeServiceConfigA;
 	static LPFN_CSCW			m_lpfnChangeServiceConfigW;
 	static LPFN_CSC2A			m_lpfnChangeServiceConfig2A;
@@ -118,6 +128,13 @@ public:
 static STUB_LOADER				_stub;
 
 HINSTANCE			STUB_LOADER::m_hAdvAPI;
+HINSTANCE			STUB_LOADER::m_hKernel;
+
+LPFN_ENCFILA		STUB_LOADER::m_lpfnEncryptFileA;
+LPFN_ENCFILW		STUB_LOADER::m_lpfnEncryptFileW;
+LPFN_DECFILA		STUB_LOADER::m_lpfnDecryptFileA;
+LPFN_DECFILW		STUB_LOADER::m_lpfnDecryptFileW;
+
 LPFN_CSCA			STUB_LOADER::m_lpfnChangeServiceConfigA;
 LPFN_CSCW			STUB_LOADER::m_lpfnChangeServiceConfigW;
 LPFN_CSC2A			STUB_LOADER::m_lpfnChangeServiceConfig2A;
@@ -176,6 +193,13 @@ STUB_LOADER::~STUB_LOADER ()
 void STUB_LOADER::CommonConstructor ()
 {
 	m_hAdvAPI							= NULL;
+	m_hKernel							= NULL;
+
+	m_lpfnEncryptFileA					= NULL;
+	m_lpfnEncryptFileW					= NULL;
+	m_lpfnDecryptFileA					= NULL;
+	m_lpfnDecryptFileW					= NULL;
+
 	m_lpfnChangeServiceConfigA			= NULL;
 	m_lpfnChangeServiceConfigW			= NULL;
 	m_lpfnChangeServiceConfig2A			= NULL;
@@ -220,52 +244,59 @@ void STUB_LOADER::CommonConstructor ()
 
 bool STUB_LOADER::LoadLibrary ()
 {
-	if ( m_hAdvAPI ) {
+	if ( m_hAdvAPI && m_hKernel) {
 		return true;
 	}
-	if ( !(m_hAdvAPI = ::LoadLibrary (_T("ADVAPI32.DLL"))) ) {
-		return false;
+
+	if ( !m_hKernel && (m_hKernel = ::LoadLibrary (_T("KERNEL32.DLL"))) != NULL ) {
+		m_lpfnEncryptFileA					= (LPFN_ENCFILA) ::GetProcAddress (m_hKernel, "EncryptFileA");
+		m_lpfnEncryptFileW					= (LPFN_ENCFILW) ::GetProcAddress (m_hKernel, "EncryptFileW");
+		m_lpfnDecryptFileA					= (LPFN_DECFILA) ::GetProcAddress (m_hKernel, "DecryptFileA");
+		m_lpfnDecryptFileW					= (LPFN_DECFILW) ::GetProcAddress (m_hKernel, "DecryptFileW");
 	}
-	m_lpfnChangeServiceConfigA			= (LPFN_CSCA) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfigA");
-	m_lpfnChangeServiceConfigW			= (LPFN_CSCW) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfigW");
-	m_lpfnChangeServiceConfig2A			= (LPFN_CSC2A) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfig2A");
-	m_lpfnChangeServiceConfig2W			= (LPFN_CSC2W) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfig2W");
-	m_lpfnCloseServiceHandle			= (LPFN_CSH) ::GetProcAddress (m_hAdvAPI, "CloseServiceHandle");
-	m_lpfnControlService				= (LPFN_CS) ::GetProcAddress (m_hAdvAPI, "ControlService");
-	m_lpfnCreateServiceA				= (LPFN_CSA) ::GetProcAddress (m_hAdvAPI, "CreateServiceA");
-	m_lpfnCreateServiceW				= (LPFN_CSW) ::GetProcAddress (m_hAdvAPI, "CreateServiceW");
-	m_lpfnDeleteService					= (LPFN_DS) ::GetProcAddress (m_hAdvAPI, "DeleteService");
-	m_lpfnEnumDependentServicesA		= (LPFN_EDSA) ::GetProcAddress (m_hAdvAPI, "EnumDependentServicesA");
-	m_lpfnEnumDependentServicesW		= (LPFN_EDSW) ::GetProcAddress (m_hAdvAPI, "EnumDependentServicesW");
-	m_lpfnEnumServicesStatusA			= (LPFN_ESSA) ::GetProcAddress (m_hAdvAPI, "EnumServicesStatusA");
-	m_lpfnEnumServicesStatusW			= (LPFN_ESSW) ::GetProcAddress (m_hAdvAPI, "EnumServicesStatusW");
-	m_lpfnGetServiceKeyNameA			= (LPFN_GSKNA) ::GetProcAddress (m_hAdvAPI, "GetServiceKeyNameA");
-	m_lpfnGetServiceKeyNameW			= (LPFN_GSKNW) ::GetProcAddress (m_hAdvAPI, "GetServiceKeyNameW");
-	m_lpfnGetServiceDisplayNameA		= (LPFN_GSDNA) ::GetProcAddress (m_hAdvAPI, "GetServiceDisplayNameA");
-	m_lpfnGetServiceDisplayNameW		= (LPFN_GSDNW) ::GetProcAddress (m_hAdvAPI, "GetServiceDisplayNameW");
-	m_lpfnLockServiceDatabase			= (LPFN_LSD) ::GetProcAddress (m_hAdvAPI, "LockServiceDatabase");
-	m_lpfnNotifyBootConfigStatus		= (LPFN_NBCS) ::GetProcAddress (m_hAdvAPI, "NotifyBootConfigStatus");
-	m_lpfnOpenSCManagerA				= (LPFN_OSCMA) ::GetProcAddress (m_hAdvAPI, "OpenSCManagerA");
-	m_lpfnOpenSCManagerW				= (LPFN_OSCMW) ::GetProcAddress (m_hAdvAPI, "OpenSCManagerW");
-	m_lpfnOpenServiceA					= (LPFN_OSA) ::GetProcAddress (m_hAdvAPI, "OpenServiceA");
-	m_lpfnOpenServiceW					= (LPFN_OSW) ::GetProcAddress (m_hAdvAPI, "OpenServiceW");
-	m_lpfnQueryServiceConfigA			= (LPFN_QSCA) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfigA");
-	m_lpfnQueryServiceConfigW			= (LPFN_QSCW) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfigW");
-	m_lpfnQueryServiceConfig2A			= (LPFN_QSC2A) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfig2A");
-	m_lpfnQueryServiceConfig2W			= (LPFN_QSC2W) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfig2W");
-	m_lpfnQueryServiceLockStatusA		= (LPFN_QSLSA) ::GetProcAddress (m_hAdvAPI, "QueryServiceLockStatusA");
-	m_lpfnQueryServiceLockStatusW		= (LPFN_QSLSW) ::GetProcAddress (m_hAdvAPI, "QueryServiceLockStatusW");
-	m_lpfnQueryServiceObjectSecurity	= (LPFN_QSOS) ::GetProcAddress (m_hAdvAPI, "QueryServiceObjectSecurity");
-	m_lpfnQueryServiceStatus			= (LPFN_QSS) ::GetProcAddress (m_hAdvAPI, "QueryServiceStatus");
-	m_lpfnRegisterServiceCtrlHandlerA	= (LPFN_RSCHA) ::GetProcAddress (m_hAdvAPI, "RegisterServiceCtrlHandlerA");
-	m_lpfnRegisterServiceCtrlHandlerW	= (LPFN_RSCHW) ::GetProcAddress (m_hAdvAPI, "RegisterServiceCtrlHandlerW");
-	m_lpfnSetServiceObjectSecurity		= (LPFN_SSOS) ::GetProcAddress (m_hAdvAPI, "SetServiceObjectSecurity");
-	m_lpfnSetServiceStatus				= (LPFN_SSS) ::GetProcAddress (m_hAdvAPI, "SetServiceStatus");
-	m_lpfnStartServiceCtrlDispatcherA	= (LPFN_SSCDA) ::GetProcAddress (m_hAdvAPI, "StartServiceCtrlDispatcherA");
-	m_lpfnStartServiceCtrlDispatcherW	= (LPFN_SSCDW) ::GetProcAddress (m_hAdvAPI, "StartServiceCtrlDispatcherW");
-	m_lpfnStartServiceA					= (LPFN_SSA) ::GetProcAddress (m_hAdvAPI, "StartServiceA");
-	m_lpfnStartServiceW					= (LPFN_SSW) ::GetProcAddress (m_hAdvAPI, "StartServiceW");
-	m_lpfnUnlockServiceDatabase			= (LPFN_USD) ::GetProcAddress (m_hAdvAPI, "UnlockServiceDatabase");
+
+	if ( !m_hAdvAPI && (m_hAdvAPI = ::LoadLibrary (_T("ADVAPI32.DLL"))) != NULL ) {
+		m_lpfnChangeServiceConfigA			= (LPFN_CSCA) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfigA");
+		m_lpfnChangeServiceConfigW			= (LPFN_CSCW) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfigW");
+		m_lpfnChangeServiceConfig2A			= (LPFN_CSC2A) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfig2A");
+		m_lpfnChangeServiceConfig2W			= (LPFN_CSC2W) ::GetProcAddress (m_hAdvAPI, "ChangeServiceConfig2W");
+		m_lpfnCloseServiceHandle			= (LPFN_CSH) ::GetProcAddress (m_hAdvAPI, "CloseServiceHandle");
+		m_lpfnControlService				= (LPFN_CS) ::GetProcAddress (m_hAdvAPI, "ControlService");
+		m_lpfnCreateServiceA				= (LPFN_CSA) ::GetProcAddress (m_hAdvAPI, "CreateServiceA");
+		m_lpfnCreateServiceW				= (LPFN_CSW) ::GetProcAddress (m_hAdvAPI, "CreateServiceW");
+		m_lpfnDeleteService					= (LPFN_DS) ::GetProcAddress (m_hAdvAPI, "DeleteService");
+		m_lpfnEnumDependentServicesA		= (LPFN_EDSA) ::GetProcAddress (m_hAdvAPI, "EnumDependentServicesA");
+		m_lpfnEnumDependentServicesW		= (LPFN_EDSW) ::GetProcAddress (m_hAdvAPI, "EnumDependentServicesW");
+		m_lpfnEnumServicesStatusA			= (LPFN_ESSA) ::GetProcAddress (m_hAdvAPI, "EnumServicesStatusA");
+		m_lpfnEnumServicesStatusW			= (LPFN_ESSW) ::GetProcAddress (m_hAdvAPI, "EnumServicesStatusW");
+		m_lpfnGetServiceKeyNameA			= (LPFN_GSKNA) ::GetProcAddress (m_hAdvAPI, "GetServiceKeyNameA");
+		m_lpfnGetServiceKeyNameW			= (LPFN_GSKNW) ::GetProcAddress (m_hAdvAPI, "GetServiceKeyNameW");
+		m_lpfnGetServiceDisplayNameA		= (LPFN_GSDNA) ::GetProcAddress (m_hAdvAPI, "GetServiceDisplayNameA");
+		m_lpfnGetServiceDisplayNameW		= (LPFN_GSDNW) ::GetProcAddress (m_hAdvAPI, "GetServiceDisplayNameW");
+		m_lpfnLockServiceDatabase			= (LPFN_LSD) ::GetProcAddress (m_hAdvAPI, "LockServiceDatabase");
+		m_lpfnNotifyBootConfigStatus		= (LPFN_NBCS) ::GetProcAddress (m_hAdvAPI, "NotifyBootConfigStatus");
+		m_lpfnOpenSCManagerA				= (LPFN_OSCMA) ::GetProcAddress (m_hAdvAPI, "OpenSCManagerA");
+		m_lpfnOpenSCManagerW				= (LPFN_OSCMW) ::GetProcAddress (m_hAdvAPI, "OpenSCManagerW");
+		m_lpfnOpenServiceA					= (LPFN_OSA) ::GetProcAddress (m_hAdvAPI, "OpenServiceA");
+		m_lpfnOpenServiceW					= (LPFN_OSW) ::GetProcAddress (m_hAdvAPI, "OpenServiceW");
+		m_lpfnQueryServiceConfigA			= (LPFN_QSCA) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfigA");
+		m_lpfnQueryServiceConfigW			= (LPFN_QSCW) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfigW");
+		m_lpfnQueryServiceConfig2A			= (LPFN_QSC2A) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfig2A");
+		m_lpfnQueryServiceConfig2W			= (LPFN_QSC2W) ::GetProcAddress (m_hAdvAPI, "QueryServiceConfig2W");
+		m_lpfnQueryServiceLockStatusA		= (LPFN_QSLSA) ::GetProcAddress (m_hAdvAPI, "QueryServiceLockStatusA");
+		m_lpfnQueryServiceLockStatusW		= (LPFN_QSLSW) ::GetProcAddress (m_hAdvAPI, "QueryServiceLockStatusW");
+		m_lpfnQueryServiceObjectSecurity	= (LPFN_QSOS) ::GetProcAddress (m_hAdvAPI, "QueryServiceObjectSecurity");
+		m_lpfnQueryServiceStatus			= (LPFN_QSS) ::GetProcAddress (m_hAdvAPI, "QueryServiceStatus");
+		m_lpfnRegisterServiceCtrlHandlerA	= (LPFN_RSCHA) ::GetProcAddress (m_hAdvAPI, "RegisterServiceCtrlHandlerA");
+		m_lpfnRegisterServiceCtrlHandlerW	= (LPFN_RSCHW) ::GetProcAddress (m_hAdvAPI, "RegisterServiceCtrlHandlerW");
+		m_lpfnSetServiceObjectSecurity		= (LPFN_SSOS) ::GetProcAddress (m_hAdvAPI, "SetServiceObjectSecurity");
+		m_lpfnSetServiceStatus				= (LPFN_SSS) ::GetProcAddress (m_hAdvAPI, "SetServiceStatus");
+		m_lpfnStartServiceCtrlDispatcherA	= (LPFN_SSCDA) ::GetProcAddress (m_hAdvAPI, "StartServiceCtrlDispatcherA");
+		m_lpfnStartServiceCtrlDispatcherW	= (LPFN_SSCDW) ::GetProcAddress (m_hAdvAPI, "StartServiceCtrlDispatcherW");
+		m_lpfnStartServiceA					= (LPFN_SSA) ::GetProcAddress (m_hAdvAPI, "StartServiceA");
+		m_lpfnStartServiceW					= (LPFN_SSW) ::GetProcAddress (m_hAdvAPI, "StartServiceW");
+		m_lpfnUnlockServiceDatabase			= (LPFN_USD) ::GetProcAddress (m_hAdvAPI, "UnlockServiceDatabase");
+	}
 	return true;
 }
 
@@ -273,14 +304,63 @@ void STUB_LOADER::FreeLibrary ()
 {
 	if ( m_hAdvAPI ) {
 		::FreeLibrary (m_hAdvAPI);
-		CommonConstructor ();
 	}
+	if ( m_hKernel ) {
+		::FreeLibrary (m_hKernel);
+	}
+	CommonConstructor ();
 }
 
 
 /*=============================================================================
  * NT API PSEUDOFUNCTIONS
  *============================================================================*/
+BOOL YLBAPI YlbEncryptFileA (
+	LPCSTR		lpFileName
+)
+{
+	if ( !_stub.m_lpfnEncryptFileA ) {
+		::SetLastError (ERROR_INVALID_FUNCTION);
+		return FALSE;
+	}
+	return _stub.m_lpfnEncryptFileA (lpFileName);
+}
+
+BOOL YLBAPI YlbEncryptFileW (
+	LPCWSTR		lpFileName
+)
+{
+	if ( !_stub.m_lpfnEncryptFileW ) {
+		::SetLastError (ERROR_INVALID_FUNCTION);
+		return FALSE;
+	}
+	return _stub.m_lpfnEncryptFileW (lpFileName);
+}
+
+BOOL YLBAPI YlbDecryptFileA (
+	LPCSTR		lpFileName,
+	DWORD		dwReserved
+)
+{
+	if ( !_stub.m_lpfnDecryptFileA ) {
+		::SetLastError (ERROR_INVALID_FUNCTION);
+		return FALSE;
+	}
+	return _stub.m_lpfnDecryptFileA (lpFileName, dwReserved);
+}
+
+BOOL YLBAPI YlbDecryptFileW (
+	LPCWSTR		lpFileName,
+	DWORD		dwReserved
+)
+{
+	if ( !_stub.m_lpfnDecryptFileW ) {
+		::SetLastError (ERROR_INVALID_FUNCTION);
+		return FALSE;
+	}
+	return _stub.m_lpfnDecryptFileW (lpFileName, dwReserved);
+}
+
 BOOL YLBAPI YlbChangeServiceConfigA (
 	SC_HANDLE	hService,
 	DWORD		dwServiceType,
