@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.11  2000/08/28 13:09:19  leo
+ * Optimized on Selfassignment
+ *
  * Revision 1.10  2000/08/24 16:57:02  leo
  * Fixed error in Right
  * Corrected length adjustment in Assign(LPCTSTR, UINT)
@@ -374,6 +377,40 @@ YBigString YFixedString::SpanExcluding (LPCTSTR lpszCharSet) const
 	ASSERTY(m_pszString);
 	ASSERTY(YlbIsValidString(lpszCharSet));
 	return Left (_tcscspn (m_pszString, lpszCharSet));
+}
+
+void YFixedString::MakeCapital ()
+{
+	ASSERTY(m_pszString);
+
+	for (LPTSTR lpPtr = m_pszString; *lpPtr; lpPtr++ ) {
+		if ( _istspace (*lpPtr) && lpPtr[1] ) {
+			lpPtr[1] = _totupper (lpPtr[1]);
+		}
+	}
+}
+
+void YFixedString::MakeCapital (TCHAR chWhiteSpace)
+{
+	ASSERTY(m_pszString);
+
+	for (LPTSTR lpPtr = m_pszString; *lpPtr; lpPtr++ ) {
+		if ( (*lpPtr == chWhiteSpace) && lpPtr[1] ) {
+			lpPtr[1] = _totupper (lpPtr[1]);
+		}
+	}
+}
+
+void YFixedString::MakeCapital (LPCTSTR lpszWhiteSpaces)
+{
+	ASSERTY(m_pszString);
+	ASSERTY(YlbIsValidString(lpszWhiteSpaces));
+
+	for (LPTSTR lpPtr = m_pszString; *lpPtr; lpPtr++ ) {
+		if ( _tcschr (lpszWhiteSpaces, *lpPtr) && lpPtr[1] ) {
+			lpPtr[1] = _totupper (lpPtr[1]);
+		}
+	}
 }
 
 void YFixedString::Trim ()

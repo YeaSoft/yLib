@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.9  2000/08/28 13:04:43  leo
+ * Added missing assignment operator on
+ * predefined string types for self assignment
+ *
  * Revision 1.8  2000/08/23 10:12:45  leo
  * Fixed some release build issue
  *
@@ -229,6 +233,9 @@ public:
 	// upper/lower/reverse conversion
 	void						MakeUpper				();
 	void						MakeLower				();
+	void						MakeCapital				();
+	void						MakeCapital				(TCHAR chWhiteSpace);
+	void						MakeCapital				(LPCTSTR lpszWhiteSpaces);
 	void						MakeReverse				();
 
 	// trimming whitespace (either side)
