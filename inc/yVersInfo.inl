@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:42  leo
  * Initial revision
  *
@@ -44,6 +47,11 @@
 YLB_INLINE YVersInfo::YVersInfo ()
 {
 	CommonConstructor ();
+}
+
+YLB_INLINE LPCTSTR YVersInfo::GetName () const
+{
+	return m_szFileName;
 }
 
 YLB_INLINE WORD YVersInfo::GetFileMajorVersion ()
