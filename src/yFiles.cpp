@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/01/17 17:58:49  leopoldo
+ * YStdioFile::WriteString now works with a variable parameter list
+ *
  * Revision 1.3  2000/08/24 16:52:45  leo
  * Fixed the close method and added autoclose to the destructor
  *
@@ -348,7 +351,7 @@ BOOL YStdioFile::WriteStringVa (LPCTSTR pszString, va_list va)
 	return _vftprintf (m_pStream, pszString, va);
 }
 
-LPTSTR YStdioFile::ReadString (LPTSTR pszString, UINT nMax)
+LPTSTR YStdioFile::ReadString (LPTSTR pszString, UINT nMax, BOOL bAutoTruncate /* = TRUE */)
 {
 	ASSERTY(pszString != NULL);
 	ASSERTY(YlbIsValidAddress(pszString, nMax));
@@ -362,17 +365,21 @@ LPTSTR YStdioFile::ReadString (LPTSTR pszString, UINT nMax)
 		clearerr (m_pStream);
 		return NULL;
 	}
+	if ( bAutoTruncate ) {
+		LPTSTR lpEnd = _tcspbrk (pszString, _T("\r\n"));
+		if ( lpEnd ) {
+			*lpEnd = 0;
+		}
+	}
 	return lpszResult;
 }
 
-BOOL YStdioFile::ReadString (YFixedString& rString)
+BOOL YStdioFile::ReadString (YFixedString& rString, BOOL bAutoTruncate /* = TRUE */)
 {
 	rString.Empty ();
-	if ( !ReadString (rString.GetBuffer (), rString.GetBufferSize ()) ) {
-		rString.Terminate (_T('\r'));
+	if ( !ReadString (rString.GetBuffer (), rString.GetBufferSize (), bAutoTruncate) ) {
 		return FALSE;
 	}
-	rString.Terminate (_T('\r'));
 	return TRUE;
 }
 

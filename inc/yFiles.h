@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/01/17 17:58:34  leopoldo
+ * YStdioFile::WriteString now works with a variable parameter list
+ *
  * Revision 1.4  2000/08/24 17:15:46  leo
  * Added missing destructor to YStdioFile
  *
@@ -185,8 +188,8 @@ public:
 
 	virtual BOOL				WriteString				(LPCTSTR pszString, ...);
 	virtual BOOL				WriteStringVa			(LPCTSTR pszString, va_list va);
-	virtual LPTSTR				ReadString				(LPTSTR pszString, UINT nMax);
-	virtual BOOL				ReadString				(YFixedString& rString);
+	virtual LPTSTR				ReadString				(LPTSTR pszString, UINT nMax, BOOL bAutoTruncate = TRUE);
+	virtual BOOL				ReadString				(YFixedString& rString, BOOL bAutoTruncate = TRUE);
 
 	virtual BOOL				Flush					();
 	virtual DWORD				Seek					(LONG lDistanceToMove, DWORD dwMoveMethod = FILE_BEGIN);
