@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/24 15:20:56  leopoldo
+ * Added support for YStringData and YMultiString
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -51,6 +54,9 @@
  *============================================================================*/
 #ifndef __yLibBase_h__
 #include <yLibBase.h>
+#endif
+#ifndef __yFixStr_h__
+#include <yFixStr.h>
 #endif
 
 /*=============================================================================
