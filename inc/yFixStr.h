@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.21  2002/05/09 14:27:39  leopoldo
+ * Added new methods for directory manipulation
+ *
  * Revision 1.20  2002/05/08 09:50:58  leopoldo
  * Added YPathString::ScanPath
  *
@@ -213,6 +216,7 @@ public:
 	void						Assign					(UINT uValue);
 	void						Assign					(LONG lValue);
 	void						Assign					(DWORD dwValue);
+	void						Assign					(LPCTSTR lpsz, UINT nCount);
 
 	// overloaded assignment
 	const YFixedString &		operator=				(const YStringData& stringSrc);
@@ -340,10 +344,6 @@ public:
 	void						AnsiToOem				();
 	void						OemToAnsi				();
 #endif
-
-protected:
-	// implementation
-	void						Assign					(LPCTSTR lpsz, UINT nCount);
 
 protected:
 	// implementation
