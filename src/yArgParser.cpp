@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2004/08/02 09:48:12  leopoldo
+ * Added new methods
+ *
  * Revision 1.1  2004/08/01 21:49:26  leopoldo
  * Initial revision
  *
@@ -264,13 +267,13 @@ LPCTSTR YArgPairParser::GetValueByName (LPCTSTR pszParam, bool bCaseSensitive) c
 	return NULL;
 }
 
-LPCTSTR YArgPairParser::GetValueByPosOrName (int nIndex, LPCTSTR pszParam, bool bCaseSensitive) const
+LPCTSTR YArgPairParser::GetValueByNameOrPos (LPCTSTR pszParam, int nIndex, bool bCaseSensitive) const
 {
 	LPCTSTR pszValue = GetValueByName (pszParam, bCaseSensitive);
 	if ( !pszValue ) {
 		const YArgPair *pPair = GetAt (nIndex);
-		if ( pPair ) {
-			pszValue = pPair->IsCommand () ? pPair->GetName () : pPair->GetValue ();
+		if ( pPair && pPair->IsCommand () ) {
+			pszValue =  pPair->GetName ();
 		}
 	}
 	return pszValue;

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2004/08/02 09:47:54  leopoldo
+ * Added new methods
+ *
  * Revision 1.1  2004/08/01 21:48:52  leopoldo
  * Initial revision
  *
@@ -115,7 +118,7 @@ public:
 	int							FindNamedValue			(LPCTSTR pszParam, bool bCaseSensitive = false) const;
 	const YArgPair *			FindNamedValuePtr		(LPCTSTR pszParam, bool bCaseSensitive = false) const;
 	LPCTSTR						GetValueByName			(LPCTSTR pszParam, bool bCaseSensitive = false) const;
-	LPCTSTR						GetValueByPosOrName		(int nIndex, LPCTSTR pszParam, bool bCaseSensitive = false) const;
+	LPCTSTR						GetValueByNameOrPos		(LPCTSTR pszParam, int nIndex, bool bCaseSensitive = false) const;
 	bool						RemoveAt				(int nIndex);
 	bool						RemoveAt				(ITERATOR &pos);
 	bool						Remove					(LPCTSTR pszParam, bool bCaseSensitive = false);
