@@ -1,0 +1,222 @@
+/*=============================================================================
+ * This is a part of the yLib Software Development Kit.
+ * Copyright (C) 1998-2000 YEAsoft Inc.
+ * All rights reserved.
+ *=============================================================================
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation. In addition, you may also charge for any
+ * application using yLib, and are under no obligation to supply source
+ * code. You must accredit YEAsoft Inc. in the "About Box", or banner
+ * of your application. 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should also have received a copy of the GNU General Public License
+ * with this software, also indicating additional rights you have when using
+ * yLib.
+ *=============================================================================
+ * FILENAME		:	yConsole.inl
+ * PURPOSE		:	Inline members of the NT console class
+ * SCOPE		:	yLib
+ * HISTORY		: =============================================================
+ * 
+ * $Log$
+ *============================================================================*/
+
+/*=============================================================================
+ * @doc YLIB | yConsole.h
+ *============================================================================*/
+YLB_INLINE YConsole::YConsole ()
+{
+	LoadHandles ();
+}
+
+YLB_INLINE YConsole::~YConsole ()
+{
+}
+
+YLB_INLINE BOOL YConsole::LoadHandles ()
+{
+	m_hStdIn	= ::GetStdHandle (STD_INPUT_HANDLE);
+	m_hStdOut	= ::GetStdHandle (STD_OUTPUT_HANDLE);
+	m_hStdErr	= ::GetStdHandle (STD_ERROR_HANDLE);
+	return AreHandlesValid ();
+}
+
+YLB_INLINE void YConsole::ClearHandles ()
+{
+	m_hStdIn = m_hStdOut = m_hStdErr = NULL;
+}
+
+YLB_INLINE BOOL YConsole::WriteVa (LPCTSTR pszFormat, va_list va) const
+{
+	return OutVa (m_hStdOut, FALSE, pszFormat, va);
+}
+
+YLB_INLINE BOOL YConsole::WriteLnVa (LPCTSTR pszFormat, va_list va) const
+{
+	return OutVa (m_hStdOut, TRUE, pszFormat, va);
+}
+
+YLB_INLINE BOOL YConsole::ErrorVa (LPCTSTR pszFormat, va_list va) const
+{
+	return OutVa (m_hStdErr, FALSE, pszFormat, va);
+}
+
+YLB_INLINE BOOL YConsole::ErrorLnVa (LPCTSTR pszFormat, va_list va) const
+{
+	return OutVa (m_hStdErr, TRUE, pszFormat, va);
+}
+
+
+YLB_INLINE BOOL YConsole::Write (LPCTSTR pszFormat, ...) const
+{
+	va_list va;
+	va_start (va, pszFormat);
+	BOOL bRet = OutVa (m_hStdOut, FALSE, pszFormat, va);
+	va_end (va);
+	return bRet;
+}
+
+YLB_INLINE BOOL YConsole::WriteLn (LPCTSTR pszFormat, ...) const
+{
+	va_list va;
+	va_start (va, pszFormat);
+	BOOL bRet = OutVa (m_hStdOut, TRUE, pszFormat, va);
+	va_end (va);
+	return bRet;
+}
+
+YLB_INLINE BOOL YConsole::Error (LPCTSTR pszFormat, ...) const
+{
+	va_list va;
+	va_start (va, pszFormat);
+	BOOL bRet = OutVa (m_hStdErr, FALSE, pszFormat, va);
+	va_end (va);
+	return bRet;
+}
+
+YLB_INLINE BOOL YConsole::ErrorLn (LPCTSTR pszFormat, ...) const
+{
+	va_list va;
+	va_start (va, pszFormat);
+	BOOL bRet = OutVa (m_hStdErr, TRUE, pszFormat, va);
+	va_end (va);
+	return bRet;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (LPCTSTR lpsz)
+{
+	if ( lpsz ) {
+		Out (m_hStdOut, FALSE, lpsz);
+	}
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (const void* lp)
+{
+	TCHAR szBuffer[16];
+	int iLen = _sntprintf (szBuffer, _countof (szBuffer), _T("0x%08x"), lp);
+	Out (m_hStdOut, FALSE, szBuffer, iLen);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (BYTE by)
+{
+	TCHAR szBuffer[32];
+	_itot ((int) by, szBuffer, 10);
+	Out (m_hStdOut, FALSE, szBuffer);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (WORD w)
+{
+	TCHAR szBuffer[32];
+	_ultot ((unsigned long) w, szBuffer, 10);
+	Out (m_hStdOut, FALSE, szBuffer);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (UINT u)
+{
+	TCHAR szBuffer[32];
+	_ultot (u, szBuffer, 10);
+	Out (m_hStdOut, FALSE, szBuffer);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (LONG l)
+{
+	TCHAR szBuffer[32];
+	_ltot (l, szBuffer, 10);
+	Out (m_hStdOut, FALSE, szBuffer);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (DWORD dw)
+{
+	TCHAR szBuffer[32];
+	_ultot (dw, szBuffer, 10);
+	Out (m_hStdOut, FALSE, szBuffer);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (float f)
+{
+	TCHAR szBuffer[256];
+	int iLen = _sntprintf (szBuffer, _countof (szBuffer), _T("%f"), f);
+	Out (m_hStdOut, FALSE, szBuffer, iLen);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (double d)
+{
+	TCHAR szBuffer[256];
+	int iLen = _sntprintf (szBuffer, _countof (szBuffer), _T("%f"), d);
+	Out (m_hStdOut, FALSE, szBuffer, iLen);
+	return *this;
+}
+
+YLB_INLINE YConsole& YConsole::operator<< (int n)
+{
+	TCHAR szBuffer[32];
+	_itot (n, szBuffer, 10);
+	Out (m_hStdOut, FALSE, szBuffer);
+	return *this;
+}
+
+YLB_INLINE BOOL YConsole::AreHandlesValid () const
+{
+	return m_hStdIn || m_hStdOut || m_hStdErr;
+}
+
+YLB_INLINE BOOL YConsole::IsAllocated () const
+{
+	return ::GetStdHandle (STD_OUTPUT_HANDLE) != NULL;
+}
+
+YLB_INLINE BOOL YConsole::SetConsoleTitle (LPCTSTR lpConsoleTitle) const
+{
+	return ::SetConsoleTitle (lpConsoleTitle);
+}
+
+YLB_INLINE DWORD YConsole::GetConsoleTitle (LPTSTR lpConsoleTitle, DWORD nSize) const
+{
+	return ::GetConsoleTitle (lpConsoleTitle, nSize);
+}
+
+YLB_INLINE YString256 YConsole::GetConsoleTitle () const
+{
+	YString256 ysBuffer;
+	::GetConsoleTitle (ysBuffer.GetBuffer (), ysBuffer.GetBufferSize ());
+	return ysBuffer;
+}
+
+
+//
+// EoF
+////////

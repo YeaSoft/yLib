@@ -1,0 +1,128 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "All"=.\Samples\All.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Sample1
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Sample2
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Sample3
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Sample4
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Sample1"=.\samples\Sample1\Sample1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name yAfc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Sample2"=.\samples\Sample2\Sample2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name yAfc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Sample3"=.\samples\Sample3\Sample3.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name yAfc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Sample4"=.\samples\Sample4\Sample4.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name yAfc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "yAfc"=.\src\yAfc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name yLib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "yLib"=.\src\yLib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
