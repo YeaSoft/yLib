@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/23 10:02:52  leo
+ * Improved file/dir detection methods
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:03:07  leo
  * Initial revision
  *
@@ -176,7 +180,17 @@ YLB_INLINE UINT YFileManager::DeleteFiles (LPCTSTR lpFile, ...)
 	va_list			va;
 
 	va_start (va, lpFile);
-	UINT uRet = YFileManager::DeleteFilesVa (lpFile, va);
+	UINT uRet = YFileManager::DeleteFilesVa (FALSE, lpFile, va);
+	va_end (va);
+	return uRet;
+}
+
+YLB_INLINE UINT YFileManager::DeleteFiles (BOOL bHardKill, LPCTSTR lpFile, ...)
+{
+	va_list			va;
+
+	va_start (va, lpFile);
+	UINT uRet = YFileManager::DeleteFilesVa (bHardKill, lpFile, va);
 	va_end (va);
 	return uRet;
 }
@@ -196,7 +210,17 @@ YLB_INLINE BOOL YFileManager::KillDir (LPCTSTR lpDir, ...)
 	va_list			va;
 
 	va_start (va, lpDir);
-	BOOL bRet = YFileManager::KillDirVa (lpDir, va);
+	BOOL bRet = YFileManager::KillDirVa (FALSE, lpDir, va);
+	va_end (va);
+	return bRet;
+}
+
+YLB_INLINE BOOL YFileManager::KillDir (BOOL bHardKill, LPCTSTR lpDir, ...)
+{
+	va_list			va;
+
+	va_start (va, lpDir);
+	BOOL bRet = YFileManager::KillDirVa (bHardKill, lpDir, va);
 	va_end (va);
 	return bRet;
 }

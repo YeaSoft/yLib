@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.18  2001/09/17 17:14:15  leopoldo
+ * Implemented YFixedString::GetPtrAt
+ *
  * Revision 1.17  2001/09/14 16:16:59  leopoldo
  * Removed ambigous operator
  *
@@ -538,9 +541,9 @@ public:
 	BOOL						IsDirCompressed			() const;
 	BOOL						IsDirEmpty				() const;
 	BOOL						CreateDirectoryTree		() const;
-	BOOL						DeleteFiles				() const;
+	BOOL						DeleteFiles				(BOOL bHardKill = FALSE) const;
 	BOOL						RemoveDir				() const;
-	BOOL						KillDir					() const;
+	BOOL						KillDir					(BOOL bHardKill = FALSE) const;
 	BOOL						CompressDir				() const;
 	BOOL						UncompressDir			() const;
 	BOOL						CompressDirTree			() const;

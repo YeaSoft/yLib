@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.14  2001/09/17 17:14:15  leopoldo
+ * Implemented YFixedString::GetPtrAt
+ *
  * Revision 1.13  2001/09/14 16:16:59  leopoldo
  * Removed ambigous operator
  *
@@ -618,9 +621,9 @@ YLB_INLINE BOOL YPathString::CreateDirectoryTree () const
 	return YFileManager::CreateDirectoryTree (m_pszString);
 }
 
-YLB_INLINE BOOL YPathString::DeleteFiles () const
+YLB_INLINE BOOL YPathString::DeleteFiles (BOOL bHardKill /* = FALSE */) const
 {
-	return YFileManager::DeleteFiles (m_pszString);
+	return YFileManager::DeleteFiles (bHardKill, m_pszString);
 }
 
 YLB_INLINE BOOL YPathString::RemoveDir () const
@@ -628,9 +631,9 @@ YLB_INLINE BOOL YPathString::RemoveDir () const
 	return YFileManager::RemoveDir (m_pszString);
 }
 
-YLB_INLINE BOOL YPathString::KillDir () const
+YLB_INLINE BOOL YPathString::KillDir (BOOL bHardKill /* = FALSE */) const
 {
-	return YFileManager::KillDir (m_pszString);
+	return YFileManager::KillDir (bHardKill, m_pszString);
 }
 
 YLB_INLINE BOOL YPathString::CompressDir () const

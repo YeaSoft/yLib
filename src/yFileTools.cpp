@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/23 10:02:42  leo
+ * Improved file/dir detection methods
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:04:58  leo
  * Initial revision
  *
@@ -559,7 +563,7 @@ BOOL YFileManager::CreatePartialDirectoryTree (LPCTSTR lpBase, LPCTSTR lpDir)
 	return ::CreateDirectory (szPath, NULL);
 }
 
-UINT YFileManager::DeleteFilesVa (LPCTSTR lpFile, va_list vaFile)
+UINT YFileManager::DeleteFilesVa (BOOL bHardKill, LPCTSTR lpFile, va_list vaFile)
 {
 	TCHAR			szFileName[MAX_PATH];
 	TCHAR			szPath[MAX_PATH * 2];
@@ -582,8 +586,15 @@ UINT YFileManager::DeleteFilesVa (LPCTSTR lpFile, va_list vaFile)
 	}
 	do {
 		_stprintf (szFileName, _T("%s\\%s"), szPath, wfd.cFileName);
+		DWORD dwAttr = ::GetFileAttributes (szFileName);
+		if ( bHardKill ) {
+			::SetFileAttributes (szFileName, dwAttr & ~(FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM));
+		}
 		if ( ::DeleteFile (szFileName) ) {
 			++nCount;
+		}
+		else if ( bHardKill ) {
+			::SetFileAttributes (szFileName, dwAttr);
 		}
 	} while ( ::FindNextFile (hFind, &wfd) );
 	::FindClose (hFind);
@@ -599,17 +610,26 @@ BOOL YFileManager::RemoveDirVa (LPCTSTR lpDir, va_list vaDir)
 	return ::RemoveDirectory (szBuffer);
 }
 
-BOOL YFileManager::KillDirVa (LPCTSTR lpDir, va_list vaDir)
+BOOL YFileManager::KillDirVa (BOOL bHardKill, LPCTSTR lpDir, va_list vaDir)
 {
 	TCHAR			szBuffer[MAX_PATH];
 
 	_ylb_formatv (szBuffer, _countof (szBuffer) - 4, lpDir, vaDir);
 	YFileNameHandler::StripBSL (szBuffer);
 	_tcscat (szBuffer, _T("\\*.*"));
-	DeleteFiles (szBuffer);
+	DeleteFiles (bHardKill, szBuffer);
 	_ylb_formatv (szBuffer, _countof (szBuffer), lpDir, vaDir);
 	YFileNameHandler::StripBSL (szBuffer);
-	return ::RemoveDirectory (szBuffer);
+
+	DWORD dwAttr = ::GetFileAttributes (szBuffer);
+	if ( bHardKill ) {
+		::SetFileAttributes (szBuffer, dwAttr & ~(FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM));
+	}
+	BOOL bRet = ::RemoveDirectory (szBuffer);
+	if ( !bRet & bHardKill ) {
+		::SetFileAttributes (szBuffer, dwAttr);
+	}
+	return bRet;
 }
 
 BOOL YFileManager::CompressDirVa (LPCTSTR lpDir, va_list vaDir)

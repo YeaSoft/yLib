@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/23 10:02:47  leo
+ * Improved file/dir detection methods
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:03:06  leo
  * Initial revision
  *
@@ -142,7 +146,9 @@ public:
 	// @cmember Deletes one or more files
 	static UINT				DeleteFiles				(LPCTSTR lpFile, ...);
 	// @cmember Deletes one or more files
-	static UINT				DeleteFilesVa			(LPCTSTR lpFile, va_list vaFile);
+	static UINT				DeleteFiles				(BOOL bHardKill, LPCTSTR lpFile, ...);
+	// @cmember Deletes one or more files
+	static UINT				DeleteFilesVa			(BOOL bHardKill, LPCTSTR lpFile, va_list vaFile);
 	// @cmember Removes a directory
 	static BOOL				RemoveDir				(LPCTSTR lpDir, ...);
 	// @cmember Removes a directory
@@ -150,7 +156,9 @@ public:
 	// @cmember Removes a directory and all contained files
 	static BOOL				KillDir					(LPCTSTR lpDir, ...);
 	// @cmember Removes a directory and all contained files
-	static BOOL				KillDirVa				(LPCTSTR lpDir, va_list vaDir);
+	static BOOL				KillDir					(BOOL bHardKill, LPCTSTR lpDir, ...);
+	// @cmember Removes a directory and all contained files
+	static BOOL				KillDirVa				(BOOL bHardKill, LPCTSTR lpDir, va_list vaDir);
 	// @cmember Compresses a directory and all contained files
 	static BOOL				CompressDir				(LPCTSTR lpDir, ...);
 	// @cmember Compresses a directory and all contained files
