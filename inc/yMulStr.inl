@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2001/05/24 15:20:11  leopoldo
+ * First basic implementation
+ *
  * Revision 1.1  2001/05/18 16:00:44  leopoldo
  * Initial revision
  *
@@ -81,6 +84,13 @@ YLB_INLINE BOOL YMultiString::Prepare (int cbSize)
 	}
 	return FALSE;
 }
+
+YLB_INLINE YMultiString::operator LPCTSTR () const
+{
+	return GetString ();
+}
+
+
 
 //
 // EoF

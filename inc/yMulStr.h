@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2001/05/24 15:20:11  leopoldo
+ * First basic implementation
+ *
  * Revision 1.1  2001/05/18 16:00:44  leopoldo
  * Initial revision
  *
@@ -93,9 +96,14 @@ public:
 	void						Empty					(BOOL bFreeExtra = FALSE);
 	BOOL						Alloc					(int cbSize);
 	BOOL						Prepare					(int cbSize);
+	BOOL						Assign					(const YMultiString &stringSrc);
+	BOOL						Append					(LPCTSTR pszString);
 
 public:
 	// operators
+	operator					LPCTSTR					() const;
+	YMultiString &				operator=				(const YMultiString &stringSrc) { Assign (stringSrc); return *this; }
+	YMultiString &				operator+=				(LPCTSTR pszString) { Append (pszString); return *this; }
 
 protected:
 	// implementation

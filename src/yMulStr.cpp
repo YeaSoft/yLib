@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2001/05/24 15:20:23  leopoldo
+ * First basic implementation
+ *
  * Revision 1.1  2001/05/18 16:01:06  leopoldo
  * Initial revision
  *
@@ -148,44 +151,31 @@ BOOL YMultiString::Alloc (int cbSize)
 	return TRUE;
 }
 
-/*
-BOOL YMultiString::Alloc (UINT cbSize, BOOL bEmpty)
+BOOL YMultiString::Assign (const YMultiString &stringSrc)
 {
-	if ( cbSize < 2) {
-		Free ();
+	if ( stringSrc.IsEmpty () ) {
+		Empty ();
 		return TRUE;
 	}
-
-	LPTSTR	lpPtr, lpOld	= m_pszString;
-	UINT	cbOld			= m_cbSize;
-
-	if ( !(lpPtr = (LPTSTR) malloc (sizeof (TCHAR) * cbSize)) ) {
-		return FALSE;
-	}
-	m_cbSize	= cbSize;
-	m_pszString	= lpPtr;
-
-	if ( lpOld ) {
-		memcpy (m_pszString, lpOld, min(m_cbSize - 2,cbOld - 2) * sizeof (TCHAR));
-		m_pszString[m_cbSize - 2] = 0;
-		m_pszString[m_cbSize - 1] = 0;
-		free (lpOld);
-	}
-	else if ( bEmpty ) {
-		m_pszString[0] = m_pszString[1] = 0;
-	}
-	return TRUE;
+	return m_dbStorage.Copy (stringSrc.m_dbStorage);
 }
 
-void YMultiString::Free ()
+BOOL YMultiString::Append (LPCTSTR pszString)
 {
-	if ( m_pszString ) {
-		free (m_pszString);
+	if ( m_dbStorage.IsEmpty () ) {
+		if ( !m_dbStorage.PushTerminatedString (pszString) ) {
+			return FALSE;
+		}
+		if ( !m_dbStorage.PushData (_T("\0"), sizeof (TCHAR)) ) {
+			m_dbStorage.Empty ();
+			return FALSE;
+		}
+		return TRUE;
 	}
-	m_pszString	= NULL;
-	m_cbSize	= 0;
+	else {
+		return m_dbStorage.InsertData (m_dbStorage.GetContentSize () - sizeof (TCHAR), pszString, (_tcslen (pszString) + 1) * sizeof (TCHAR));
+	}
 }
-*/
 
 #ifndef YLB_ENABLE_INLINE
 #include <yMulStr.inl>
