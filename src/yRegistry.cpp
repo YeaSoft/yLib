@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2002/05/09 17:07:03  leopoldo
+ * Fixed uninitialized stuff in YRegistry::MultiStringAdd in value does not exist
+ *
  * Revision 1.4  2001/09/14 16:22:41  leopoldo
  * Made string default handling more typical
  *
@@ -931,7 +934,12 @@ BOOL YRegistry::MultiStringRemove (LPCTSTR lpszValueName, LPCTSTR lpszValue, BOO
 		LPCTSTR	lpNext	= lpPtr + _tcslen (lpPtr) + 1;
 		DWORD	dwCount	= dwRetSize - ((lpNext - lpBuffer) * sizeof (TCHAR));
 		memmove (lpPtr, lpPtr + _tcslen (lpPtr) + 1, dwCount);
-		bRet = AnySet (lpszValueName, REG_MULTI_SZ, lpBuffer, dwRetSize - dwRemSize);
+		dwValueSize = dwRetSize - dwRemSize;
+		if ( dwValueSize < (2 * sizeof (TCHAR))	) {
+			lpBuffer[0] = lpBuffer[1] = 0;
+			dwValueSize = 2 * sizeof (TCHAR);
+		}
+		bRet = AnySet (lpszValueName, REG_MULTI_SZ, lpBuffer, dwValueSize);
 	}
 
 	free (lpBuffer);
