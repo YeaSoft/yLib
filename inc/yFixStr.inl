@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2000/08/23 10:12:34  leo
+ * Fixed some release build issue
+ *
  * Revision 1.5  2000/08/22  16:18:54  leo
  * Added some of the directory operations to YPathString
  *
@@ -415,6 +418,99 @@ YLB_INLINE BOOL YFixedString::LoadString (UINT nID)
 	ASSERTY(m_pszString);
 	YlbLoadString (nID, m_pszString, m_cbSize);
 	return ::GetLastError () == NOERROR;
+}
+
+/*=============================================================================
+ * COMPARE HELPERS
+ *============================================================================*/
+YLB_INLINE bool YLBAPI operator== (const YFixedString& s1, const YFixedString& s2)
+{
+	return s1.Compare(s2) == 0;
+}
+
+YLB_INLINE bool YLBAPI operator== (const YFixedString& s1, LPCTSTR s2)
+{
+	return s1.Compare(s2) == 0;
+}
+
+YLB_INLINE bool YLBAPI operator== (LPCTSTR s1, const YFixedString& s2)
+{
+	return s2.Compare(s1) == 0;
+}
+
+YLB_INLINE bool YLBAPI operator!= (const YFixedString& s1, const YFixedString& s2)
+{
+	return s1.Compare(s2) != 0;
+}
+
+YLB_INLINE bool YLBAPI operator!= (const YFixedString& s1, LPCTSTR s2)
+{
+	return s1.Compare(s2) != 0;
+}
+
+YLB_INLINE bool YLBAPI operator!= (LPCTSTR s1, const YFixedString& s2)
+{
+	return s2.Compare(s1) != 0;
+}
+
+YLB_INLINE bool YLBAPI operator< (const YFixedString& s1, const YFixedString& s2)
+{
+	return s1.Compare(s2) < 0;
+}
+
+YLB_INLINE bool YLBAPI operator< (const YFixedString& s1, LPCTSTR s2)
+{
+	return s1.Compare(s2) < 0;
+}
+
+YLB_INLINE bool YLBAPI operator< (LPCTSTR s1, const YFixedString& s2)
+{
+	return s2.Compare(s1) > 0;
+}
+
+YLB_INLINE bool YLBAPI operator> (const YFixedString& s1, const YFixedString& s2)
+{
+	return s1.Compare(s2) > 0;
+}
+
+YLB_INLINE bool YLBAPI operator> (const YFixedString& s1, LPCTSTR s2)
+{
+	return s1.Compare(s2) > 0;
+}
+
+YLB_INLINE bool YLBAPI operator> (LPCTSTR s1, const YFixedString& s2)
+{
+	return s2.Compare(s1) < 0;
+}
+
+YLB_INLINE bool YLBAPI operator<= (const YFixedString& s1, const YFixedString& s2)
+{
+	return s1.Compare(s2) <= 0;
+}
+
+YLB_INLINE bool YLBAPI operator<= (const YFixedString& s1, LPCTSTR s2)
+{
+	return s1.Compare(s2) <= 0;
+}
+
+YLB_INLINE bool YLBAPI operator<= (LPCTSTR s1, const YFixedString& s2)
+{
+	return s2.Compare(s1) >= 0;
+}
+
+YLB_INLINE bool YLBAPI operator>= (const YFixedString& s1, const YFixedString& s2)
+{
+	return s1.Compare(s2) >= 0;
+}
+
+YLB_INLINE bool YLBAPI operator>= (const YFixedString& s1, LPCTSTR s2)
+{
+	return s1.Compare(s2) >= 0;
+}
+
+YLB_INLINE bool YLBAPI operator>= (LPCTSTR s1, const YFixedString& s2)
+{
+	return s2.Compare(s1) <= 0;
 }
 
 /*=============================================================================

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.10  2000/10/05 17:20:45  leopoldo
+ * Added YFixedString::MakeCapital
+ *
  * Revision 1.9  2000/08/28 13:04:43  leo
  * Added missing assignment operator on
  * predefined string types for self assignment
@@ -306,6 +309,28 @@ protected:
 	// implementation
 	static UINT					SafeStrLen				(LPCTSTR lpsz);
 };
+
+/*=============================================================================
+ * COMPARE HELPERS
+ *============================================================================*/
+bool YLBAPI						operator==				(const YFixedString& s1, const YFixedString& s2);
+bool YLBAPI						operator==				(const YFixedString& s1, LPCTSTR s2);
+bool YLBAPI						operator==				(LPCTSTR s1, const YFixedString& s2);
+bool YLBAPI						operator!=				(const YFixedString& s1, const YFixedString& s2);
+bool YLBAPI						operator!=				(const YFixedString& s1, LPCTSTR s2);
+bool YLBAPI						operator!=				(LPCTSTR s1, const YFixedString& s2);
+bool YLBAPI						operator<				(const YFixedString& s1, const YFixedString& s2);
+bool YLBAPI						operator<				(const YFixedString& s1, LPCTSTR s2);
+bool YLBAPI						operator<				(LPCTSTR s1, const YFixedString& s2);
+bool YLBAPI						operator>				(const YFixedString& s1, const YFixedString& s2);
+bool YLBAPI						operator>				(const YFixedString& s1, LPCTSTR s2);
+bool YLBAPI						operator>				(LPCTSTR s1, const YFixedString& s2);
+bool YLBAPI						operator<=				(const YFixedString& s1, const YFixedString& s2);
+bool YLBAPI						operator<=				(const YFixedString& s1, LPCTSTR s2);
+bool YLBAPI						operator<=				(LPCTSTR s1, const YFixedString& s2);
+bool YLBAPI						operator>=				(const YFixedString& s1, const YFixedString& s2);
+bool YLBAPI						operator>=				(const YFixedString& s1, LPCTSTR s2);
+bool YLBAPI						operator>=				(LPCTSTR s1, const YFixedString& s2);
 
 /*=============================================================================
  * FIXED STRING TEMPLATE
