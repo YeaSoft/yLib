@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/05/21 18:53:30  leopoldo
+ * Added more methods to YDynamicBuffer
+ *
  * Revision 1.4  2001/05/06 18:30:49  leopoldo
  * Improved YBuffer
  * Added new class YDynamicBuffer
@@ -141,6 +144,10 @@ public:
 
 	BOOL						PushString				(LPCSTR pszData);
 	BOOL						PushString				(LPCWSTR pszData);
+	BOOL						ExtractString			(UINT nOffset, LPSTR pszData, UINT cbSize);
+	BOOL						ExtractString			(UINT nOffset, LPWSTR pszData, UINT cbSize);
+	BOOL						PopString				(LPSTR pszData, UINT cbSize);
+	BOOL						PopString				(LPWSTR pszData, UINT cbSize);
 
 	BOOL						PushTerminatedString	(LPCSTR pszData);
 	BOOL						PushTerminatedString	(LPCWSTR pszData);

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/05/21 18:53:30  leopoldo
+ * Added more methods to YDynamicBuffer
+ *
  * Revision 1.3  2001/05/06 18:30:49  leopoldo
  * Improved YBuffer
  * Added new class YDynamicBuffer
@@ -166,6 +169,16 @@ YLB_INLINE BOOL YDynamicBuffer::PushTerminatedString (LPCSTR pszData)
 YLB_INLINE BOOL YDynamicBuffer::PushTerminatedString (LPCWSTR pszData)
 {
 	return PushData (pszData, (wcslen (pszData) + 1) * sizeof (WCHAR));
+}
+
+YLB_INLINE BOOL YDynamicBuffer::PopString (LPSTR pszData, UINT cbSize)
+{
+	return ExtractString (0, pszData, cbSize);
+}
+
+YLB_INLINE BOOL YDynamicBuffer::PopString (LPWSTR pszData, UINT cbSize)
+{
+	return ExtractString (0, pszData, cbSize);
 }
 
 YLB_INLINE UINT YDynamicBuffer::GetContentSize () const

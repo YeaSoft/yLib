@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2001/05/21 18:53:05  leopoldo
+ * Added more methods to YDynamicBuffer
+ *
  * Revision 1.5  2001/05/06 18:31:00  leopoldo
  * Improved YBuffer
  * Added new class YDynamicBuffer
@@ -380,6 +383,79 @@ BOOL YDynamicBuffer::PopData (LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRe
 	return TRUE;
 }
 
+BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPSTR pszData, UINT cbSize)
+{
+	if ( !pszData || ((m_cbContentSize - nOffset) < 1) || (cbSize < 2) ) {
+		if ( pszData && cbSize ) {
+			*pszData = 0;
+		}
+		return FALSE;
+	}
+
+	// determine how many chars to read (cbSize must be > 0)
+	cbSize = min (m_cbContentSize - nOffset, cbSize - 1);
+
+	// copy the stuff
+	for ( LPSTR lpPtr = (LPSTR) (m_lpPtr + nOffset); *lpPtr && cbSize; lpPtr++, cbSize-- ) {
+		*pszData = *lpPtr;
+	}
+	// zero terminate
+	*pszData = 0;
+
+	if ( !*lpPtr ) {
+		// zero termination has thrown us out
+		++lpPtr;
+	}
+
+	// determine how much stuff we have extracted
+	UINT nExtracted = lpPtr - (LPSTR) (m_lpPtr + nOffset);
+
+	if ( nExtracted ) {
+		// shift the rest back
+		memmove (m_lpPtr + nOffset, lpPtr, m_cbContentSize - (nOffset + nExtracted));
+		// redimension
+		m_cbContentSize -= nExtracted;
+	}
+
+	return TRUE;
+}
+
+BOOL YDynamicBuffer::ExtractString (UINT nOffset, LPWSTR pszData, UINT cbSize)
+{
+	if ( !pszData || ((m_cbContentSize - nOffset) < sizeof(WCHAR)) || (cbSize < 2) ) {
+		if ( pszData && cbSize ) {
+			*pszData = 0;
+		}
+		return FALSE;
+	}
+
+	// determine how many chars to read (cbSize must be > 0)
+	cbSize = min ((m_cbContentSize - nOffset) / sizeof(WCHAR), cbSize - 1);
+
+	// copy the stuff
+	for ( LPWSTR lpPtr = (LPWSTR) (m_lpPtr + nOffset); *lpPtr && cbSize; lpPtr++, cbSize-- ) {
+		*pszData = *lpPtr;
+	}
+	// zero terminate
+	*pszData = 0;
+
+	if ( !*lpPtr ) {
+		// zero termination has thrown us out
+		++lpPtr;
+	}
+
+	// determine how much stuff we have extracted
+	UINT nExtracted = (LPBYTE) lpPtr - (m_lpPtr + nOffset);
+
+	if ( nExtracted ) {
+		// shift the rest back
+		memmove (m_lpPtr + nOffset, lpPtr, m_cbContentSize - (nOffset + nExtracted));
+		// redimension
+		m_cbContentSize -= nExtracted;
+	}
+
+	return TRUE;
+}
 
 #ifndef YLB_ENABLE_INLINE
 #include <yBuffer.inl>
