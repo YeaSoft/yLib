@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.8  2000/08/23 10:12:45  leo
+ * Fixed some release build issue
+ *
  * Revision 1.7  2000/08/22  16:18:59  leo
  * Added some of the directory operations to YPathString
  *
@@ -298,6 +301,60 @@ protected:
 };
 
 /*=============================================================================
+ * FIXED STRING TEMPLATE
+ *============================================================================*/
+template<unsigned int SIZE>
+class YFixedStringClass : public YFixedString
+{
+public:
+	// construction
+	YFixedStringClass			(BOOL bEmpty = TRUE) : YFixedString (m_szData, SIZE, bEmpty) { }
+	YFixedStringClass			(const YStringData& stringSrc) : YFixedString (m_szData, SIZE, FALSE) { Assign (stringSrc); }
+	YFixedStringClass			(LPCTSTR lpsz) : YFixedString (m_szData, SIZE, FALSE) { Assign (lpsz); }
+	
+	// overloaded assignment
+	const YFixedStringClass &	operator=				(const YFixedStringClass& stringSrc) { Assign (stringSrc); return *this; }
+	const YFixedStringClass &	operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
+	const YFixedStringClass &	operator=				(TCHAR ch) { Assign (ch); return *this; }
+	const YFixedStringClass &	operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
+	const YFixedStringClass &	operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
+	const YFixedStringClass &	operator=				(const unsigned char* psz) { Assign (psz); return *this; }
+#ifdef _UNICODE
+	const YFixedStringClass &	operator=				(char ch) { Assign (ch); return *this; }
+#endif
+
+	// overloaded concatenation
+	const YFixedStringClass &	operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
+	const YFixedStringClass &	operator+=				(TCHAR ch) { Concat (ch); return *this; };
+	const YFixedStringClass &	operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
+	const YFixedStringClass &	operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
+	const YFixedStringClass &	operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
+#ifdef _UNICODE
+	const YFixedStringClass &	operator+=				(char ch) { Concat (ch); return *this; };
+#endif
+
+private:
+	// implementation
+	TCHAR						m_szData[SIZE];
+};
+
+#ifdef WITH_TEMPLATES
+
+/*=============================================================================
+ * PREDEFINED FIXED STRINGS (DISABLED SINCE NOT TESTED
+ *============================================================================*/
+typedef YFixedStringClass<16>							YString16;
+typedef YFixedStringClass<32>							YString32;
+typedef YFixedStringClass<64>							YString64;
+typedef YFixedStringClass<128>							YString128;
+typedef YFixedStringClass<256>							YString256;
+typedef YFixedStringClass<512>							YString512;
+typedef YFixedStringClass<1024>							YString1024;
+typedef YFixedStringClass<YLB_BIGSTRING_SIZE>			YBigString;
+
+#else 
+
+/*=============================================================================
  * PREDEFINED FIXED STRINGS
  *============================================================================*/
 class YString16 : public YFixedString
@@ -309,6 +366,7 @@ public:
 	YString16					(LPCTSTR lpsz) : YFixedString (m_szData, 16, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YString16 &			operator=				(const YString16& stringSrc) { Assign (stringSrc); return *this; }
 	const YString16 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YString16 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YString16 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -342,6 +400,7 @@ public:
 	YString32					(LPCTSTR lpsz) : YFixedString (m_szData, 32, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YString32 &			operator=				(const YString32& stringSrc) { Assign (stringSrc); return *this; }
 	const YString32 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YString32 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YString32 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -375,6 +434,7 @@ public:
 	YString64					(LPCTSTR lpsz) : YFixedString (m_szData, 64, FALSE) { Assign (lpsz); }
 
 	// overloaded assignment
+	const YString64 &			operator=				(const YString64& stringSrc) { Assign (stringSrc); return *this; }
 	const YString64 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YString64 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YString64 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -408,6 +468,7 @@ public:
 	YString128					(LPCTSTR lpsz) : YFixedString (m_szData, 128, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YString128 &			operator=				(const YString128& stringSrc) { Assign (stringSrc); return *this; }
 	const YString128 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YString128 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YString128 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -441,6 +502,7 @@ public:
 	YString256					(LPCTSTR lpsz) : YFixedString (m_szData, 256, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YString256 &			operator=				(const YString256& stringSrc) { Assign (stringSrc); return *this; }
 	const YString256 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YString256 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YString256 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -474,6 +536,7 @@ public:
 	YString512					(LPCTSTR lpsz) : YFixedString (m_szData, 512, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YString512 &			operator=				(const YString512& stringSrc) { Assign (stringSrc); return *this; }
 	const YString512 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YString512 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YString512 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -507,6 +570,7 @@ public:
 	YString1024					(LPCTSTR lpsz) : YFixedString (m_szData, 1024, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YString1024 &			operator=				(const YString1024& stringSrc) { Assign (stringSrc); return *this; }
 	const YString1024 &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YString1024 &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YString1024 &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -540,6 +604,7 @@ public:
 	YBigString					(LPCTSTR lpsz) : YFixedString (m_szData, YLB_BIGSTRING_SIZE, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YBigString &			operator=				(const YBigString& stringSrc) { Assign (stringSrc); return *this; }
 	const YBigString &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YBigString &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YBigString &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -564,6 +629,8 @@ private:
 	TCHAR						m_szData[YLB_BIGSTRING_SIZE];
 };
 
+#endif //WITH_TEMPLATES
+
 /*=============================================================================
  * DYNAMICALLY ALLOCATED FIXED SYSTEM STRING CLASS
  *============================================================================*/
@@ -585,6 +652,7 @@ public:
 
 public:
 	// overloaded assignment
+	const YHeapString &			operator=				(const YHeapString& stringSrc) { Assign (stringSrc); return *this; }
 	const YHeapString &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YHeapString &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YHeapString &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -617,6 +685,7 @@ public:
 	YPathString					(LPCTSTR lpsz) : YFixedString (m_szData, MAX_PATH, FALSE) { Assign (lpsz); }
 	
 	// overloaded assignment
+	const YPathString &			operator=				(const YPathString& stringSrc) { Assign (stringSrc); return *this; }
 	const YPathString &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YPathString &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YPathString &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -684,6 +753,7 @@ public:
 
 public:
 	// overloaded assignment
+	const YComputerName &		operator=				(const YComputerName& stringSrc) { Assign (stringSrc); return *this; }
 	const YComputerName &		operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YComputerName &		operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YComputerName &		operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
@@ -722,6 +792,7 @@ public:
 
 public:
 	// overloaded assignment
+	const YUserName &			operator=				(const YUserName& stringSrc) { Assign (stringSrc); return *this; }
 	const YUserName &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
 	const YUserName &			operator=				(TCHAR ch) { Assign (ch); return *this; }
 	const YUserName &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
