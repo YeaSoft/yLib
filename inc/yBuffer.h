@@ -1,9 +1,9 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Int'l.
+ * Copyright (C) 1998-2001 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * Copyright (c) 1998-2001 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the
  * use of this software.
@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/05/06 18:30:49  leopoldo
+ * Improved YBuffer
+ * Added new class YDynamicBuffer
+ *
  * Revision 1.3  2000/10/25 09:19:22  leopoldo
  * Added assignment operations
  *
@@ -95,15 +99,17 @@ public:
 	UINT						GetSize					() const;
 	LPVOID						GetBuffer				();
 	LPCVOID						GetBuffer				() const;
-	LPBYTE						GetByteBufferPtr		(int iOffset = 0);
+	LPBYTE						GetByteBufferPtr		(UINT nOffset = 0);
+	const BYTE *				GetByteBufferPtr		(UINT nOffset = 0) const;
 	operator					LPVOID					();
 	operator					LPCVOID					() const;
 	operator					LPBYTE					();
+	operator					const BYTE *			() const;
 
 protected:
 	// implementation
 	UINT						m_cbSize;
-	LPVOID						m_lpPtr;
+	LPBYTE						m_lpPtr;
 };
 
 class YDynamicBuffer : public YBuffer
@@ -114,7 +120,7 @@ private:
 
 public:
 	// construction/destruction
-	YDynamicBuffer				(UINT nAllocationGranularity = 0);
+	YDynamicBuffer				(UINT nAllocationIncrease = 0);
 	YDynamicBuffer				(LPVOID lpBuffer, UINT cbSize, UINT cbContentSize = 0);
 
 public:
@@ -129,8 +135,13 @@ public:
 	BOOL						Copy					(const YDynamicBuffer &srcBuffer, BOOL bDontReallocIfFits = TRUE);
 
 	BOOL						PushData				(LPCVOID lpData, UINT cbSize);
+	BOOL						InsertData				(UINT nOffset, LPCVOID lpData, UINT cbSize);
+	BOOL						ExtractData				(UINT nOffset, LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRead = NULL);
+	BOOL						PopData					(LPVOID lpData, UINT cbSize, UINT *pNumberOfBytesRead = NULL);
+
 	BOOL						PushString				(LPCSTR pszData);
 	BOOL						PushString				(LPCWSTR pszData);
+
 	BOOL						PushTerminatedString	(LPCSTR pszData);
 	BOOL						PushTerminatedString	(LPCWSTR pszData);
 

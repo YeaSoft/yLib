@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/06 18:30:49  leopoldo
+ * Improved YBuffer
+ * Added new class YDynamicBuffer
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -52,7 +56,7 @@ YLB_INLINE YBuffer::YBuffer ()
 YLB_INLINE YBuffer::YBuffer (LPVOID lpBuffer, UINT cbSize)
 {
 	ASSERTY((!lpBuffer && !cbSize) || (lpBuffer && cbSize));
-	m_lpPtr		= lpBuffer;
+	m_lpPtr		= (LPBYTE) lpBuffer;
 	m_cbSize	= cbSize;
 }
 
@@ -68,32 +72,42 @@ YLB_INLINE UINT YBuffer::GetSize () const
 
 YLB_INLINE LPVOID YBuffer::GetBuffer ()
 {
-	return m_lpPtr;
+	return (LPVOID) m_lpPtr;
 }
 
 YLB_INLINE LPCVOID YBuffer::GetBuffer () const
 {
-	return m_lpPtr;
+	return (LPCVOID) m_lpPtr;
 }
 
-YLB_INLINE LPBYTE YBuffer::GetByteBufferPtr (int iOffset /* = 0 */)
+YLB_INLINE LPBYTE YBuffer::GetByteBufferPtr (UINT nOffset /* = 0 */)
 {
-	return ((LPBYTE) m_lpPtr) + iOffset;
+	return (nOffset >= m_cbSize) ? (NULL) : (m_lpPtr + nOffset);
+}
+
+YLB_INLINE const BYTE * YBuffer::GetByteBufferPtr (UINT nOffset /* = 0 */) const
+{
+	return (nOffset >= m_cbSize) ? (NULL) : (m_lpPtr + nOffset);
 }
 
 YLB_INLINE YBuffer::operator LPVOID ()
 {
-	return m_lpPtr;
+	return (LPVOID) m_lpPtr;
 }
 
 YLB_INLINE YBuffer::operator LPCVOID () const
 {
-	return m_lpPtr;
+	return (LPCVOID) m_lpPtr;
 }
 
 YLB_INLINE YBuffer::operator LPBYTE ()
 {
-	return (LPBYTE) m_lpPtr;
+	return m_lpPtr;
+}
+
+YLB_INLINE YBuffer::operator const BYTE * () const
+{
+	return m_lpPtr;
 }
 
 YLB_INLINE void YBuffer::Clear (int iFill)
@@ -108,7 +122,7 @@ YLB_INLINE void YBuffer::Clear (int iFill)
 YLB_INLINE YDynamicBuffer::YDynamicBuffer (UINT nAllocationIncrease /* = 0 */)
 {
 	m_cbContentSize			= 0;
-	m_nAllocationIncrease	= 0;
+	m_nAllocationIncrease	= nAllocationIncrease;
 }
 
 YLB_INLINE YDynamicBuffer::YDynamicBuffer (LPVOID lpBuffer, UINT cbSize, UINT cbContentSize /* = 0 */) : YBuffer (lpBuffer, cbSize)
