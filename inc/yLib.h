@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/04/12 18:48:25  leopoldo
+ * Added the array classes
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -52,6 +55,7 @@
 #include <yCrc32.h>
 #include <yFlags.h>
 #include <yFixStr.h>
+#include <yMulStr.h>
 #include <yRegistry.h>
 #include <yFileTools.h>
 #include <yLogging.h>

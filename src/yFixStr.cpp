@@ -1,9 +1,9 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Int'l.
+ * Copyright (C) 1998-2001 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * Copyright (c) 1998-2001 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the
  * use of this software.
@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.16  2001/05/17 16:19:32  leopoldo
+ * Fixed the misunderstanding between YStringData::GetSize and YStringData::GetBufferSize
+ *
  * Revision 1.15  2001/05/08 17:09:58  leopoldo
  * Added the new methods Fill, BufferToHex, HexToBuffer
  *
@@ -1253,46 +1256,6 @@ BOOL YUserName::GetCurrent ()
 {
 	DWORD	dwLen = GetBufferSize ();
 	return ::GetUserName (m_szData, &dwLen);
-}
-
-/*=============================================================================
- * MULTISTRING CLASS IMPLEMENTATION
- *============================================================================*/
-BOOL YMultiString::Alloc (UINT cbSize, BOOL bEmpty)
-{
-	if ( cbSize < 2) {
-		Free ();
-		return TRUE;
-	}
-
-	LPTSTR	lpPtr, lpOld	= m_pszString;
-	UINT	cbOld			= m_cbSize;
-
-	if ( !(lpPtr = (LPTSTR) malloc (sizeof (TCHAR) * cbSize)) ) {
-		return FALSE;
-	}
-	m_cbSize	= cbSize;
-	m_pszString	= lpPtr;
-
-	if ( lpOld ) {
-		memcpy (m_pszString, lpOld, min(m_cbSize - 2,cbOld - 2) * sizeof (TCHAR));
-		m_pszString[m_cbSize - 2] = 0;
-		m_pszString[m_cbSize - 1] = 0;
-		free (lpOld);
-	}
-	else if ( bEmpty ) {
-		m_pszString[0] = m_pszString[1] = 0;
-	}
-	return TRUE;
-}
-
-void YMultiString::Free ()
-{
-	if ( m_pszString ) {
-		free (m_pszString);
-	}
-	m_pszString	= NULL;
-	m_cbSize	= 0;
 }
 
 #ifndef YLB_ENABLE_INLINE

@@ -1,9 +1,9 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Int'l.
+ * Copyright (C) 1998-2001 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * Copyright (c) 1998-2001 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the
  * use of this software.
@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.11  2001/05/17 16:20:23  leopoldo
+ * Fixed the misunderstanding between YStringData::GetSize and YStringData::GetBufferSize
+ *
  * Revision 1.10  2001/05/08 17:10:30  leopoldo
  * Added the new methods IsRoot, Fill, BufferToHex, HexToBuffer
  *
@@ -649,18 +652,6 @@ YLB_INLINE BOOL YPathString::IsRoot () const
 YLB_INLINE BOOL YPathString::IsUNC () const
 {
 	return (m_szData[0] == _T('\\')) && (m_szData[1] == _T('\\'));
-}
-
-/*=============================================================================
- * MULTISTRING CLASS IMPLEMENTATION
- *============================================================================*/
-YLB_INLINE YMultiString::YMultiString () : YStringData (NULL, 0)
-{
-}
-
-YLB_INLINE YMultiString::~YMultiString ()
-{
-	Free ();
 }
 
 //

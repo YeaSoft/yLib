@@ -1,9 +1,9 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Int'l.
+ * Copyright (C) 1998-2001 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * Copyright (c) 1998-2001 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the
  * use of this software.
@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.15  2001/05/17 16:20:03  leopoldo
+ * Fixed the misunderstanding between YStringData::GetSize and YStringData::GetBufferSize
+ *
  * Revision 1.14  2001/05/08 17:10:30  leopoldo
  * Added the new methods IsRoot, Fill, BufferToHex, HexToBuffer
  *
@@ -624,27 +627,6 @@ public:
 private:
 	// implementation
 	TCHAR						m_szData[UNLEN + 1];
-};
-
-/*=============================================================================
- * MULTISTRING CLASS DECLARATION
- *============================================================================*/
-class YMultiString : public YStringData
-{
-private:
-	// kill these construction methods & operators
-	YMultiString				(const YStringData& stringSrc);
-
-public:
-	// construction
-	YMultiString				();
-	~YMultiString				();
-
-public:
-	// allocation
-	BOOL						Alloc					(UINT cbSize, BOOL bEmpty = TRUE);
-	void						Free					();
-
 };
 
 #ifdef YLB_ENABLE_INLINE

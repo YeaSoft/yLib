@@ -379,6 +379,10 @@ SOURCE=..\inc\yMailSlotServer.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\inc\yMulStr.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\inc\yPipes.h
 # End Source File
 # Begin Source File
@@ -480,6 +484,10 @@ SOURCE=..\inc\yMailSlots.inl
 # Begin Source File
 
 SOURCE=..\inc\yMailSlotServer.inl
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yMulStr.inl
 # End Source File
 # Begin Source File
 
