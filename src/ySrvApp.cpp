@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:10  leo
  * Initial revision
  *
@@ -79,8 +82,9 @@ LPHANDLER_FUNCTION _ytab_service_ctrl[] = {
 /*============================================================================*
  * THE SERVICE COMMANDLINE PARSER
  *============================================================================*/
-YServiceCmdLineParser::YServiceCmdLineParser (BOOL bAutoParse)
+YServiceCmdLineParser::YServiceCmdLineParser (BOOL bAutoParse, BOOL bCanBeRenamed)
 {
+	m_bCanBeRenamed = bCanBeRenamed;
 	if ( bAutoParse ) {
 		Parse ();
 	}
@@ -166,7 +170,7 @@ BOOL YServiceCmdLineParser::OnProcessParam (BOOL &bTerminate, YCmdLineParam &cli
 	case SCL_CMD_STOP:
 	case SCL_CMD_PAUSE:
 	case SCL_CMD_RESUME:
-		if ( YlbGetSrv ()->IsShareService () ) {
+		if ( CanBeRenamed () || YlbGetSrv ()->IsShareService () ) {
 			// take one
 			if ( cliPar.m_argc ) {
 				cliPar.m_argc = 1;
@@ -181,138 +185,6 @@ BOOL YServiceCmdLineParser::OnProcessParam (BOOL &bTerminate, YCmdLineParam &cli
 
 	SetCommandFlags (dwCmd);
 	return dwCmd != SCL_CMD_UNKNOWN;
-}
-
-void YServiceCmdLineParser::ShowUsage (DWORDLONG dwCmd)
-{
-	ASSERTY(YlbGetSrv ());
-
-	YSrvApp	*pApp	= YlbGetSrv ();
-	BOOL	bSingle	= pApp->IsOwnService ();
-
-	switch ( dwCmd ) {
-	case SCL_CMD_INSTALL:
-		_tprintf (_T("USAGE: %s install%s [-i] [-d] [-a] %s\n\n"), pApp->GetImageName (), (bSingle) ? (_T("")) : (_T(" <svcName>")), (bSingle) ? (_T("[-u <username> -p <password>]")) : (_T("")));
-		if ( bSingle ) {
-			_tprintf (_T("       This command installs the %s.\n"), pApp->GetAppDescription ());
-		}
-		else {
-			_tprintf (_T("       This command installs one of the services contained\n"));
-			_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
-		}
-		_tprintf (_T("       The following options are available:\n"));
-		_tprintf (_T("       -i  Allow the service to interact with the desktop.\n"));
-		_tprintf (_T("           This option cannot be used in conjunction with -u.\n"));
-		_tprintf (_T("       -d  Install as a disabled service.\n"));
-		_tprintf (_T("           This option cannot be used in conjunction with -a.\n"));
-		_tprintf (_T("       -a  Install as an automatic starting service.\n"));
-		_tprintf (_T("           This option cannot be used in conjunction with -d.\n"));
-		if ( bSingle ) {
-			_tprintf (_T("       -u <username>  Specify the account under which the service\n"));
-			_tprintf (_T("                      will run. Cannot be used in conjunction with -i\n"));
-			_tprintf (_T("       -p <password>  Specify the password for the account under which\n"));
-			_tprintf (_T("                      the service will run. Must be used in conjunction\n"));
-			_tprintf (_T("                      with -u\n"));
-		}
-		else {
-			ShowServices ();
-		}
-		break;
-	case SCL_CMD_REMOVE:
-		_tprintf (_T("USAGE: %s remove%s\n\n"), pApp->GetImageName (), (bSingle) ? (_T("")) : (_T(" <svcName>")));
-		if ( bSingle ) {
-			_tprintf (_T("       This command uninstalls an installed %s.\n"), pApp->GetAppDescription ());
-		}
-		else {
-			_tprintf (_T("       This command uninstalls one of the services contained\n"));
-			_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
-			ShowServices ();
-		}
-		break;
-	case SCL_CMD_START:
-		_tprintf (_T("USAGE: %s start%s [<parm1> ...]\n\n"), pApp->GetImageName (), (bSingle) ? (_T("")) : (_T(" <svcName>")));
-		if ( bSingle ) {
-			_tprintf (_T("       This command starts the %s.\n"), YlbGetApp ()->GetAppDescription ());
-		}
-		else {
-			_tprintf (_T("       This command starts one of the services contained\n"));
-			_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
-			ShowServices ();
-		}
-		break;
-	case SCL_CMD_STOP:
-		_tprintf (_T("USAGE: %s stop%s\n\n"), pApp->GetImageName (), (bSingle) ? (_T("")) : (_T(" <svcName>")));
-		if ( bSingle ) {
-			_tprintf (_T("       This command stops the execution of a running %s.\n"), pApp->GetAppDescription ());
-		}
-		else {
-			_tprintf (_T("       This command stops one of the services contained\n"));
-			_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
-			ShowServices ();
-		}
-		break;
-	case SCL_CMD_PAUSE:
-		_tprintf (_T("USAGE: %s pause%s\n\n"), pApp->GetImageName (), (bSingle) ? (_T("")) : (_T(" <svcName>")));
-		if ( bSingle ) {
-			_tprintf (_T("       This command pauses the execution of a running %s.\n"), pApp->GetAppDescription ());
-		}
-		else {
-			_tprintf (_T("       This command pauses one of the services contained\n"));
-			_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
-			ShowServices ();
-		}
-		break;
-	case SCL_CMD_RESUME:
-		_tprintf (_T("USAGE: %s resume%s\n\n"), pApp->GetImageName (), (bSingle) ? (_T("")) : (_T(" <svcName>")));
-		if ( bSingle ) {
-			_tprintf (_T("       This command resumes the execution of a paused %s.\n"), pApp->GetAppDescription ());
-		}
-		else {
-			_tprintf (_T("       This command resumes one of the services contained\n"));
-			_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
-			ShowServices ();
-		}
-		break;
-	case SCL_CMD_SIMULATE:
-		_tprintf (_T("USAGE: %s simulate%s [<parm1> ...]\n\n"), pApp->GetImageName (), (bSingle) ? (_T("")) : (_T(" <svcName>")));
-		if ( bSingle ) {
-			_tprintf (_T("       This command starts the %s as an application.\n"), pApp->GetAppDescription ());
-		}
-		else {
-			_tprintf (_T("       This command start one of the services contained\n"));
-			_tprintf (_T("       in the the %s as an application.\n"), pApp->GetAppDescription ());
-			ShowServices ();
-		}
-		break;
-	default:
-		_tprintf (_T("USAGE: %s <cmd> [options]\n\n"), pApp->GetImageName ());
-		_tprintf (_T("       where <cmd> can be:\n"));
-		_tprintf (_T("       install          Installs the %s\n"), pApp->GetAppDescription ());
-		_tprintf (_T("       remove           Uninstalls the %s\n"), pApp->GetAppDescription ());
-		_tprintf (_T("       start            Starts the %s\n"), pApp->GetAppDescription ());
-		_tprintf (_T("       stop             Stops the %s\n"), pApp->GetAppDescription ());
-		_tprintf (_T("       pause            Pauses the %s\n"), pApp->GetAppDescription ());
-		_tprintf (_T("       resume           Resumes the %s\n"), pApp->GetAppDescription ());
-		_tprintf (_T("       simulate         Starts the %s as an application\n"), pApp->GetAppDescription ());
-		if ( !bSingle ) {
-			ShowServices ();
-		}
-		break;
-	}
-}
-
-void YServiceCmdLineParser::ShowServices ()
-{
-	ASSERTY(YlbGetSrv ());
-	YSrvApp *pApp = YlbGetSrv ();
-
-	_tprintf (_T("\nThe shared %s contains the following services:\n\n"), pApp->GetAppDescription ());
-	for ( UINT nCnt = 1; nCnt <= pApp->GetServiceCount (); nCnt++ ) {
-		YServiceLogic *pSL = pApp->GetService (nCnt);
-		if ( pSL ) {
-			_tprintf (_T("       %-16.16s  %s\n"), pSL->GetAppName (), pSL->GetAppDescription ());
-		}
-	}
 }
 
 BOOL YServiceCmdLineParser::OnFinalCheck ()
@@ -402,6 +274,319 @@ BOOL YServiceCmdLineParser::OnFinalCheck ()
 	return TRUE;
 }
 
+void YServiceCmdLineParser::ShowFullUsage (DWORDLONG dwCmd, LPCTSTR pszError, ...)
+{
+	va_list va;
+	va_start (va, pszError);
+	ShowFullUsageVa (dwCmd, pszError, va);
+	va_end (va);
+}
+
+void YServiceCmdLineParser::ShowFullUsageVa (DWORDLONG dwCmd, LPCTSTR pszError, va_list va)
+{
+	ShowIntro ();
+	_vtprintf (pszError, va);
+	ShowUsage (dwCmd);
+	ShowExtro ();
+}
+
+void YServiceCmdLineParser::ShowUsage (DWORDLONG dwCmd)
+{
+	ASSERTY(YlbGetSrv ());
+
+	YSrvApp	*pApp	= YlbGetSrv ();
+	BOOL	bSingle	= pApp->IsOwnService ();
+
+	switch ( dwCmd ) {
+	case SCL_CMD_INSTALL:
+		ShowInstallCommand (pApp, bSingle);
+		ShowInstallExplanation (pApp, bSingle);
+		ShowInstallOptions (pApp, bSingle);
+		break;
+	case SCL_CMD_REMOVE:
+		ShowRemoveCommand (pApp, bSingle);
+		ShowRemoveExplanation (pApp, bSingle);
+		ShowRemoveOptions (pApp, bSingle);
+		break;
+	case SCL_CMD_START:
+		ShowStartCommand (pApp, bSingle);
+		ShowStartExplanation (pApp, bSingle);
+		ShowStartOptions (pApp, bSingle);
+		break;
+	case SCL_CMD_STOP:
+		ShowStopCommand (pApp, bSingle);
+		ShowStopExplanation (pApp, bSingle);
+		ShowStopOptions (pApp, bSingle);
+		break;
+	case SCL_CMD_PAUSE:
+		ShowPauseCommand (pApp, bSingle);
+		ShowPauseExplanation (pApp, bSingle);
+		ShowPauseOptions (pApp, bSingle);
+		break;
+	case SCL_CMD_RESUME:
+		ShowResumeCommand (pApp, bSingle);
+		ShowResumeExplanation (pApp, bSingle);
+		ShowResumeOptions (pApp, bSingle);
+		break;
+	case SCL_CMD_SIMULATE:
+		ShowSimulateCommand (pApp, bSingle);
+		ShowSimulateExplanation (pApp, bSingle);
+		ShowSimulateOptions (pApp, bSingle);
+		break;
+	default:
+		ShowCommands (pApp, bSingle);
+		ShowServices (pApp, bSingle);
+		break;
+	}
+}
+
+void YServiceCmdLineParser::ShowCommands (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (_T("USAGE: %s <cmd> [options]\n\n"), pApp->GetImageName ());
+	_tprintf (_T("       where <cmd> can be:\n"));
+	_tprintf (_T("       install          Installs the %s\n"), pApp->GetAppDescription ());
+	_tprintf (_T("       remove           Uninstalls the %s\n"), pApp->GetAppDescription ());
+	_tprintf (_T("       start            Starts the %s\n"), pApp->GetAppDescription ());
+	_tprintf (_T("       stop             Stops the %s\n"), pApp->GetAppDescription ());
+	_tprintf (_T("       pause            Pauses the %s\n"), pApp->GetAppDescription ());
+	_tprintf (_T("       resume           Resumes the %s\n"), pApp->GetAppDescription ());
+	_tprintf (_T("       simulate         Starts the %s as an application\n"), pApp->GetAppDescription ());
+}
+
+void YServiceCmdLineParser::ShowServices (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( !bSingle ) {
+		ASSERTY(pApp);
+		_tprintf (_T("\nThe shared %s contains the following services:\n\n"), pApp->GetAppDescription ());
+		for ( UINT nCnt = 1; nCnt <= pApp->GetServiceCount (); nCnt++ ) {
+			YServiceLogic *pSL = pApp->GetService (nCnt);
+			if ( pSL ) {
+				_tprintf (_T("       %-16.16s  %s\n"), pSL->GetAppName (), pSL->GetAppDescription ());
+			}
+		}
+	}
+}
+
+void YServiceCmdLineParser::ShowInstallCommand (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (
+		_T("USAGE: %s install%s [-i] [-d] [-a] %s\n\n"),
+		pApp->GetImageName (),
+		(bSingle) ? ((m_bCanBeRenamed) ? (_T(" [<svcName>]")) : (_T(""))) : (_T(" <svcName>")),
+		(bSingle) ? (_T("[-u <username> -p <password>]")) : (_T(""))
+	);
+}
+
+void YServiceCmdLineParser::ShowInstallExplanation (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( bSingle ) {
+		_tprintf (_T("       This command installs the %s.\n"), pApp->GetAppDescription ());
+		if ( m_bCanBeRenamed ) {
+			_tprintf (_T("       If <svcName> is specified, the service will be installed\n"));
+			_tprintf (_T("       under that name instead of his internal name.\n"));
+		}
+	}
+	else {
+		_tprintf (_T("       This command installs one of the services contained\n"));
+		_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
+	}
+}
+
+void YServiceCmdLineParser::ShowInstallOptions (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (_T("       The following options are available:\n"));
+	_tprintf (_T("       -i  Allow the service to interact with the desktop.\n"));
+	_tprintf (_T("           This option cannot be used in conjunction with -u.\n"));
+	_tprintf (_T("       -d  Install as a disabled service.\n"));
+	_tprintf (_T("           This option cannot be used in conjunction with -a.\n"));
+	_tprintf (_T("       -a  Install as an automatic starting service.\n"));
+	_tprintf (_T("           This option cannot be used in conjunction with -d.\n"));
+	if ( bSingle ) {
+		_tprintf (_T("       -u <username>  Specify the account under which the service\n"));
+		_tprintf (_T("                      will run. Cannot be used in conjunction with -i\n"));
+		_tprintf (_T("       -p <password>  Specify the password for the account under which\n"));
+		_tprintf (_T("                      the service will run. Must be used in conjunction\n"));
+		_tprintf (_T("                      with -u\n"));
+	}
+	else {
+		ShowServices (pApp, bSingle);
+	}
+}
+
+void YServiceCmdLineParser::ShowRemoveCommand (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (
+		_T("USAGE: %s remove%s\n\n"),
+		pApp->GetImageName (),
+		(bSingle) ? ((m_bCanBeRenamed) ? (_T(" [<svcName>]")) : (_T(""))) : (_T(" <svcName>"))
+	);
+}
+
+void YServiceCmdLineParser::ShowRemoveExplanation (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( bSingle ) {
+		_tprintf (_T("       This command uninstalls an installed %s.\n"), pApp->GetAppDescription ());
+		if ( m_bCanBeRenamed ) {
+			_tprintf (_T("       If <svcName> is specified, the service with the specified\n"));
+			_tprintf (_T("       name will be removed.\n"));
+		}
+	}
+	else {
+		_tprintf (_T("       This command uninstalls one of the services contained\n"));
+		_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
+	}
+}
+
+void YServiceCmdLineParser::ShowRemoveOptions (YSrvApp *pApp, BOOL bSingle)
+{
+	ShowServices (pApp, bSingle);
+}
+
+void YServiceCmdLineParser::ShowStartCommand (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (
+		_T("USAGE: %s start%s [<parm1> ...]\n\n"),
+		pApp->GetImageName (),
+		(bSingle) ? ((m_bCanBeRenamed) ? (_T(" [<svcName>]")) : (_T(""))) : (_T(" <svcName>"))
+	);
+}
+
+void YServiceCmdLineParser::ShowStartExplanation (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( bSingle ) {
+		_tprintf (_T("       This command starts the %s.\n"), YlbGetApp ()->GetAppDescription ());
+		if ( m_bCanBeRenamed ) {
+			_tprintf (_T("       If <svcName> is specified, the service with the specified\n"));
+			_tprintf (_T("       name will be started.\n"));
+		}
+	}
+	else {
+		_tprintf (_T("       This command starts one of the services contained\n"));
+		_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
+	}
+}
+
+void YServiceCmdLineParser::ShowStartOptions (YSrvApp *pApp, BOOL bSingle)
+{
+	ShowServices (pApp, bSingle);
+}
+
+void YServiceCmdLineParser::ShowStopCommand (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (
+		_T("USAGE: %s stop%s\n\n"),
+		pApp->GetImageName (),
+		(bSingle) ? ((m_bCanBeRenamed) ? (_T(" [<svcName>]")) : (_T(""))) : (_T(" <svcName>"))
+	);
+}
+
+void YServiceCmdLineParser::ShowStopExplanation (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( bSingle ) {
+		_tprintf (_T("       This command stops the execution of a running %s.\n"), pApp->GetAppDescription ());
+		if ( m_bCanBeRenamed ) {
+			_tprintf (_T("       If <svcName> is specified, the service with the specified\n"));
+			_tprintf (_T("       name will be stopped.\n"));
+		}
+	}
+	else {
+		_tprintf (_T("       This command stops one of the services contained\n"));
+		_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
+	}
+}
+
+void YServiceCmdLineParser::ShowStopOptions (YSrvApp *pApp, BOOL bSingle)
+{
+		ShowServices (pApp, bSingle);
+}
+
+void YServiceCmdLineParser::ShowPauseCommand (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (
+		_T("USAGE: %s pause%s\n\n"),
+		pApp->GetImageName (),
+		(bSingle) ? ((m_bCanBeRenamed) ? (_T(" [<svcName>]")) : (_T(""))) : (_T(" <svcName>"))
+	);
+}
+
+void YServiceCmdLineParser::ShowPauseExplanation (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( bSingle ) {
+		_tprintf (_T("       This command pauses the execution of a running %s.\n"), pApp->GetAppDescription ());
+		if ( m_bCanBeRenamed ) {
+			_tprintf (_T("       If <svcName> is specified, the service with the specified\n"));
+			_tprintf (_T("       name will be paused.\n"));
+		}
+	}
+	else {
+		_tprintf (_T("       This command pauses one of the services contained\n"));
+		_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
+	}
+}
+
+void YServiceCmdLineParser::ShowPauseOptions (YSrvApp *pApp, BOOL bSingle)
+{
+	ShowServices (pApp, bSingle);
+}
+
+void YServiceCmdLineParser::ShowResumeCommand (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (
+		_T("USAGE: %s resume%s\n\n"),
+		pApp->GetImageName (),
+		(bSingle) ? ((m_bCanBeRenamed) ? (_T(" [<svcName>]")) : (_T(""))) : (_T(" <svcName>"))
+	);
+}
+
+void YServiceCmdLineParser::ShowResumeExplanation (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( bSingle ) {
+		_tprintf (_T("       This command resumes the execution of a paused %s.\n"), pApp->GetAppDescription ());
+		if ( m_bCanBeRenamed ) {
+			_tprintf (_T("       If <svcName> is specified, the service with the specified\n"));
+			_tprintf (_T("       name will be resumed.\n"));
+		}
+	}
+	else {
+		_tprintf (_T("       This command resumes one of the services contained\n"));
+		_tprintf (_T("       in the the %s.\n"), pApp->GetAppDescription ());
+	}
+}
+
+void YServiceCmdLineParser::ShowResumeOptions (YSrvApp *pApp, BOOL bSingle)
+{
+	ShowServices (pApp, bSingle);
+}
+
+void YServiceCmdLineParser::ShowSimulateCommand (YSrvApp *pApp, BOOL bSingle)
+{
+	_tprintf (
+		_T("USAGE: %s simulate%s [<parm1> ...]\n\n"),
+		pApp->GetImageName (),
+		(bSingle) ? ((m_bCanBeRenamed) ? (_T(" [<svcName>]")) : (_T(""))) : (_T(" <svcName>"))
+	);
+}
+
+void YServiceCmdLineParser::ShowSimulateExplanation (YSrvApp *pApp, BOOL bSingle)
+{
+	if ( bSingle ) {
+		_tprintf (_T("       This command starts the %s as an application.\n"), pApp->GetAppDescription ());
+		if ( m_bCanBeRenamed ) {
+			_tprintf (_T("       If <svcName> is specified, the service with the specified\n"));
+			_tprintf (_T("       name will be simulated.\n"));
+		}
+	}
+	else {
+		_tprintf (_T("       This command start one of the services contained\n"));
+		_tprintf (_T("       in the the %s as an application.\n"), pApp->GetAppDescription ());
+	}
+}
+
+void YServiceCmdLineParser::ShowSimulateOptions (YSrvApp *pApp, BOOL bSingle)
+{
+	ShowServices (pApp, bSingle);
+}
+
 /*==================================================================================*
  * SERVICE RUNTIME FUNCTION IMPLEMENTATION
  *==================================================================================*/
@@ -419,6 +604,11 @@ extern "C" static VOID WINAPI _ylb_service_main (DWORD dwArgc, LPTSTR *lpszArgv)
 	UINT nIndex			= YlbGetSrv ()->FindService (lpszArgv[0]);
 	YServiceLogic *pSL	= YlbGetSrv ()->GetService (nIndex);
 	ASSERTY(pSL);
+
+	if ( _tcsicmp (pSL->GetAppName (), lpszArgv[0]) ) {
+		// service was renamed
+		pSL->OnServiceRename (TRUE, lpszArgv[0]);
+	}
 
 	YCommandLineInfo sCLI (dwArgc, lpszArgv);
 
@@ -614,6 +804,38 @@ void YServiceLogic::AfterRemoveService (LPCTSTR pszCompName, LPCTSTR pszImagePat
 	if ( !bBadInstalled ) {
 		_tprintf (_T("OK: The %s service was successfully removed\n"), GetAppDescription ());
 	}
+}
+
+BOOL YServiceLogic::OnServiceRename (BOOL bFromServiceMain, LPCTSTR pszNewName)
+{
+	SetAppName (pszNewName);
+
+	// try to get the long name from the registry
+	YComputerName	ysCompName;
+	YPathString		ysBinPath;
+	YRegistry		yRegRemote;
+	YRegistry		yRegServices;
+	ComputeActionPaths (ysCompName, ysBinPath);
+	if ( !ysCompName.IsEmpty () ) {
+		if ( yRegRemote.Connect (ysCompName) ) {
+			yRegServices = yRegRemote;
+		}
+	}
+	if ( yRegServices.Open (_T("SYSTEM\\CurrentControlSet\\Services"), KEY_READ) ) {
+		YRegistry yRegMine = yRegServices;
+		if ( yRegMine.Open (GetAppName (), KEY_READ) ) {
+			LPCTSTR lpName = yRegMine.StringGet (_T("DisplayName"), NULL, 0, GetAppDescription ());
+			if ( lpName && *lpName ) {
+				SetAppDescription (lpName);
+				return TRUE;
+			}
+		}
+	}
+
+	YString128 ysName;
+	ysName.Format (_T("%s (%s)"), GetAppDescription (), GetAppName ());
+	SetAppDescription (ysName);
+	return FALSE;
 }
 
 //
@@ -1128,10 +1350,18 @@ BOOL YServiceLogic::PerformStart (UINT nIndex, YServiceCmdLineParser &cliParser)
 	YCmdLineParam *pParam = cliParser.FindParamByMeaning (SCL_CMD_START);
 	ASSERTY(pParam);
 
-	DWORD	dwArgC = _proc.m_cli.GetParamCount () - pParam->GetCliIndex ();
-	LPCTSTR	*lpArgV = (dwArgC) ? ((LPCTSTR *) _proc.m_cli.m_argv + pParam->GetCliIndex () - 1) : (NULL);
-	if ( lpArgV ) {
-		lpArgV[0] = GetAppName ();
+	DWORD		dwArgC = _proc.m_cli.GetParamCount () - pParam->GetCliIndex ();
+	LPTSTR	*	lpArgV = _proc.m_cli.m_argv + pParam->GetCliIndex () - 1;
+
+	if ( cliParser.CanBeRenamed () && (dwArgC > 1) ) {
+		--dwArgC;
+		++lpArgV;
+	}
+	if ( dwArgC ) {
+		lpArgV[0] = (LPTSTR) GetAppName ();
+	}
+	else {
+		lpArgV = NULL;
 	}
 
 	if ( !ComputeActionPaths (ysCompName, ysBinImage) ) {
@@ -1164,7 +1394,7 @@ BOOL YServiceLogic::PerformStart (UINT nIndex, YServiceCmdLineParser &cliParser)
 
 		OnStartUI (SERVICE_STOPPED);
 
-		if ( !srv.Start (dwArgC, lpArgV) ) {
+		if ( !srv.Start (dwArgC, (LPCTSTR *) lpArgV) ) {
 			throw YException (::GetLastError ());
 		}
 
@@ -1425,9 +1655,17 @@ BOOL YServiceLogic::PerformSimulation (UINT nIndex, YServiceCmdLineParser &cliPa
 	YCmdLineParam *pParam = cliParser.FindParamByMeaning (SCL_CMD_SIMULATE);
 	ASSERTY(pParam);
 
-	YCommandLineInfo cli (_proc.m_cli.GetParamCount () - pParam->GetCliIndex (), _proc.m_cli.m_argv + pParam->GetCliIndex () - 1);
-	cli.m_argv[0] = (LPTSTR) GetAppName ();
+	int			argc = _proc.m_cli.GetParamCount () - pParam->GetCliIndex ();
+	LPTSTR *	argv = _proc.m_cli.m_argv + pParam->GetCliIndex () - 1;
 
+	if ( cliParser.CanBeRenamed () && (argc > 1) ) {
+		--argc;
+		++argv;
+	}
+	argv[0] = (LPTSTR) GetAppName ();
+
+
+	YCommandLineInfo cli (argc, argv);
 	ServiceMain (nIndex, &cli, FALSE);
 
 	return TRUE;
@@ -1479,7 +1717,10 @@ BOOL YSrvApp::AddService (YServiceLogic *psl)
 UINT YSrvApp::FindService (LPCTSTR pszName) const
 {
 	if ( pszName && *pszName ) {
-		for ( UINT nCnt = 0; nCnt < YLB_MAX_SERVICES; nCnt++ ) {
+		if ( m_nServices == 1 ) {
+			return 1;
+		}
+		for ( UINT nCnt = 0; nCnt < m_nServices; nCnt++ ) {
 			if ( m_slServices[nCnt] && !_tcsicmp (pszName, m_slServices[nCnt]->GetAppName ()) ) {
 				return nCnt + 1;
 			}
@@ -1507,18 +1748,28 @@ BOOL YSrvApp::ProcessShellCommand (YServiceCmdLineParser &cliParser)
 		return FALSE;
 	}
 
-	UINT			nIndex = GetRequestedService (cliParser, dwCmd);
-	YServiceLogic *	pSL = GetService (nIndex);
+
+
+	UINT			nIndex	= GetRequestedService (cliParser, dwCmd);
+	YServiceLogic *	pSL		= GetService (nIndex);
 	if ( !pSL ) {
 		// bad. we are done.
 		return TRUE;
 	}
 
 	// got it!
+	if ( IsOwnService () && cliParser.CanBeRenamed () ) {
+		YCmdLineParam *pParam = cliParser.FindParamByMeaning (dwCmd);
+		if ( pParam && pParam->GetParamCount () && pParam->GetAt (ZERO) && *pParam->GetAt (ZERO) ) {
+			// service will be internally renamed....
+			pSL->OnServiceRename (FALSE, pParam->GetAt (ZERO));
+		}
+	}
+
 	cliParser.ShowIntro ();
 
 	if ( !pSL->InitInstance (GetCommandLineInfo ()) ) {
-		// he does not want. he is responsible for showing an appropriate error...
+		// if he does not want. he is responsible for showing an appropriate error...
 		pSL->ExitInstance (FALSE);
 		cliParser.ShowExtro ();
 		return TRUE;
@@ -1574,6 +1825,10 @@ void YSrvApp::Run ()
 	}
 	dispatchTable[nCnt].lpServiceName = NULL;
 	dispatchTable[nCnt].lpServiceProc = NULL;
+
+	if ( m_nServices == 1 ) {
+		dispatchTable[0].lpServiceName = _T("");
+	}
 
 	StartServiceCtrlDispatcher (dispatchTable);
 }
