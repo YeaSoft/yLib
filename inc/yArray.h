@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/04/12 18:42:56  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -66,6 +69,7 @@ public:
 	BOOL						FreeExtra				();
 	void						RemoveAll				();
 
+	int							Find					(LPVOID pElement) const;
 	LPVOID						GetAt					(int nIndex) const;
 	BOOL						SetAt					(int nIndex, LPVOID newElement);
 	BOOL						SetAtGrow				(int nIndex, LPVOID newElement);
@@ -85,6 +89,7 @@ public:
 	BOOL						InsertAt				(int nIndex, const YPtrArray & src);
 	BOOL						InsertAt				(int nIndex, LPVOID newElement, int nCount = 1);
 	int							RemoveAt				(int nIndex, int nCount = 1);
+	BOOL						Remove					(LPVOID pElement);
 
 public:
 	// attributes
@@ -111,6 +116,7 @@ public:
 
 public:
 	// operations
+	int							Find					(TYPE pElement) const { return YPtrArray::Find (pElement); }
 	TYPE						GetAt					(int nIndex) const { return (TYPE) YPtrArray::GetAt (nIndex); }
 	BOOL						SetAt					(int nIndex, TYPE newElement) { return YPtrArray::SetAt (nIndex, newElement); }
 	BOOL						SetAtGrow				(int nIndex, TYPE newElement) { return YPtrArray::SetAtGrow (nIndex, newElement); }
@@ -124,8 +130,75 @@ public:
 	TYPE &						operator[]				(int nIndex) { return (TYPE &) YPtrArray::operator[] (nIndex); }
 
 	BOOL						InsertAt				(int nIndex, TYPE newElement, int nCount = 1) { return YPtrArray::InsertAt (nIndex, newElement, nCount); }
+	BOOL						Remove					(TYPE pElement) { return YPtrArray::Remove (pElement); }
 };
 
+template<class TYPE, class CREATIONTYPE>
+class YTypedAllocatedPtrArray : public YPtrArray
+{
+public:
+	// construction/destruction
+	YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>			(int nAllocationGranularity = -1) : YPtrArray (nAllocationGranularity) { }
+	~YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>		() { RemoveAll (); }
+
+public:
+	// operations
+	void						RemoveAll				(BOOL bFreeAllocated = TRUE);
+
+	int							Find					(TYPE pElement) const { return YPtrArray::Find (pElement); }
+	TYPE						GetAt					(int nIndex) const { return (TYPE) YPtrArray::GetAt (nIndex); }
+	BOOL						SetAt					(int nIndex, TYPE newElement) { return YPtrArray::SetAt (nIndex, newElement); }
+	BOOL						SetAtGrow				(int nIndex, TYPE newElement) { return YPtrArray::SetAtGrow (nIndex, newElement); }
+	int							Add						(TYPE newElement) { return YPtrArray::Add (newElement); }
+
+	TYPE &						ElementAt				(int nIndex) { return (TYPE &) YPtrArray::ElementAt (nIndex); }
+	const TYPE *				GetData					() const { return (const TYPE) YPtrArray::GetData (); }
+	TYPE *						GetData					() { return (TYPE) YPtrArray::GetData (); }
+
+	TYPE						operator[]				(int nIndex) const { return (TYPE) YPtrArray::operator[] (nIndex); }
+	TYPE &						operator[]				(int nIndex) { return (TYPE &) YPtrArray::operator[] (nIndex); }
+
+	BOOL						InsertAt				(int nIndex, TYPE newElement, int nCount = 1) { return YPtrArray::InsertAt (nIndex, newElement, nCount); }
+	int							RemoveAt				(int nIndex, int nCount = 1, BOOL bFreeAllocated = TRUE);
+	BOOL						Remove					(TYPE pElement, BOOL bFreeAllocated = TRUE);
+};
+
+template<class TYPE, class CREATIONTYPE>
+void YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>::RemoveAll (BOOL bFreeAllocated)
+{
+	if ( bFreeAllocated ) {
+		for ( int i = 0; i < m_nSize; i++ ) {
+			delete GetAt (i);
+		}
+	}
+
+	YPtrArray::RemoveAll ();
+}
+
+template<class TYPE, class CREATIONTYPE>
+BOOL YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>::Remove (TYPE pElement, BOOL bFreeAllocated)
+{
+	if ( bFreeAllocated ) {
+		if ( YPtrArray::Remove (pElement) ) {
+			delete pElement;
+			return TRUE;
+		}
+		return FALSE;
+	}
+	return YPtrArray::Remove (pElement);
+}
+
+template<class TYPE, class CREATIONTYPE>
+int YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>::RemoveAt (int nIndex, int nCount, BOOL bFreeAllocated)
+{
+	if ( bFreeAllocated ) {
+		int nTop = min(nIndex + nCount,m_nSize);
+		for ( int i = nIndex; (i >= 0) && (i < nTop); i++ ) {
+			delete GetAt (i);
+		}
+	}
+	return YPtrArray::RemoveAt (nIndex, nCount);
+}
 
 #ifdef YLB_ENABLE_INLINE
 #include <yArray.inl>

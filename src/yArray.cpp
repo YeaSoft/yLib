@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2001/04/12 18:47:47  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdInc.hpp"
@@ -59,6 +62,16 @@ void YPtrArray::RemoveAll ()
 	m_pData				= NULL;
 	m_nSize				= 0;
 	m_nAllocatedSize	= 0;
+}
+
+int  YPtrArray::Find (LPVOID pElement) const
+{
+	for ( int i = 0; i < m_nSize; i++ ) {
+		if ( m_pData[i] == pElement ) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 BOOL YPtrArray::SetAt (int nIndex, LPVOID newElement)
@@ -166,6 +179,15 @@ int YPtrArray::RemoveAt (int nIndex, int nCount /* = 1 */)
 	}
 	m_nSize -= nCount;
 	return m_nSize;
+}
+
+BOOL YPtrArray::Remove (LPVOID pElement)
+{
+	int nIndex = Find (pElement);
+	if ( nIndex != -1 ) {
+		return RemoveAt (nIndex);
+	}
+	return FALSE;
 }
 
 BOOL YPtrArray::SetSize (int nNewSize, int nAllocationGranularity /* = -1 */)
