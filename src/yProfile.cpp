@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2001/09/15 12:41:11  leopoldo
+ * Added YProfile::NumberSet and YProfile::NumberGet for 'double' Values
+ *
  * Revision 1.1  2001/09/14 16:21:51  leopoldo
  * Initial revision
  *
@@ -79,6 +82,15 @@ YProfile::YProfile (const YProfile &iniSrc)
 {
 	m_ysIniFile	= iniSrc.m_ysIniFile;
 	m_ysSection	= iniSrc.m_ysSection;
+}
+
+bool YProfile::SetFileName (LPCTSTR pszFile, ...)
+{
+	va_list va;
+	va_start (va, pszFile);
+	m_ysIniFile.FormatV (pszFile, va);
+	va_end (va);
+	return !m_ysIniFile.IsEmpty ();
 }
 
 bool YProfile::Open (LPCTSTR lpszKey)
@@ -143,6 +155,61 @@ bool YProfile::SectionExists (LPCTSTR lpszKey) const
 		return true;
 	}
 	return false;
+}
+
+/*
+ITERATOR YProfile::GetFirstValuePosition ()
+ITERATOR YProfile::GetLastValuePosition ()
+LPCTSTR YProfile::GetNextValue (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen)
+LPCTSTR YProfile::GetPrevValue (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen)
+*/
+
+ITERATOR YProfile::GetFirstSectionPosition ()
+{
+	if ( !m_ysSecEnum.GetBuffer () && !m_ysSecEnum.Alloc (16384) ) {
+		return NULL;
+	}
+	if ( !::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile) ) {
+		return NULL;
+	}
+	return m_ysSecEnum.GetFirstStringPosition ();
+}
+
+ITERATOR YProfile::GetLastSectionPosition ()
+{
+	if ( !m_ysSecEnum.GetBuffer () && !m_ysSecEnum.Alloc (16384) ) {
+		return NULL;
+	}
+	if ( !::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile) ) {
+		return NULL;
+	}
+	return m_ysSecEnum.GetLastStringPosition ();
+}
+
+LPCTSTR YProfile::GetNextSection (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer)
+{
+	CHECK_HELPER(pszBuffer, cbBuffer);
+
+	LPCTSTR lpPtr = m_ysSecEnum.GetNext (rPosition);
+	if ( !lpPtr ) {
+		return NULL;
+	}
+	_tcsncpy (pszBuffer, lpPtr, cbBuffer);
+	pszBuffer[cbBuffer - 1] = 0;
+	return pszBuffer;
+}
+
+LPCTSTR YProfile::GetPrevSection (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer)
+{
+	CHECK_HELPER(pszBuffer, cbBuffer);
+
+	LPCTSTR lpPtr = m_ysSecEnum.GetPrev (rPosition);
+	if ( !lpPtr ) {
+		return NULL;
+	}
+	_tcsncpy (pszBuffer, lpPtr, cbBuffer);
+	pszBuffer[cbBuffer - 1] = 0;
+	return pszBuffer;
 }
 
 bool YProfile::BooleanGet (LPCTSTR lpszValueName, bool bDefault, BOOL bStrict /* = TRUE */) const

@@ -32,6 +32,12 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2002/05/08 09:59:32  leo
+ * Initial Sourceforge Revision
+ *
+ * Revision 1.3  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.2  2000/07/06 11:17:57  leo
  * Added flag LOG_F_TEXT to write text without time stamp
  *
@@ -75,9 +81,9 @@ typedef DWORD					LOG_FLAG;	// @type	LOG_FLAG | Logging message flags.
 #define LOG_F_TEXT				0x00000400	// @flag	LOG_F_TEXT | pure text
 
 /* compound logging flags */
-#define XMR_F_CFATAL			0x00040001	// @flag	LOG_F_CFATAL | fatal error with detailed error information appended
-#define XMR_F_CERROR			0x00040002	// @flag	LOG_F_CERROR | error with detailed error information appended
-#define XMR_F_CWARNING			0x00040004	// @flag	LOG_F_CWARNING | warning with detailed error information appended
+#define LOG_F_CFATAL			0x00040001	// @flag	LOG_F_CFATAL | fatal error with detailed error information appended
+#define LOG_F_CERROR			0x00040002	// @flag	LOG_F_CERROR | error with detailed error information appended
+#define LOG_F_CWARNING			0x00040004	// @flag	LOG_F_CWARNING | warning with detailed error information appended
 
 /* modifier flags */
 #define LOG_F_ALWAYS			0x00010000	// @flag	LOG_F_ALWAYS | message is displayed always
@@ -174,6 +180,7 @@ protected:
 protected:
 	// implementation
 	BOOL						ReOpen				(BOOL bTrucate);
+	BOOL						WriteToFile			(LPCTSTR pszStr, int iLen = -1);
 
 private:
 	// implementation

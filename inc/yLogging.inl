@@ -32,6 +32,12 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2002/05/08 09:59:32  leo
+ * Initial Sourceforge Revision
+ *
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:16  leo
  * Initial revision
  *
@@ -88,11 +94,29 @@ YLB_INLINE BOOL YLogHandler::Fatal (LPCTSTR lpszFormat, ...)
 	return bRet;
 }
 
+YLB_INLINE BOOL YLogHandler::FatalDetail (LPCTSTR lpszFormat, ...)
+{
+	va_list	va;
+	va_start (va, lpszFormat);
+	BOOL bRet = WriteVa (LOG_F_CFATAL, lpszFormat, va);
+	va_end (va);
+	return bRet;
+}
+
 YLB_INLINE BOOL YLogHandler::Error (LPCTSTR lpszFormat, ...)
 {
 	va_list	va;
 	va_start (va, lpszFormat);
 	BOOL bRet = WriteVa (LOG_F_ERROR, lpszFormat, va);
+	va_end (va);
+	return bRet;
+}
+
+YLB_INLINE BOOL YLogHandler::ErrorDetail (LPCTSTR lpszFormat, ...)
+{
+	va_list	va;
+	va_start (va, lpszFormat);
+	BOOL bRet = WriteVa (LOG_F_CERROR, lpszFormat, va);
 	va_end (va);
 	return bRet;
 }

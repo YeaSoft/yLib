@@ -32,6 +32,12 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2002/05/08 09:59:32  leo
+ * Initial Sourceforge Revision
+ *
+ * Revision 1.1  2001/09/14 16:19:48  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 /*=============================================================================
  * @doc YLIB | yProfile.h
@@ -39,6 +45,11 @@
 YLB_INLINE bool YProfile::IsOpen () const
 {
 	return !m_ysIniFile.IsEmpty () && m_ysIniFile.IsFile () && !m_ysSection.IsEmpty ();
+}
+
+YLB_INLINE LPCTSTR YProfile::GetFileName () const
+{
+	return m_ysIniFile;
 }
 
 YLB_INLINE void YProfile::Close ()

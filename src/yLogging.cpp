@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.2  2000/07/06 11:22:45  leo
  * Added flag LOG_F_TEXT to write text without time stamp
  *
@@ -110,12 +113,15 @@ void YLogFileHandler::SetOpenMode (BOOL bOpenOnDemand /* = FALSE */)
 BOOL YLogFileHandler::OutVa (LOG_FLAG logFlag, LPCTSTR lpszFormat, va_list va)
 {
 	TCHAR	szLogString[1024];
+	TCHAR	szErrBuffer[768];
 	TCHAR	cFlag;
+	int		iLen;
+	int		iErrLen;
 
 	if ( !TestFlags (logFlag) ) {
 		return TRUE;
 	}
-	switch ( logFlag ) {
+	switch ( logFlag & LOG_M_FLAGS ) {
 	case LOG_F_FATAL:
 		cFlag = _T('F');
 		break;
@@ -148,8 +154,8 @@ BOOL YLogFileHandler::OutVa (LOG_FLAG logFlag, LPCTSTR lpszFormat, va_list va)
 		break;
 	}
 
-	if ( logFlag == LOG_F_TEXT ) {
-		_sntprintf (szLogString, _countof (szLogString), lpszFormat, va);
+	if ( (logFlag & LOG_M_FLAGS) == LOG_F_TEXT ) {
+		iLen = _vsntprintf (szLogString, _countof (szLogString), lpszFormat, va);
 	}
 	else {
 		SYSTEMTIME	st;
@@ -168,25 +174,84 @@ BOOL YLogFileHandler::OutVa (LOG_FLAG logFlag, LPCTSTR lpszFormat, va_list va)
 		);
 
 
-		_vsntprintf (
+		iLen = _vsntprintf (
 			szLogString + 24,
-			_countof (szLogString) - 24,
+			_countof (szLogString) - 26,
 			lpszFormat,
 			va
 		);
 	}
-	szLogString[_countof (szLogString) - 1] = 0;
+	if ( iLen < 0 ) {
+		iLen = _countof (szLogString) - 3;
+		szLogString[iLen] = 0;
+	}
+	else {
+		iLen += 24;
+	}
+
+	if ( logFlag & LOG_F_ERRSTR ) {
+		iErrLen = FormatMessage	( 
+			FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
+			NULL,
+			GetLastError (),
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			szErrBuffer,
+			sizeof (szErrBuffer),
+			NULL 
+		);
+		if ( iErrLen && ((iLen + iErrLen + 5) < _countof (szLogString)) ) {
+			// error string is small enougth to fit into one line
+			_tcscat (szLogString, _T(" ("));	// 2
+			_tcscat (szLogString, szErrBuffer);	// iErrLen
+			_tcscat (szLogString, _T(")\r\n"));	// 3
+			iLen += iErrLen + 5;
+			iErrLen = 0;	// OK: Don't append
+		}
+	}
+	else {
+		szLogString[iLen + 0] = _T('\r');
+		szLogString[iLen + 1] = _T('\n');
+		szLogString[iLen + 2] = 0;
+		iLen += 2;
+	}
+
+	WriteToFile (szLogString, iLen);
+
+	// we have a long error string to send...
+	if ( (logFlag & LOG_F_ERRSTR) && iErrLen ) {
+		iLen = _sntprintf (
+			szLogString + 24,
+			_countof (szLogString) - 24,
+			_T("NT Error: %s\r\n"),
+			szErrBuffer
+		);
+		if ( iLen < 0 ) {
+			iLen = _countof (szLogString) - 1;
+			szLogString[iLen] = 0;
+		}
+		else {
+			iLen += 24;
+		}
+		WriteToFile (szLogString, iLen);
+	}
+	return TRUE;
+}
+
+BOOL YLogFileHandler::WriteToFile (LPCTSTR pszStr, int iLen /* = -1 */)
+{
+	if ( iLen < 0 ) {
+		iLen = _tcslen (pszStr);
+	}
+
 	DWORD dwRet;
 	if ( !m_bOpenOnDemand || (m_bOpenOnDemand && ReOpen (FALSE)) ) {
 		if ( !IsOpen () ) {
 			return FALSE;
 		}
-		WriteFile (m_hFile, szLogString, _tcslen (szLogString), &dwRet, NULL);
+		WriteFile (m_hFile, pszStr, iLen * sizeof (TCHAR), &dwRet, NULL);
 #ifdef _DEBUG
-		OutputDebugString (szLogString);
-		OutputDebugString (_T("\r\n"));
+		OutputDebugString (pszStr);
 #endif
-		WriteFile (m_hFile, _T("\r\n"), 2 * sizeof (TCHAR), &dwRet, NULL);
 		if ( m_bOpenOnDemand ) {
 			Close ();
 		}

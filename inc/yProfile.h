@@ -32,6 +32,12 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2002/05/08 09:59:32  leo
+ * Initial Sourceforge Revision
+ *
+ * Revision 1.2  2001/09/15 12:43:08  leopoldo
+ * Added YProfile::NumberSet and YProfile::NumberGet for 'double' Values
+ *
  * Revision 1.1  2001/09/14 16:19:48  leopoldo
  * Initial revision
  *
@@ -74,6 +80,9 @@ public:
 	YProfile					(const YProfile &iniSrc);
 
 public:
+	bool						SetFileName				(LPCTSTR pszFile, ...);
+	LPCTSTR						GetFileName				() const;
+
 	// @access Access Operations
 	// @cmember Opens an existing key of the ini file
 	bool						Open					(LPCTSTR lpszKey);
@@ -101,9 +110,9 @@ public:
 	DWORD						SectionGetCount			() const;
 
 	// @cmember Returns the position of the first value in the open key
-	ITERATOR					GetFirstValuePosition	() const;
+	ITERATOR					GetFirstValuePosition	();
 	// @cmember Returns the position of the last value in the open key
-	ITERATOR					GetLastValuePosition	() const;
+	ITERATOR					GetLastValuePosition	();
 	// @cmember Gets the next value name for iterating
 	LPCTSTR						GetNextValue			(ITERATOR &rPosition, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPDWORD pdwType = NULL, LPBYTE pbData = NULL, LPDWORD pdwDataLen = 0);
 	// @cmember Gets the previous value name for iterating
@@ -169,10 +178,12 @@ public:
 	bool						MultiStringRemove		(LPCTSTR lpszValueName, LPCTSTR lpszValue, bool bCaseSensitive = FALSE) const;
 
 
-private:
+protected:
 	YPathString					m_ysIniFile;
 	YString64					m_ysSection;
 	YString256					m_ysHelper;
+	YMultiString				m_ysSecEnum;
+	YMultiString				m_ysValEnum;
 };
 
 #ifdef YLB_ENABLE_INLINE
