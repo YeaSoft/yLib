@@ -313,6 +313,106 @@ SOURCE=..\inc\ySrvApp.inl
 # Begin Group "yLib Header Files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\inc\yBuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yConsole.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yCrc32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yEventSource.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFileObjects.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFiles.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFileTools.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFixStr.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yFlags.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yHandle.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yLib.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yLibBase.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yLogging.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yMailSlots.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yMailSlotServer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yPipes.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yPipeServer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yRegistry.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\ySCM.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\ySecDesc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\ySync.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yThread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yTokens.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yUNC.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\inc\yVersInfo.h
+# End Source File
 # End Group
 # End Target
 # End Project
