@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.9  2000/08/23  14:38:24  leo
+ * Fixed a typo
+ *
  * Revision 1.8  2000/08/23  10:12:22  leo
  * Fixed some release build issue
  *
@@ -202,7 +205,7 @@ void YFixedString::Assign (LPCWSTR lpsz)
 void YFixedString::Assign (LPCTSTR lpsz, UINT nCount)
 {
 	ASSERTY(m_pszString);
-	nCount = min(nCount,m_cbSize);
+	nCount = min(nCount+1,m_cbSize);
 	if ( lpsz && nCount ) {
 		--nCount;
 		_tcsncpy (m_pszString, lpsz, nCount);
@@ -345,7 +348,7 @@ YBigString YFixedString::Right (int nCount) const
 	}
 
 	YBigString	dest;
-	dest.Assign (m_pszString + nCount, nLength - nCount);
+	dest.Assign (m_pszString + nLength - nCount, nCount);
 	return dest;
 }
 
