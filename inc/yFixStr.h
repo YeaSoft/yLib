@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.20  2002/05/08 09:50:58  leopoldo
+ * Added YPathString::ScanPath
+ *
  * Revision 1.19  2001/10/05 13:29:56  leopoldo
  * Added harder delete options to file and directory delete functions
  *
@@ -530,10 +533,13 @@ public:
 	// special operations and attributes
 	LPCTSTR						GetFileName				() const;
 	LPCTSTR						GetFileExtension		() const;
+	void						AddDirectoryName		(LPCTSTR pszDirName) { AddFileName (pszDirName); }
 	void						AddFileName				(LPCTSTR pszFileName);
 	void						AddFileExtension		(LPCTSTR pszFileExtension);
+	void						SubstDirectoryName		(LPCTSTR pszDirName);
 	void						SubstFileName			(LPCTSTR pszFileName);
 	void						SubstFileExtension		(LPCTSTR pszFileExtension);
+	void						StripDirectoryName		();
 	void						StripFileName			(BOOL bToValidPath = FALSE);
 	void						StripExtension			();
 	void						AppendBackslash			(BOOL bToValidPath = FALSE);

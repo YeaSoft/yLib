@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.19  2002/05/08 09:51:20  leopoldo
+ * Added YPathString::ScanPath
+ *
  * Revision 1.18  2001/09/26 11:14:09  leopoldo
  * Fixed UNICODE issues
  *
@@ -1178,6 +1181,19 @@ void YPathString::AddFileExtension (LPCTSTR pszFileExtension)
 	}
 }
 
+void YPathString::SubstDirectoryName (LPCTSTR pszDirName)
+{
+	YPathString	ysName = GetFileName ();
+	if ( pszDirName && *pszDirName ) {
+		Assign (pszDirName);
+		AppendBackslash ();
+	}
+	else {
+		Empty ();
+	}
+	Concat (ysName);
+}
+
 void YPathString::SubstFileName (LPCTSTR pszFileName)
 {
 	ASSERTY(pszFileName);
@@ -1194,6 +1210,11 @@ void YPathString::SubstFileExtension (LPCTSTR pszFileExtension)
 		Concat (_T('.'));
 		Concat (pszFileExtension);
 	}
+}
+
+void YPathString::StripDirectoryName ()
+{
+	Assign (GetFileName ());
 }
 
 void YPathString::StripFileName (BOOL bToValidPath /* = FALSE */)
