@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.17  2001/09/14 16:16:59  leopoldo
+ * Removed ambigous operator
+ *
  * Revision 1.16  2001/05/18 16:00:19  leopoldo
  * Moved YMultiString in it's own implementation files
  *
@@ -174,9 +177,11 @@ public:
 	void						Empty					();
 	void						Fill					(WCHAR ch, UINT cSize = (UINT) -1);
 	void						Fill					(char ch, UINT cSize = (UINT) -1);
-	TCHAR						GetAt					(UINT nIndex) const;
-//	TCHAR &						operator[]				(UINT nIndex);
-	void						SetAt					(UINT nIndex, TCHAR ch);
+	TCHAR						GetAt					(int nIndex) const;
+	LPTSTR						GetPtrAt				(int nIndex);
+	LPCTSTR						GetPtrAt				(int nIndex) const;
+//	TCHAR &						operator[]				(int nIndex);
+	void						SetAt					(int nIndex, TCHAR ch);
 
 	// transfer
 	void						Copy					(LPTSTR pszDest, UINT cbSize);

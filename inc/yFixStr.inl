@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.13  2001/09/14 16:16:59  leopoldo
+ * Removed ambigous operator
+ *
  * Revision 1.12  2001/05/18 16:00:19  leopoldo
  * Moved YMultiString in it's own implementation files
  *
@@ -162,22 +165,34 @@ YLB_INLINE void YFixedString::Empty ()
 	*m_pszString = 0;
 }
 
-YLB_INLINE TCHAR YFixedString::GetAt (UINT nIndex) const
+YLB_INLINE TCHAR YFixedString::GetAt (int nIndex) const
 {
 	ASSERTY(m_pszString);
-	return (nIndex < m_cbSize) ? (m_pszString[nIndex]) : (0);
+	return ((nIndex >= 0) && (nIndex < (int) m_cbSize)) ? (m_pszString[nIndex]) : (0);
 }
 
-//YLB_INLINE TCHAR & YFixedString::operator[] (UINT nIndex)
+YLB_INLINE LPTSTR YFixedString::GetPtrAt (int nIndex)
+{
+	ASSERTY(m_pszString);
+	return ((nIndex >= 0) && (nIndex < (int) m_cbSize)) ? (m_pszString + nIndex) : (NULL);
+}
+
+YLB_INLINE LPCTSTR YFixedString::GetPtrAt (int nIndex) const
+{
+	ASSERTY(m_pszString);
+	return ((nIndex >= 0) && (nIndex < (int) m_cbSize)) ? (m_pszString + nIndex) : (NULL);
+}
+
+//YLB_INLINE TCHAR & YFixedString::operator[] (int nIndex)
 //{
-//	ASSERTY(nIndex < m_cbSize);
+//	ASSERTY((nIndex >= 0) && (nIndex < m_cbSize));
 //	return m_pszString[nIndex];
 //}
 
-YLB_INLINE void YFixedString::SetAt (UINT nIndex, TCHAR ch)
+YLB_INLINE void YFixedString::SetAt (int nIndex, TCHAR ch)
 {
 	ASSERTY(m_pszString);
-	if ( nIndex && (nIndex < m_cbSize) ) {
+	if ( (nIndex >= 0) && (nIndex < (int) m_cbSize) ) {
 		m_pszString[nIndex] = ch;
 	}
 }
