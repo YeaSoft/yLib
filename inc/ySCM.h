@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2002/08/20 18:51:47  leopoldo
+ * Moved pseudofunctions support from yLibBase.h
+ *
  * Revision 1.5  2001/05/25 16:31:53  leopoldo
  * Added configuration management methods
  *
@@ -262,10 +265,6 @@ private:
 	SC_HANDLE					m_hSCM;
 	SC_HANDLE					m_hService;
 };
-
-#ifdef YLB_ENABLE_INLINE
-#include <ySCM.inl>
-#endif
 
 /*=============================================================================
  * NT API PSEUDOFUNCTIONS
@@ -566,6 +565,10 @@ BOOL YLBAPI YlbUnlockServiceDatabase (
 } //extern "C"
 
 #endif //YLB_NATIVE_NT_LINKING
+
+#ifdef YLB_ENABLE_INLINE
+#include <ySCM.inl>
+#endif
 
 #endif //__ySCM_h__
 
