@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2000/08/22  16:18:54  leo
+ * Added some of the directory operations to YPathString
+ *
  * Revision 1.4  2000/08/22  16:01:39  leo
  * Added the transfer methods
  *
@@ -151,24 +154,6 @@ YLB_INLINE void YFixedString::SetAt (UINT nIndex, TCHAR ch)
 		m_pszString[nIndex] = ch;
 	}
 }
-
-#ifdef _UNICODE
-
-YLB_INLINE void YFixedString::Copy (LPSTR pszDest, UINT cbSize)
-{
-	ASSERTY(pszDest);
-	_ywcstombsz (pstDest, m_pszString, cbSize);
-}
-
-#else
-
-YLB_INLINE void YFixedString::Copy (LPWSTR pszDest, UINT cbSize)
-{
-	ASSERTY(pszDest);
-	_ymbstowcsz (pszDest, m_pszString, cbSize);
-}
-
-#endif
 
 YLB_INLINE void YFixedString::Assign (const YStringData& stringSrc)
 {

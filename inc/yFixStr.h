@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.7  2000/08/22  16:18:59  leo
+ * Added some of the directory operations to YPathString
+ *
  * Revision 1.6  2000/08/22  16:01:50  leo
  * Added the transfer methods
  *
@@ -64,6 +67,9 @@
  *============================================================================*/
 #ifndef __yUNC_h__
 #include <yUNC.h>
+#endif
+#ifndef __yFileTools_h__
+#include <yFileTools.h>
 #endif
 
 /*=============================================================================
