@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2001/05/24 15:16:55  leopoldo
+ * Added some new method
+ * Changed size variables to int
+ *
  * Revision 1.5  2001/05/22 16:57:47  leopoldo
  * Added more methods to YDynamicBuffer
  *
@@ -199,7 +203,7 @@ YLB_INLINE BOOL YDynamicBuffer::PopString (LPWSTR pszData, int cbSize)
 
 YLB_INLINE BOOL YDynamicBuffer::IsEmpty () const
 {
-	return m_cbContentSize != 0;
+	return m_cbContentSize == 0;
 }
 
 YLB_INLINE int YDynamicBuffer::GetContentSize () const
