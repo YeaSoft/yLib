@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:04:59  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdInc.hpp"
@@ -592,6 +595,50 @@ void YFixedString::ReverseTerminate (LPCTSTR lpszTermCharSet)
 	for ( LPTSTR lpPtr = m_pszString + GetLength () - 1; lpPtr >= m_pszString; lpPtr-- ) {
 		if ( _tcschr (lpszTermCharSet, *lpPtr) ) {
 			*lpPtr = 0;
+			break;
+		}
+	}
+}
+
+void YFixedString::TerminateAfter (TCHAR cTermChar)
+{
+	ASSERTY(m_pszString);
+	LPTSTR lpPtr = _tcschr (m_pszString, (_TUCHAR) cTermChar);
+	if ( lpPtr ) {
+		lpPtr[1] = 0;
+	}
+}
+
+void YFixedString::ReverseTerminateAfter (TCHAR cTermChar)
+{
+	ASSERTY(m_pszString);
+	LPTSTR lpPtr = _tcsrchr (m_pszString, (_TUCHAR) cTermChar);
+	if ( lpPtr ) {
+		lpPtr[1] = 0;
+	}
+}
+
+
+void YFixedString::TerminateAfter (LPCTSTR lpszTermCharSet)
+{
+	ASSERTY(m_pszString);
+	for ( LPTSTR lpPtr = m_pszString; *lpPtr; lpPtr++ ) {
+		if ( _tcschr (lpszTermCharSet, *lpPtr) ) {
+			lpPtr[1] = 0;
+			break;
+		}
+	}
+}
+
+void YFixedString::ReverseTerminateAfter (LPCTSTR lpszTermCharSet)
+{
+	ASSERTY(m_pszString);
+	if ( IsEmpty () ) {
+		return;
+	}
+	for ( LPTSTR lpPtr = m_pszString + GetLength () - 1; lpPtr >= m_pszString; lpPtr-- ) {
+		if ( _tcschr (lpszTermCharSet, *lpPtr) ) {
+			lpPtr[1] = 0;
 			break;
 		}
 	}

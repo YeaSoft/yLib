@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26  14:03:08  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -204,6 +207,10 @@ public:
 	void						ReverseTerminate		(TCHAR cTermChar);
 	void						Terminate				(LPCTSTR lpszTermCharSet);
 	void						ReverseTerminate		(LPCTSTR lpszTermCharSet);
+	void						TerminateAfter			(TCHAR cTermChar);
+	void						ReverseTerminateAfter	(TCHAR cTermChar);
+	void						TerminateAfter			(LPCTSTR lpszTermCharSet);
+	void						ReverseTerminateAfter	(LPCTSTR lpszTermCharSet);
 
 	// advanced manipulation
 	int							Replace					(TCHAR chOld, TCHAR chNew);
