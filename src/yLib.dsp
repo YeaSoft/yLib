@@ -259,6 +259,10 @@ SOURCE=.\yArrayS.cpp
 # End Group
 # Begin Source File
 
+SOURCE=.\_ntStubs.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\_yState.cpp
 # End Source File
 # Begin Source File

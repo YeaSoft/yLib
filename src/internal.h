@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/16 17:15:53  leopoldo
+ * Added support for reattachment of RTL output handles
+ *
  * Revision 1.2  2000/08/23 10:01:41  leo
  * Added inlined format function
  * Updated license
@@ -142,6 +145,300 @@ inline void						_ylb_formatv			(LPTSTR pszBuffer, UINT cbSize, LPCTSTR pszForma
 		pszBuffer[cbSize - 1] = 0;
 	}
 }
+
+#ifndef YLB_NATIVE_NT_LINKING
+
+typedef BOOL  (WINAPI * LPFN_CSCA) (
+	SC_HANDLE	hService,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCSTR		lpBinaryPathName,
+	LPCSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCSTR		lpDependencies,
+	LPCSTR		lpServiceStartName,
+	LPCSTR		lpPassword,
+	LPCSTR		lpDisplayName
+);
+
+typedef BOOL (WINAPI * LPFN_CSCW) (
+	SC_HANDLE	hService,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCWSTR		lpBinaryPathName,
+	LPCWSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCWSTR		lpDependencies,
+	LPCWSTR		lpServiceStartName,
+	LPCWSTR		lpPassword,
+	LPCWSTR		lpDisplayName
+);
+
+typedef BOOL (WINAPI * LPFN_CSC2A) (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPVOID		lpInfo
+);
+
+typedef BOOL (WINAPI * LPFN_CSC2W) (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPVOID		lpInfo
+);
+
+typedef BOOL (WINAPI * LPFN_CSH) (
+	SC_HANDLE	hSCObject
+);
+
+typedef BOOL (WINAPI * LPFN_CS) (
+	SC_HANDLE			hService,
+	DWORD				dwControl,
+	LPSERVICE_STATUS	lpServiceStatus
+);
+
+typedef SC_HANDLE (WINAPI * LPFN_CSA) (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpServiceName,
+	LPCSTR		lpDisplayName,
+	DWORD		dwDesiredAccess,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCSTR		lpBinaryPathName,
+	LPCSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCSTR		lpDependencies,
+	LPCSTR		lpServiceStartName,
+	LPCSTR		lpPassword
+);
+
+typedef SC_HANDLE (WINAPI * LPFN_CSW) (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpServiceName,
+	LPCWSTR		lpDisplayName,
+	DWORD		dwDesiredAccess,
+	DWORD		dwServiceType,
+	DWORD		dwStartType,
+	DWORD		dwErrorControl,
+	LPCWSTR		lpBinaryPathName,
+	LPCWSTR		lpLoadOrderGroup,
+	LPDWORD		lpdwTagId,
+	LPCWSTR		lpDependencies,
+	LPCWSTR		lpServiceStartName,
+	LPCWSTR		lpPassword
+);
+
+typedef BOOL (WINAPI * LPFN_DS) (
+	SC_HANDLE	hService
+);
+
+typedef BOOL (WINAPI * LPFN_EDSA) (
+	SC_HANDLE				hService,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSA	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned
+);
+
+
+typedef BOOL (WINAPI * LPFN_EDSW) (
+	SC_HANDLE				hService,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSW	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned
+);
+
+typedef BOOL (WINAPI * LPFN_ESSA) (
+	SC_HANDLE				hSCManager,
+	DWORD					dwServiceType,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSA	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned,
+	LPDWORD					lpResumeHandle
+);
+
+typedef BOOL (WINAPI * LPFN_ESSW) (
+	SC_HANDLE				hSCManager,
+	DWORD					dwServiceType,
+	DWORD					dwServiceState,
+	LPENUM_SERVICE_STATUSW	lpServices,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded,
+	LPDWORD					lpServicesReturned,
+	LPDWORD					lpResumeHandle
+);
+
+typedef BOOL (WINAPI * LPFN_GSKNA) (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpDisplayName,
+	LPSTR		lpServiceName,
+	LPDWORD		lpcchBuffer
+);
+
+typedef BOOL (WINAPI * LPFN_GSKNW) (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpDisplayName,
+	LPWSTR		lpServiceName,
+	LPDWORD		lpcchBuffer
+);
+
+typedef BOOL (WINAPI * LPFN_GSDNA) (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpServiceName,
+	LPSTR		lpDisplayName,
+	LPDWORD		lpcchBuffer
+);
+
+typedef BOOL (WINAPI * LPFN_GSDNW) (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpServiceName,
+	LPWSTR		lpDisplayName,
+	LPDWORD		lpcchBuffer
+);
+
+typedef SC_LOCK (WINAPI * LPFN_LSD) (
+	SC_HANDLE	hSCManager
+);
+
+typedef BOOL (WINAPI * LPFN_NBCS) (
+	BOOL	BootAcceptable
+);
+
+typedef SC_HANDLE (WINAPI * LPFN_OSCMA) (
+	LPCSTR	lpMachineName,
+	LPCSTR	lpDatabaseName,
+	DWORD	dwDesiredAccess
+);
+
+typedef SC_HANDLE (WINAPI * LPFN_OSCMW) (
+	LPCWSTR	lpMachineName,
+	LPCWSTR	lpDatabaseName,
+	DWORD	dwDesiredAccess
+);
+
+typedef SC_HANDLE (WINAPI * LPFN_OSA) (
+	SC_HANDLE	hSCManager,
+	LPCSTR		lpServiceName,
+	DWORD		dwDesiredAccess
+);
+
+typedef SC_HANDLE (WINAPI * LPFN_OSW) (
+	SC_HANDLE	hSCManager,
+	LPCWSTR		lpServiceName,
+	DWORD		dwDesiredAccess
+);
+
+typedef BOOL (WINAPI * LPFN_QSCA) (
+	SC_HANDLE				hService,
+	LPQUERY_SERVICE_CONFIGA	lpServiceConfig,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded
+);
+
+typedef BOOL (WINAPI * LPFN_QSCW) (
+	SC_HANDLE				hService,
+	LPQUERY_SERVICE_CONFIGW	lpServiceConfig,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded
+);
+
+
+typedef BOOL (WINAPI *LPFN_QSC2A) (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPBYTE		lpBuffer,
+	DWORD		cbBufSize,
+	LPDWORD		pcbBytesNeeded
+);
+
+typedef BOOL (WINAPI * LPFN_QSC2W) (
+	SC_HANDLE	hService,
+	DWORD		dwInfoLevel,
+	LPBYTE		lpBuffer,
+	DWORD		cbBufSize,
+	LPDWORD		pcbBytesNeeded
+);
+
+typedef BOOL (WINAPI * LPFN_QSLSA) (
+	SC_HANDLE						hSCManager,
+	LPQUERY_SERVICE_LOCK_STATUSA	lpLockStatus,
+	DWORD							cbBufSize,
+	LPDWORD							pcbBytesNeeded
+);
+
+typedef BOOL (WINAPI * LPFN_QSLSW) (
+	SC_HANDLE						hSCManager,
+	LPQUERY_SERVICE_LOCK_STATUSW	lpLockStatus,
+	DWORD							cbBufSize,
+	LPDWORD							pcbBytesNeeded
+);
+
+typedef BOOL (WINAPI * LPFN_QSOS) (
+	SC_HANDLE				hService,
+	SECURITY_INFORMATION	dwSecurityInformation,
+	PSECURITY_DESCRIPTOR	lpSecurityDescriptor,
+	DWORD					cbBufSize,
+	LPDWORD					pcbBytesNeeded
+);
+
+typedef BOOL (WINAPI * LPFN_QSS) (
+	SC_HANDLE			hService,
+	LPSERVICE_STATUS	lpServiceStatus
+);
+
+typedef SERVICE_STATUS_HANDLE (WINAPI * LPFN_RSCHA) (
+	LPCSTR				lpServiceName,
+	LPHANDLER_FUNCTION	lpHandlerProc
+);
+
+typedef SERVICE_STATUS_HANDLE (WINAPI * LPFN_RSCHW) (
+	LPCWSTR				lpServiceName,
+	LPHANDLER_FUNCTION	lpHandlerProc
+);
+
+typedef BOOL (WINAPI * LPFN_SSOS) (
+	SC_HANDLE				hService,
+	SECURITY_INFORMATION	dwSecurityInformation,
+	PSECURITY_DESCRIPTOR	lpSecurityDescriptor
+);
+
+typedef BOOL (WINAPI * LPFN_SSS) (
+	SERVICE_STATUS_HANDLE	hServiceStatus,
+	LPSERVICE_STATUS		lpServiceStatus
+);
+
+typedef BOOL (WINAPI * LPFN_SSCDA) (
+	CONST SERVICE_TABLE_ENTRYA *	lpServiceStartTable
+);
+
+typedef BOOL (WINAPI * LPFN_SSCDW) (
+	CONST SERVICE_TABLE_ENTRYW *	lpServiceStartTable
+);
+
+typedef BOOL (WINAPI * LPFN_SSA) (
+	SC_HANDLE	hService,
+	DWORD		dwNumServiceArgs,
+	LPCSTR *	lpServiceArgVectors
+);
+
+typedef BOOL (WINAPI * LPFN_SSW) (
+	SC_HANDLE	hService,
+	DWORD		dwNumServiceArgs,
+	LPCWSTR *	lpServiceArgVectors
+);
+
+typedef BOOL (WINAPI * LPFN_USD) (
+	SC_LOCK	ScLock
+);
+
+#endif //YLB_NATIVE_NT_LINKING
 
 #endif //_ylib_internal_
 //
