@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/22 11:40:34  leo
+ * Added more access methods
+ * Updated license
+ *
  * Revision 1.1  2000/05/26  14:04:50  leo
  * Initial revision
  *
@@ -107,7 +111,7 @@ BOOL YCmdLineParser::Parse ()
 
 	BOOL		bTerminate = FALSE;
 	ITERATOR	pos;
-	UINT		nCliIndex = 2;
+	UINT		nCliIndex = 1;
 	for ( pos = _proc.m_cli.GetHeadPosition (), _proc.m_cli.GetNext (pos); pos; nCliIndex++ ) {
 		LPCTSTR pszArg = _proc.m_cli.GetNext (pos);
 		if ( pszArg ) {
