@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/07/05  13:30:38  leo
+ * Added the "TerminateAfter" methods
+ *
  * Revision 1.1  2000/05/26  14:04:59  leo
  * Initial revision
  *
@@ -945,6 +948,12 @@ BOOL YComputerName::FromUNC (LPCTSTR lpszUNC)
 		m_szData[GetSize () - 1] = 0;
 	}
 	return *m_szData != 0;
+}
+
+BOOL YUserName::GetCurrent ()
+{
+	DWORD	dwLen = GetSize ();
+	return ::GetUserName (m_szData, &dwLen);
 }
 
 /*=============================================================================

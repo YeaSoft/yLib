@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/07/05  13:26:39  leo
+ * Added the "TerminateAfter" methods
+ *
  * Revision 1.1  2000/05/26  14:03:08  leo
  * Initial revision
  *
@@ -61,6 +64,7 @@ class YStringData;
 		// system related strings with related methods
 		class YPathString;
 		class YComputerName;
+		class YUserName;
 	class YMultiString;
 
 /*=============================================================================
@@ -635,6 +639,44 @@ public:
 private:
 	// implementation
 	TCHAR						m_szData[MAX_COMPUTERNAME_LENGTH + 1];
+};
+
+class YUserName : public YFixedString
+{
+public:
+	// construction
+	YUserName					(BOOL bEmpty = TRUE) : YFixedString (m_szData, UNLEN + 1, bEmpty) { }
+	YUserName					(const YStringData& stringSrc) : YFixedString (m_szData, UNLEN + 1, FALSE) { Assign (stringSrc); }
+	YUserName					(LPCTSTR lpsz) : YFixedString (m_szData, UNLEN + 1, FALSE) { Assign (lpsz); }
+
+public:
+	// special operations
+	BOOL						GetCurrent				();
+
+public:
+	// overloaded assignment
+	const YUserName &			operator=				(const YStringData& stringSrc) { Assign (stringSrc); return *this; }
+	const YUserName &			operator=				(TCHAR ch) { Assign (ch); return *this; }
+	const YUserName &			operator=				(LPCSTR lpsz) { Assign (lpsz); return *this; }
+	const YUserName &			operator=				(LPCWSTR lpsz) { Assign (lpsz); return *this; }
+	const YUserName &			operator=				(const unsigned char* psz) { Assign (psz); return *this; }
+#ifdef _UNICODE
+	const YUserName &			operator=				(char ch) { Assign (ch); return *this; }
+#endif
+
+	// overloaded concatenation
+	const YUserName &			operator+=				(const YStringData& stringSrc) { Concat (stringSrc); return *this; };
+	const YUserName &			operator+=				(TCHAR ch) { Concat (ch); return *this; };
+	const YUserName &			operator+=				(LPCSTR lpsz) { Concat (lpsz); return *this; };
+	const YUserName &			operator+=				(LPCWSTR lpsz) { Concat (lpsz); return *this; };
+	const YUserName &			operator+=				(const unsigned char* psz) { Concat (psz); return *this; };
+#ifdef _UNICODE
+	const YUserName &			operator+=				(char ch) { Concat (ch); return *this; };
+#endif
+
+private:
+	// implementation
+	TCHAR						m_szData[UNLEN + 1];
 };
 
 /*=============================================================================
