@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.19  2001/10/05 13:29:56  leopoldo
+ * Added harder delete options to file and directory delete functions
+ *
  * Revision 1.18  2001/09/17 17:14:15  leopoldo
  * Implemented YFixedString::GetPtrAt
  *
@@ -553,6 +556,9 @@ public:
 	BOOL						IsRelative				() const;
 	BOOL						IsRoot					() const;
 	BOOL						IsUNC					() const;
+
+	BOOL						ScanPath				(LPCTSTR pszPattern, LPCTSTR pszSeparators = _T(";"));
+
 
 private:
 	// implementation

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.18  2001/09/26 11:14:09  leopoldo
+ * Fixed UNICODE issues
+ *
  * Revision 1.17  2001/05/18 16:00:02  leopoldo
  * Moved YMultiString in it's own implementation files
  *
@@ -1150,6 +1153,9 @@ void YHeapString::Free ()
 /*=============================================================================
  * SYSTEM STRING CLASSES IMPLEMENTATION
  *============================================================================*/
+//
+// class YPathString
+//
 void YPathString::AddFileName (LPCTSTR pszFileName)
 {
 	if ( pszFileName && *pszFileName ) {
@@ -1227,6 +1233,22 @@ void YPathString::RemoveBackslash ()
 	}
 }
 
+BOOL YPathString::ScanPath (LPCTSTR pszPattern, LPCTSTR pszSeparators /* = _T(";") */)
+{
+	YTokenizer	tok(pszPattern, pszSeparators);
+	LPTSTR		lpFilePart;
+
+	for ( LPCTSTR lpPtr = tok.GetFirstToken (); lpPtr; lpPtr = tok.GetNextToken () ) {
+		if ( ::SearchPath (NULL, lpPtr, NULL, GetBufferSize (), GetBuffer (), &lpFilePart) ) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+//
+// class YComputerName
+//
 BOOL YComputerName::GetCurrent ()
 {
 	DWORD	dwLen = GetBufferSize ();
@@ -1255,6 +1277,9 @@ BOOL YComputerName::FromUNC (LPCTSTR lpszUNC)
 	return *m_szData != 0;
 }
 
+//
+// class YUserName
+//
 BOOL YUserName::GetCurrent ()
 {
 	DWORD	dwLen = GetBufferSize ();
