@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.7  2001/03/23 12:17:55  leopoldo
+ * Added missing compare helpers
+ *
  * Revision 1.6  2000/08/23 10:12:34  leo
  * Fixed some release build issue
  *
@@ -608,6 +611,21 @@ YLB_INLINE BOOL YPathString::CompressDirTree () const
 YLB_INLINE BOOL YPathString::UncompressDirTree () const
 {
 	return YFileManager::UncompressDirTree (m_pszString);
+}
+
+YLB_INLINE BOOL YPathString::IsAbsolute () const
+{
+	return _istalpha (m_szData[0]) &&  (m_szData[1] == _T(':')) && (m_szData[2] == _T('\\'));
+}
+
+YLB_INLINE BOOL YPathString::IsRelative () const
+{
+	return !IsAbsolute ();
+}
+
+YLB_INLINE BOOL YPathString::IsUNC () const
+{
+	return (m_szData[0] == _T('\\')) && (m_szData[1] == _T('\\'));
 }
 
 /*=============================================================================

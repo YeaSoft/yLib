@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.11  2001/03/23 12:17:55  leopoldo
+ * Added missing compare helpers
+ *
  * Revision 1.10  2000/10/05 17:20:45  leopoldo
  * Added YFixedString::MakeCapital
  *
@@ -762,6 +765,10 @@ public:
 	BOOL						UncompressDir			() const;
 	BOOL						CompressDirTree			() const;
 	BOOL						UncompressDirTree		() const;
+
+	BOOL						IsAbsolute				() const;
+	BOOL						IsRelative				() const;
+	BOOL						IsUNC					() const;
 
 private:
 	// implementation
