@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.8  2001/04/25 12:28:01  leopoldo
+ * Added IsAbsolute, IsRelative and IsUNC to YPathString
+ *
  * Revision 1.7  2001/03/23 12:17:55  leopoldo
  * Added missing compare helpers
  *
@@ -97,6 +100,11 @@ YLB_INLINE UINT YStringData::GetBufferSize () const
 }
 
 YLB_INLINE LPTSTR YStringData::GetBuffer () const
+{
+	return m_pszString;
+}
+
+YLB_INLINE LPCTSTR YStringData::GetString () const
 {
 	return m_pszString;
 }
@@ -539,13 +547,9 @@ YLB_INLINE LPCTSTR YPathString::GetFileName () const
 
 YLB_INLINE LPCTSTR YPathString::GetFileExtension () const
 {
-	LPCTSTR lpRet = _tcsrchr (m_pszString, _T('.'));
-	return (lpRet) ? (lpRet + 1) : (_T(""));
-}
-
-YLB_INLINE void YPathString::StripExtension ()
-{
-	ReverseTerminate (_T('.'));
+	LPCTSTR lpSep = _tcsrchr (m_pszString, _T('\\'));
+	LPCTSTR lpExt = _tcsrchr (m_pszString, _T('.'));
+	return (lpExt > lpSep) ? (lpExt + 1) : (_T(""));
 }
 
 YLB_INLINE BOOL YPathString::IsFile () const
