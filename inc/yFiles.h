@@ -1,23 +1,30 @@
 /*=============================================================================
  * This is a part of the yLib Software Development Kit.
- * Copyright (C) 1998-2000 YEAsoft Inc.
+ * Copyright (C) 1998-2000 YEAsoft Int'l.
  * All rights reserved.
  *=============================================================================
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation. In addition, you may also charge for any
- * application using yLib, and are under no obligation to supply source
- * code. You must accredit YEAsoft Inc. in the "About Box", or banner
- * of your application. 
+ * Copyright (c) 1998-2000 YEAsoft Int'l (Leo Moll, Andrea Pennelli).
+ * This software is provided 'as-is', without any express or implied warranty.
+ * In no event will the authors be held liable for any damages arising from the
+ * use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software in
+ *    a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source distribution.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should also have received a copy of the GNU General Public License
- * with this software, also indicating additional rights you have when using
- * yLib.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *=============================================================================
  * FILENAME		:	yFiles.h
  * PURPOSE		:	Declaration of the generic file classes
@@ -25,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/05/30  10:58:08  leo
+ * Removed unused methods from YStdioFile
+ *
  * Revision 1.1  2000/05/26  14:03:04  leo
  * Initial revision
  *
@@ -87,18 +97,26 @@ class YFile : virtual public YBaseFile, virtual public YDataHandle
 {
 public:
 	enum YOpenFlags {
-		modeRead		= 0x00000000,
-		modeWrite		= 0x00000001,
-		modeReadWrite	= 0x00000002,
-		shareExclusive	= 0x00000000,
-		shareDenyWrite	= 0x00000004,
-		shareDenyRead	= 0x00000008,
-		shareDenyNone	= 0x00000010,
-		modeNoInherit	= 0x00000020,
-		modeCreate		= 0x00000040,
-		modeNoTruncate	= 0x00000080,
-		typeText		= 0x00000100,
-		typeBinary		= 0x00000200
+		modeRead					= 0x00000000,
+		modeWrite					= 0x00000001,
+		modeReadWrite				= 0x00000002,
+		shareExclusive				= 0x00000000,
+		shareDenyWrite				= 0x00000004,
+		shareDenyRead				= 0x00000008,
+		shareDenyNone				= 0x00000010,
+		modeNoInherit				= 0x00000020,
+		modeCreate					= 0x00000040,
+		modeNoTruncate				= 0x00000080,
+		typeText					= 0x00000100,
+		typeBinary					= 0x00000200,
+		cacheDefault				= 0x00000000,
+		cacheNoBuffering			= 0x00010000,
+		cacheWriteThrough			= 0x00020000,
+		cacheSequentialOptimized	= 0x00040000,
+		cacheRandomOptimized		= 0x00080000,
+		modeDeleteOnClose			= 0x00100000,
+		modeBackup					= 0x00200000,
+		modePosix					= 0x00400000
 	};
 
 private:
