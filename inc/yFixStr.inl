@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.10  2001/05/08 17:10:30  leopoldo
+ * Added the new methods IsRoot, Fill, BufferToHex, HexToBuffer
+ *
  * Revision 1.9  2001/05/06 18:28:12  leopoldo
  * Improved YPathString::GetFileExtension
  *
@@ -92,12 +95,12 @@ YLB_INLINE YStringData::YStringData (LPTSTR pszStorage, UINT cbSize)
 	m_cbSize	= cbSize;
 }
 
-YLB_INLINE UINT YStringData::GetSize () const
+YLB_INLINE UINT YStringData::GetBufferSize () const
 {
 	return m_cbSize;
 }
 
-YLB_INLINE UINT YStringData::GetBufferSize () const
+YLB_INLINE UINT YStringData::GetBufferSizeInBytes () const
 {
 	return m_cbSize * sizeof (TCHAR);
 }

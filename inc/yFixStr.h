@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.14  2001/05/08 17:10:30  leopoldo
+ * Added the new methods IsRoot, Fill, BufferToHex, HexToBuffer
+ *
  * Revision 1.13  2001/05/06 18:26:52  leopoldo
  * Switched to template based predefined fixed strings
  *
@@ -127,7 +130,7 @@ public:
 
 public:
 	// attributes
-	UINT						GetSize					() const;
+	UINT						GetBufferSizeInBytes	() const;
 	UINT						GetBufferSize			() const;
 	LPTSTR						GetBuffer				() const;
 	LPCTSTR						GetString				() const;

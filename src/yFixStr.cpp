@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.15  2001/05/08 17:09:58  leopoldo
+ * Added the new methods Fill, BufferToHex, HexToBuffer
+ *
  * Revision 1.14  2001/05/06 18:28:53  leopoldo
  * Improved YPathString::StripExtension
  *
@@ -1220,7 +1223,7 @@ void YPathString::RemoveBackslash ()
 
 BOOL YComputerName::GetCurrent ()
 {
-	DWORD	dwLen = GetSize ();
+	DWORD	dwLen = GetBufferSize ();
 	return ::GetComputerName (m_szData, &dwLen);
 }
 
@@ -1236,19 +1239,19 @@ BOOL YComputerName::FromUNC (LPCTSTR lpszUNC)
 
 	LPCTSTR lpPtr = _tcschr (lpszUNC, _T('\\'));
 	if ( lpPtr ) {
-		_tcsncpy (m_szData, lpszUNC, min(lpPtr - lpszUNC,(int)GetSize () - 1));
-		m_szData[min(lpPtr - lpszUNC,(int)GetSize () - 1)] = 0;
+		_tcsncpy (m_szData, lpszUNC, min(lpPtr - lpszUNC,(int)GetBufferSize () - 1));
+		m_szData[min(lpPtr - lpszUNC,(int)GetBufferSize () - 1)] = 0;
 	}
 	else {
-		_tcsncpy (m_szData, lpszUNC, GetSize () - 1);
-		m_szData[GetSize () - 1] = 0;
+		_tcsncpy (m_szData, lpszUNC, GetBufferSize () - 1);
+		m_szData[GetBufferSize () - 1] = 0;
 	}
 	return *m_szData != 0;
 }
 
 BOOL YUserName::GetCurrent ()
 {
-	DWORD	dwLen = GetSize ();
+	DWORD	dwLen = GetBufferSize ();
 	return ::GetUserName (m_szData, &dwLen);
 }
 
