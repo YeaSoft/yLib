@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.16  2001/05/18 16:00:19  leopoldo
+ * Moved YMultiString in it's own implementation files
+ *
  * Revision 1.15  2001/05/17 16:20:03  leopoldo
  * Fixed the misunderstanding between YStringData::GetSize and YStringData::GetBufferSize
  *
@@ -172,7 +175,7 @@ public:
 	void						Fill					(WCHAR ch, UINT cSize = (UINT) -1);
 	void						Fill					(char ch, UINT cSize = (UINT) -1);
 	TCHAR						GetAt					(UINT nIndex) const;
-	TCHAR						operator[]				(UINT nIndex) const;
+//	TCHAR &						operator[]				(UINT nIndex);
 	void						SetAt					(UINT nIndex, TCHAR ch);
 
 	// transfer

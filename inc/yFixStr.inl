@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.12  2001/05/18 16:00:19  leopoldo
+ * Moved YMultiString in it's own implementation files
+ *
  * Revision 1.11  2001/05/17 16:20:23  leopoldo
  * Fixed the misunderstanding between YStringData::GetSize and YStringData::GetBufferSize
  *
@@ -165,10 +168,11 @@ YLB_INLINE TCHAR YFixedString::GetAt (UINT nIndex) const
 	return (nIndex < m_cbSize) ? (m_pszString[nIndex]) : (0);
 }
 
-YLB_INLINE TCHAR YFixedString::operator[] (UINT nIndex) const
-{
-	return GetAt (nIndex);
-}
+//YLB_INLINE TCHAR & YFixedString::operator[] (UINT nIndex)
+//{
+//	ASSERTY(nIndex < m_cbSize);
+//	return m_pszString[nIndex];
+//}
 
 YLB_INLINE void YFixedString::SetAt (UINT nIndex, TCHAR ch)
 {
