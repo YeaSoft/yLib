@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.10  2000/08/24 16:57:02  leo
+ * Fixed error in Right
+ * Corrected length adjustment in Assign(LPCTSTR, UINT)
+ *
  * Revision 1.9  2000/08/23  14:38:24  leo
  * Fixed a typo
  *
@@ -156,9 +160,12 @@ void YFixedString::Assign (LPCTSTR lpsz)
 {
 	ASSERTY(m_pszString);
 	if ( lpsz ) {
-		ASSERTY(YlbIsValidString(lpsz));
-		_tcsncpy (m_pszString, lpsz, m_cbSize - 1);
-		m_pszString[m_cbSize - 1] = 0;
+		if ( lpsz != m_pszString ) {
+			// not self assigned
+			ASSERTY(YlbIsValidString(lpsz));
+			_tcsncpy (m_pszString, lpsz, m_cbSize - 1);
+			m_pszString[m_cbSize - 1] = 0;
+		}
 	}
 	else {
 		*m_pszString = 0;
@@ -208,7 +215,10 @@ void YFixedString::Assign (LPCTSTR lpsz, UINT nCount)
 	nCount = min(nCount+1,m_cbSize);
 	if ( lpsz && nCount ) {
 		--nCount;
-		_tcsncpy (m_pszString, lpsz, nCount);
+		if ( lpsz != m_pszString ) {
+			// not self assigned
+			_tcsncpy (m_pszString, lpsz, nCount);
+		}
 		m_pszString[nCount] = 0;
 	}
 	else {
