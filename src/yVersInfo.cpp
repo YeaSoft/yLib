@@ -32,6 +32,12 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2002/05/08 09:59:56  leo
+ * Initial Sourceforge Revision
+ *
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:14  leo
  * Initial revision
  *
@@ -207,7 +213,7 @@ LPCTSTR  YVersInfo::QueryValue (WORD wLangCode, WORD wCodePage, LPCTSTR pszName)
 	return lpReturn;
 }
 
-LPCTSTR  YVersInfo::QueryValue (LPCTSTR pszName)
+LPCTSTR YVersInfo::QueryValue (LPCTSTR pszName)
 {
 	WORD wLanguage, wCodePage;
 	for ( BOOL bFound = GetFirstLanguage (&wLanguage, &wCodePage); bFound; bFound = GetNextLanguage (&wLanguage, &wCodePage) ) {
@@ -217,6 +223,44 @@ LPCTSTR  YVersInfo::QueryValue (LPCTSTR pszName)
 		}
 	}
 	return NULL;
+}
+
+int YVersInfo::CompareFileVersion (YVersInfo &src)
+{
+	int iDiff;
+
+	if ( 0 != (iDiff = (int) GetFileMajorVersion () - (int) src.GetFileMajorVersion ()) ) {
+		return iDiff;
+	}
+	if ( 0 != (iDiff = (int) GetFileMinorVersion () - (int) src.GetFileMinorVersion ()) ) {
+		return iDiff;
+	}
+	if ( 0 != (iDiff = (int) GetFileSteppingNumber () - (int) src.GetFileSteppingNumber ()) ) {
+		return iDiff;
+	}
+	if ( 0 != (iDiff = (int) GetFileBuildNumber () - (int) src.GetFileBuildNumber ()) ) {
+		return iDiff;
+	}
+	return 0;
+}
+
+int YVersInfo::CompareProductVersion (YVersInfo &src)
+{
+	int iDiff;
+
+	if ( 0 != (iDiff = (int) GetProductMajorVersion () - (int) src.GetProductMajorVersion ()) ) {
+		return iDiff;
+	}
+	if ( 0 != (iDiff = (int) GetProductMinorVersion () - (int) src.GetProductMinorVersion ()) ) {
+		return iDiff;
+	}
+	if ( 0 != (iDiff = (int) GetProductSteppingNumber () - (int) src.GetProductSteppingNumber ()) ) {
+		return iDiff;
+	}
+	if ( 0 != (iDiff = (int) GetProductBuildNumber () - (int) src.GetProductBuildNumber ()) ) {
+		return iDiff;
+	}
+	return 0;
 }
 
 #ifndef YLB_ENABLE_INLINE

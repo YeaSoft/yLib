@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2002/05/14 12:03:21  leopoldo
+ * Added YVersInfo::GetFixedFileInfo
+ *
  * Revision 1.3  2002/05/14 11:55:56  leopoldo
  * Added YVersInfo::GetName
  *
@@ -145,6 +148,9 @@ public:
 	LPCTSTR						QueryFileVersion			();
 	LPCTSTR						QueryOriginalFilename		();
 	LPCTSTR						QuerySpecialBuild			();
+
+	int							CompareFileVersion			(YVersInfo &src);
+	int							CompareProductVersion		(YVersInfo &src);
 
 private:
 	// implementation
