@@ -287,83 +287,35 @@ SOURCE=..\hlp\yLibHlp.mk
 
 !IF  "$(CFG)" == "yLib - Win32 Static Debug CRT"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Debug CRT"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "yLib - Win32 Static Release CRT"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Release CRT"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "yLib - Win32 Static Debug CRT Unicode"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Debug CRT Unicode"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "yLib - Win32 Static Release CRT Unicode"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "yLib - Win32 Dynamic Release CRT Unicode"
 
-# Begin Custom Build - Making Help File
-InputPath=..\hlp\yLibHlp.mk
-
-"..\hlp\yLib.hlp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	nmake /nologo /s /f ..\hlp\yLibHlp.mk
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ENDIF 
 
