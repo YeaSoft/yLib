@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:27  leo
  * Initial revision
  *
@@ -100,6 +103,7 @@ public:
 public:
 	// attributes of services
 	BOOL						IsService				(LPCTSTR pszServiceName) const;
+	BOOL						StatusGet				(LPCTSTR pszServiceName, LPSERVICE_STATUS lpServiceStatus) const;
 	DWORD						StatusGet				(LPCTSTR pszServiceName) const;
 	BOOL						IsRunning				(LPCTSTR pszServiceName) const;
 	LPQUERY_SERVICE_CONFIG		AllocQueryConfig		(LPCTSTR pszServiceName) const;

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/25 12:04:15  leopoldo
+ * Fixed a pointer error in YServiceControlManager::EnumServices
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -166,11 +169,13 @@ BOOL YServiceControlManager::IsService (LPCTSTR pszServiceName) const
 	return TRUE;
 }
 
-DWORD YServiceControlManager::StatusGet (LPCTSTR pszServiceName) const
+BOOL YServiceControlManager::StatusGet (LPCTSTR pszServiceName, LPSERVICE_STATUS lpServiceStatus) const
 {
+	lpServiceStatus->dwCurrentState = SERVICE_STOPPED;
+
 	if ( !m_hSCM ) {
 		::SetLastError (ERROR_INVALID_HANDLE);
-		return SERVICE_STOPPED;
+		return FALSE;
 	}
 	SC_HANDLE schService = ::OpenService (
 		m_hSCM,
@@ -178,15 +183,16 @@ DWORD YServiceControlManager::StatusGet (LPCTSTR pszServiceName) const
 		GENERIC_READ
 	);
 	if ( !schService ) {
-		return SERVICE_STOPPED;
+		return FALSE;
 	}
-	SERVICE_STATUS	srvStatus;
-	BOOL			bRet = FALSE;
-	if ( !QueryServiceStatus (schService, &srvStatus) ) {
-		srvStatus.dwCurrentState = SERVICE_STOPPED;
+
+	BOOL bRet;
+
+	if ( !(bRet = QueryServiceStatus (schService, lpServiceStatus)) ) {
+		lpServiceStatus->dwCurrentState = SERVICE_STOPPED;
 	}
 	CloseServiceHandle (schService);
-	return srvStatus.dwCurrentState;
+	return bRet;
 }
 
 BOOL  YServiceControlManager::Start (LPCTSTR pszServiceName) const

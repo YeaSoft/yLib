@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:28  leo
  * Initial revision
  *
@@ -59,6 +62,13 @@ YLB_INLINE YServiceControlManager::~YServiceControlManager ()
 YLB_INLINE YServiceControlManager::operator SC_HANDLE() const
 {
 	return m_hSCM;
+}
+
+YLB_INLINE DWORD YServiceControlManager::StatusGet (LPCTSTR pszServiceName) const
+{
+	SERVICE_STATUS	srvStatus;
+	StatusGet (pszServiceName, &srvStatus);
+	return srvStatus.dwCurrentState;
 }
 
 YLB_INLINE void YServiceControlManager::FreeQueryLockStatus (LPQUERY_SERVICE_LOCK_STATUS &lpSLS) const
