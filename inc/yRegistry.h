@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/06/13 11:54:41  leopoldo
+ * Added dependency
+ *
  * Revision 1.3  2001/05/24 15:20:56  leopoldo
  * Added support for YStringData and YMultiString
  *
@@ -69,7 +72,6 @@ class YMultiString;
  * USEFUL MACROS
  *============================================================================*/
 #define REG_ANY					( 0 )
-#define EMPTY_STRING			_T("")
 
 /*=============================================================================
  * CLASS DECLARATION
@@ -153,11 +155,11 @@ public:
 	// @cmember Returns a numeric value
 	DWORD						NumberGet				(LPCTSTR lpszValueName, DWORD dwDefault) const;
 	// @cmember Returns a string value
-	LPCTSTR						StringGet				(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPCTSTR lpszDefault = EMPTY_STRING);
+	LPCTSTR						StringGet				(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPCTSTR lpszDefault = NULL);
 	// @cmember Returns a string value
-	LPCTSTR						StringGet				(LPCTSTR lpszValueName, YStringData &ysValue, LPCTSTR lpszDefault = EMPTY_STRING);
+	LPCTSTR						StringGet				(LPCTSTR lpszValueName, YStringData &ysValue, LPCTSTR lpszDefault = NULL);
 	// @cmember Returns an expandable string value
-	LPCTSTR						ExpandableStringGet		(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPCTSTR lpszDefault = EMPTY_STRING);
+	LPCTSTR						ExpandableStringGet		(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPCTSTR lpszDefault = NULL);
 	// @cmember Returns a multiple string value
 	UINT						MultiStringGet			(LPCTSTR lpszValueName, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0) const;
 	// @cmember Returns a multiple string value

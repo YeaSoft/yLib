@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/24 15:20:43  leopoldo
+ * Added support for YStringData and YMultiString
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -50,6 +53,13 @@
 		if ( !(psz) || !(cb) ) { \
 			(psz)	= m_szHelpBuffer; \
 			(cb)	= _countof(m_szHelpBuffer); \
+		} \
+	} while (0)
+
+#define SAFE_STRING(psz) \
+	do { \
+		if ( !(psz) ) { \
+			(psz) = _T(""); \
 		} \
 	} while (0)
 
@@ -642,6 +652,7 @@ DWORD YRegistry::NumberGet (LPCTSTR lpszValueName, DWORD dwDefault) const
 
 LPCTSTR YRegistry::StringGet (LPCTSTR lpszValueName, LPTSTR pszBuffer, UINT cbBuffer, LPCTSTR lpszDefault)
 {
+	SAFE_STRING(lpszDefault);
 	if ( !INTKEY ) {
 		return NULL;
 	}
@@ -682,6 +693,7 @@ LPCTSTR YRegistry::StringGet (LPCTSTR lpszValueName, LPTSTR pszBuffer, UINT cbBu
 
 LPCTSTR YRegistry::ExpandableStringGet (LPCTSTR lpszValueName, LPTSTR pszBuffer, UINT cbBuffer, LPCTSTR lpszDefault)
 {
+	SAFE_STRING(lpszDefault);
 	if ( !INTKEY ) {
 		return NULL;
 	}
