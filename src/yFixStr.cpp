@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.12  2000/10/05 17:20:28  leopoldo
+ * Added YFixedString::MakeCapital
+ *
  * Revision 1.11  2000/08/28 13:09:19  leo
  * Optimized on Selfassignment
  *
@@ -383,6 +386,10 @@ void YFixedString::MakeCapital ()
 {
 	ASSERTY(m_pszString);
 
+	if ( *m_pszString ) {
+		*m_pszString = _totupper (*m_pszString);
+	}
+
 	for (LPTSTR lpPtr = m_pszString; *lpPtr; lpPtr++ ) {
 		if ( _istspace (*lpPtr) && lpPtr[1] ) {
 			lpPtr[1] = _totupper (lpPtr[1]);
@@ -393,6 +400,10 @@ void YFixedString::MakeCapital ()
 void YFixedString::MakeCapital (TCHAR chWhiteSpace)
 {
 	ASSERTY(m_pszString);
+
+	if ( *m_pszString ) {
+		*m_pszString = _totupper (*m_pszString);
+	}
 
 	for (LPTSTR lpPtr = m_pszString; *lpPtr; lpPtr++ ) {
 		if ( (*lpPtr == chWhiteSpace) && lpPtr[1] ) {
@@ -405,6 +416,10 @@ void YFixedString::MakeCapital (LPCTSTR lpszWhiteSpaces)
 {
 	ASSERTY(m_pszString);
 	ASSERTY(YlbIsValidString(lpszWhiteSpaces));
+
+	if ( *m_pszString ) {
+		*m_pszString = _totupper (*m_pszString);
+	}
 
 	for (LPTSTR lpPtr = m_pszString; *lpPtr; lpPtr++ ) {
 		if ( _tcschr (lpszWhiteSpaces, *lpPtr) && lpPtr[1] ) {
