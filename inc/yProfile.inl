@@ -32,8 +32,8 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
- * Revision 1.1  2002/05/08 09:59:32  leo
- * Initial Sourceforge Revision
+ * Revision 1.2  2002/08/04 14:50:00  leopoldo
+ * Added new functionality
  *
  * Revision 1.1  2001/09/14 16:19:48  leopoldo
  * Initial revision
@@ -44,7 +44,7 @@
  *============================================================================*/
 YLB_INLINE bool YProfile::IsOpen () const
 {
-	return !m_ysIniFile.IsEmpty () && m_ysIniFile.IsFile () && !m_ysSection.IsEmpty ();
+	return !m_ysIniFile.IsEmpty () && TestFile () && !m_ysSection.IsEmpty ();
 }
 
 YLB_INLINE LPCTSTR YProfile::GetFileName () const
@@ -62,6 +62,35 @@ YLB_INLINE bool YProfile::ExpandableStringSet (LPCTSTR lpszValueName, LPCTSTR lp
 	return StringSet (lpszValueName, lpszValue);
 }
 
+YLB_INLINE ITERATOR YProfile::GetFirstSectionPosition ()
+{
+	return GetSectionBuffer () ? m_ysSecEnum.GetFirstStringPosition () : NULL;
+}
+
+YLB_INLINE ITERATOR YProfile::GetLastSectionPosition ()
+{
+	return GetSectionBuffer () ? m_ysSecEnum.GetLastStringPosition () : NULL;
+}
+
+YLB_INLINE ITERATOR YProfile::GetFirstValuePosition ()
+{
+	return GetValueBuffer () ? m_ysValEnum.GetFirstStringPosition () : NULL;
+}
+
+YLB_INLINE ITERATOR YProfile::GetLastValuePosition ()
+{
+	return GetValueBuffer () ? m_ysValEnum.GetLastStringPosition () : NULL;
+}
+
+YLB_INLINE LPCTSTR YProfile::GetNextValue (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen)
+{
+	return GetValue (m_ysValEnum.GetNext (rPosition), pszBuffer, cbBuffer, pdwType, pbData, pdwDataLen);
+}
+
+YLB_INLINE LPCTSTR YProfile::GetPrevValue (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen)
+{
+	return GetValue (m_ysValEnum.GetPrev (rPosition), pszBuffer, cbBuffer, pdwType, pbData, pdwDataLen);
+}
 
 //
 // EoF

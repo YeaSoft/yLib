@@ -32,8 +32,8 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
- * Revision 1.1  2002/05/08 09:59:32  leo
- * Initial Sourceforge Revision
+ * Revision 1.3  2002/08/04 14:50:00  leopoldo
+ * Added new functionality
  *
  * Revision 1.2  2001/09/15 12:43:08  leopoldo
  * Added YProfile::NumberSet and YProfile::NumberGet for 'double' Values
@@ -51,9 +51,10 @@
 /*=============================================================================
  * RELATED INCLUDES
  *============================================================================*/
-#ifndef __yFixStr_h__
-#include <yFixStr.h>
+#ifndef __yMulStr_h__
+#include <yMulStr.h>
 #endif
+
 
 /*=============================================================================
  * FORWARD CLASS DECLARATIONS
@@ -109,15 +110,6 @@ public:
 	// @cmember Returns the number of sections contained in the ini file
 	DWORD						SectionGetCount			() const;
 
-	// @cmember Returns the position of the first value in the open key
-	ITERATOR					GetFirstValuePosition	();
-	// @cmember Returns the position of the last value in the open key
-	ITERATOR					GetLastValuePosition	();
-	// @cmember Gets the next value name for iterating
-	LPCTSTR						GetNextValue			(ITERATOR &rPosition, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPDWORD pdwType = NULL, LPBYTE pbData = NULL, LPDWORD pdwDataLen = 0);
-	// @cmember Gets the previous value name for iterating
-	LPCTSTR						GetPrevValue			(ITERATOR &rPosition, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPDWORD pdwType = NULL, LPBYTE pbData = NULL, LPDWORD pdwDataLen = 0);
-
 	// @cmember Returns the position of the first key in the ini file
 	ITERATOR					GetFirstSectionPosition	();
 	// @cmember Returns the position of the last key in the ini file
@@ -127,6 +119,15 @@ public:
 	// @cmember Gets the previous section name for iterating
 	LPCTSTR						GetPrevSection			(ITERATOR &rPosition, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0);
 	
+	// @cmember Returns the position of the first value in the open key
+	ITERATOR					GetFirstValuePosition	();
+	// @cmember Returns the position of the last value in the open key
+	ITERATOR					GetLastValuePosition	();
+	// @cmember Gets the next value name for iterating
+	LPCTSTR						GetNextValue			(ITERATOR &rPosition, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPDWORD pdwType = NULL, LPBYTE pbData = NULL, LPDWORD pdwDataLen = 0);
+	// @cmember Gets the previous value name for iterating
+	LPCTSTR						GetPrevValue			(ITERATOR &rPosition, LPTSTR pszBuffer = NULL, UINT cbBuffer = 0, LPDWORD pdwType = NULL, LPBYTE pbData = NULL, LPDWORD pdwDataLen = 0);
+
 public:
 	// @access Simple ini file data access
 	// @cmember Returns a boolean value
@@ -177,6 +178,11 @@ public:
 	// @cmember Removes a string from a multistring value
 	bool						MultiStringRemove		(LPCTSTR lpszValueName, LPCTSTR lpszValue, bool bCaseSensitive = FALSE) const;
 
+protected:
+	bool						TestFile				() const;
+	bool						GetSectionBuffer		();
+	bool						GetValueBuffer			();
+	LPCTSTR						GetValue				(LPCTSTR lpszValuePair, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen) const;
 
 protected:
 	YPathString					m_ysIniFile;

@@ -32,6 +32,12 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2002/08/04 15:25:49  leo
+ * Updated from sourceforge
+ *
+ * Revision 1.4  2002/08/04 15:24:28  leopoldo
+ * Fixed MultiString load behaviour
+ *
  * Revision 1.3  2002/08/04 14:53:13  leopoldo
  * Added new functionality
  *
@@ -87,6 +93,20 @@ YProfile::YProfile (const YProfile &iniSrc)
 	m_ysSection	= iniSrc.m_ysSection;
 }
 
+bool YProfile::TestFile () const
+{
+	if ( m_ysIniFile.IsEmpty () ) {
+		return false;
+	}
+	if ( m_ysIniFile.IsFile () ) {
+		return true;
+	}
+	YPathString ysWinDir;
+	::GetWindowsDirectory (ysWinDir.GetBuffer (), ysWinDir.GetBufferSize ());
+	ysWinDir.AddFileName (m_ysIniFile);
+	return ysWinDir.IsFile () != FALSE;
+}
+
 bool YProfile::SetFileName (LPCTSTR pszFile, ...)
 {
 	va_list va;
@@ -100,7 +120,7 @@ bool YProfile::Open (LPCTSTR lpszKey)
 {
 	TCHAR	szDummy[16];
 
-	if ( m_ysIniFile.IsFile () && ::GetPrivateProfileSection (lpszKey, szDummy, _countof(szDummy), m_ysIniFile) ) {
+	if ( TestFile () && ::GetPrivateProfileSection (lpszKey, szDummy, _countof(szDummy), m_ysIniFile) ) {
 		m_ysSection = lpszKey;
 		return true;
 	}
@@ -154,46 +174,34 @@ bool YProfile::SectionExists (LPCTSTR lpszKey) const
 {
 	TCHAR	szDummy[16];
 
-	if ( m_ysIniFile.IsFile () && ::GetPrivateProfileSection (lpszKey, szDummy, _countof(szDummy), m_ysIniFile) ) {
+	if ( TestFile () && ::GetPrivateProfileSection (lpszKey, szDummy, _countof(szDummy), m_ysIniFile) ) {
 		return true;
 	}
 	return false;
 }
 
-/*
-ITERATOR YProfile::GetFirstValuePosition ()
-ITERATOR YProfile::GetLastValuePosition ()
-LPCTSTR YProfile::GetNextValue (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen)
-LPCTSTR YProfile::GetPrevValue (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen)
-*/
-
-ITERATOR YProfile::GetFirstSectionPosition ()
+bool YProfile::GetSectionBuffer ()
 {
 	DWORD dwSize;
 
 	if ( !m_ysSecEnum.GetBuffer () && !m_ysSecEnum.Alloc (16384) ) {
-		return NULL;
+		return false;
 	}
-	if ( !(dwSize = ::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile)) ) {
-		return NULL;
-	}
+	while ( true ) {
+		if ( !(dwSize = ::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile)) ) {
+			m_ysSecEnum.Empty (TRUE);
+			return false;
+		}
+		if ( dwSize < (m_ysSecEnum.GetBufferSize () - 2) ) {
+			break;
+		}
+		if ( !m_ysSecEnum.Alloc (m_ysSecEnum.GetBufferSize () * 2) ) {
+			m_ysSecEnum.Empty (TRUE);
+			return false;
+		}
+	};
 	m_ysSecEnum.SetContentSize (dwSize + 1);
-	return m_ysSecEnum.GetFirstStringPosition ();
-}
-
-ITERATOR YProfile::GetLastSectionPosition ()
-{
-	DWORD dwSize;
-
-	if ( !m_ysSecEnum.GetBuffer () && !m_ysSecEnum.Alloc (16384) ) {
-		return NULL;
-	}
-	if ( !(dwSize = ::GetPrivateProfileSectionNames (m_ysSecEnum.GetBuffer (), m_ysSecEnum.GetBufferSize (), m_ysIniFile)) ) {
-		return NULL;
-	}
-	m_ysSecEnum.SetContentSize (dwSize + 1);
-
-	return m_ysSecEnum.GetLastStringPosition ();
+	return true;
 }
 
 LPCTSTR YProfile::GetNextSection (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cbBuffer)
@@ -219,6 +227,102 @@ LPCTSTR YProfile::GetPrevSection (ITERATOR &rPosition, LPTSTR pszBuffer, UINT cb
 	}
 	_tcsncpy (pszBuffer, lpPtr, cbBuffer);
 	pszBuffer[cbBuffer - 1] = 0;
+	return pszBuffer;
+}
+
+bool YProfile::GetValueBuffer ()
+{
+	if ( !IsOpen () ) {
+		return false;
+	}
+
+	DWORD dwSize;
+
+	if ( !m_ysValEnum.GetBuffer () && !m_ysValEnum.Alloc (16384) ) {
+		return false;
+	}
+	while ( true ) {
+		if ( !(dwSize = ::GetPrivateProfileSection (m_ysSection, m_ysValEnum.GetBuffer (), m_ysValEnum.GetBufferSize (), m_ysIniFile)) ) {
+			m_ysValEnum.Empty (TRUE);
+			return false;
+		}
+		if ( dwSize < (m_ysValEnum.GetBufferSize () - 2) ) {
+			break;
+		}
+		if ( !m_ysValEnum.Alloc (m_ysValEnum.GetBufferSize () * 2) ) {
+			m_ysValEnum.Empty (TRUE);
+			return false;
+		}
+	};
+	m_ysValEnum.SetContentSize (dwSize + 1);
+	return true;
+}
+
+LPCTSTR YProfile::GetValue (LPCTSTR lpszValuePair, LPTSTR pszBuffer, UINT cbBuffer, LPDWORD pdwType, LPBYTE pbData, LPDWORD pdwDataLen) const
+{
+	CHECK_HELPER(pszBuffer, cbBuffer);
+
+	if ( !lpszValuePair ) {
+		return NULL;
+	}
+
+	_tcsncpy (pszBuffer, lpszValuePair, cbBuffer);
+	pszBuffer[cbBuffer - 1] = 0;
+
+	LPTSTR lpPtr = _tcschr (pszBuffer, _T('='));
+	if ( lpPtr ) {
+		*lpPtr = 0;
+	}
+
+	if ( !(lpPtr = _tcschr (lpszValuePair, _T('='))) ) {
+		// snh
+		if ( pdwType ) {
+			*pdwType = REG_NONE;
+		}
+		return pszBuffer;
+	}
+
+	DWORD	dwType	= REG_NONE;
+	DWORD	dwValue	= 0;
+
+	if ( pdwType || (pbData && pdwDataLen) ) {
+		++lpPtr;
+
+		LPTSTR lpEnd;
+
+		if ( (lpPtr[0] == _T('0')) && (lpPtr[1] == _T('x')) ) {
+			// hex number ?
+			dwValue = _tcstoul (lpPtr + 2, &lpEnd, 16);
+			if ( (errno == 0) && (!lpEnd || !*lpEnd) ) {
+				dwType = REG_DWORD;
+			}
+		}
+		if ( (dwType == REG_NONE) && *lpPtr ) {
+			// decimal number?
+			dwValue = _tcstoul (lpPtr, &lpEnd, 10);
+			if ( (errno == 0) && (!lpEnd || !*lpEnd) ) {
+				dwType = REG_DWORD;
+			}
+		}
+		if ( dwType == REG_NONE ) {
+			// string!
+			dwType = REG_SZ;
+		}
+	}
+
+	if ( pdwType ) {
+		*pdwType = dwType;
+	}
+	if ( pbData && pdwDataLen ) {
+		if ( dwType == REG_SZ ) {
+			_tcsncpy ((LPTSTR) pbData, lpPtr, *pdwDataLen / sizeof (TCHAR));
+			((LPTSTR)pbData)[(*pdwDataLen/sizeof (TCHAR)) - 1] = 0;
+		}
+		else {
+			*((LPDWORD)pbData) = dwValue;
+		}
+	}
+
 	return pszBuffer;
 }
 
