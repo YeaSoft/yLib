@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/25 14:28:21  leopoldo
+ * Improved YServiceControlManager::StatusGet
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -172,6 +175,14 @@ YLB_INLINE DWORD YService::QueryStatus ()
 {
 	SERVICE_STATUS	ssStatus;
 	return (QueryStatus (&ssStatus)) ? (ssStatus.dwCurrentState) : (SERVICE_UNKNOWN);
+}
+
+YLB_INLINE void YService::FreeQueryConfig (LPQUERY_SERVICE_CONFIG &lpSc) const
+{
+	if ( lpSc ) {
+		free (lpSc);
+		lpSc = NULL;
+	}
 }
 
 YLB_INLINE BOOL YService::Start (DWORD dwNumServiceArgs, LPCTSTR *lpServiceArgVectors) const

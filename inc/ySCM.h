@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/05/25 14:50:07  leopoldo
+ * Changed access mode to YService::Open
+ *
  * Revision 1.3  2001/05/25 14:28:21  leopoldo
  * Improved YServiceControlManager::StatusGet
  *
@@ -192,6 +195,16 @@ public:
 	BOOL						Control					(DWORD dwControl, LPSERVICE_STATUS lpServiceStatus = NULL) const;
 	BOOL						QueryStatus				(LPSERVICE_STATUS lpServiceStatus);
 	DWORD						QueryStatus				();
+	LPQUERY_SERVICE_CONFIG		AllocQueryConfig		() const;
+	void						FreeQueryConfig			(LPQUERY_SERVICE_CONFIG &lpSc) const;
+
+	BOOL						SetInteractive			(BOOL bInteractive) const;
+	BOOL						SetStartMode			(DWORD dwStartType) const;
+	BOOL						SetErrorControl			(DWORD dwErrorControl) const;
+	BOOL						SetLoadOrderGroup		(LPCTSTR lpGroup = NULL, LPDWORD lpdwTagId = NULL) const;
+	BOOL						SetDependencies			(LPCTSTR lpDependencies = _T("\0")) const;
+	BOOL						SetStartUser			(LPCTSTR lpUserName = _T("\0"), LPCTSTR lpPassword = NULL) const;
+	BOOL						SetDisplayName			(LPCTSTR lpDisplayName) const;
 
 
 private:

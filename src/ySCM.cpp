@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/05/25 15:13:35  leopoldo
+ * Fixed access rights
+ *
  * Revision 1.4  2001/05/25 14:28:32  leopoldo
  * Improved YServiceControlManager::StatusGet
  *
@@ -318,43 +321,12 @@ LPQUERY_SERVICE_CONFIG YServiceControlManager::AllocQueryConfig (LPCTSTR pszServ
 		return NULL;
 	}
 
-	DWORD					dwBytesNeeded, dwSize;
-	LPQUERY_SERVICE_CONFIG	lpSc;
+	YService srv (m_hSCM);
 
-	SC_HANDLE schService = ::OpenService (
-		m_hSCM,
-		pszServiceName,
-		SERVICE_QUERY_CONFIG
-	);
-	if ( !schService ) {
+	if ( !srv.Open (pszServiceName, SERVICE_QUERY_CONFIG) ) {
 		return NULL;
 	}
-
-	if ( ::QueryServiceConfig (schService, NULL, 0, &dwBytesNeeded) ) {
-		// SNH:
-		CloseServiceHandle (schService);
-		return NULL;
-	}
-	if ( ::GetLastError() != ERROR_INSUFFICIENT_BUFFER ) {
-		// SNH: Mistus!
-		CloseServiceHandle (schService);
-		return NULL;
-	}
-	if ( !(lpSc = (LPQUERY_SERVICE_CONFIG) malloc (dwBytesNeeded)) ) {
-		// No mem or corrupted heap
-		CloseServiceHandle (schService);
-		return NULL;
-	}
-
-	if ( !::QueryServiceConfig (schService, lpSc, dwBytesNeeded, &dwSize) ) {
-		// strange strange
-		CloseServiceHandle (schService);
-		free (lpSc);
-		return NULL;
-	}
-
-	CloseServiceHandle (schService);
-	return lpSc;
+	return srv.AllocQueryConfig ();
 }
 
 BOOL YServiceControlManager::EnumServices (ENUM_SERVICES_PROC lpEnumServicesFunc, DWORD dwUserData /* = 0 */, DWORD dwServiceType /* = SERVICE_WIN32 */, DWORD dwServiceState /* = SERVICE_STATE_ALL */) const
@@ -515,6 +487,238 @@ BOOL YService::Control (DWORD dwControl, LPSERVICE_STATUS lpServiceStatus) const
 		lpServiceStatus = &ssStatus;
 	}
 	return ::ControlService (m_hService, dwControl, lpServiceStatus);
+}
+
+LPQUERY_SERVICE_CONFIG YService::AllocQueryConfig () const
+{
+	if ( !m_hService ) {
+		// not inited
+		::SetLastError (ERROR_INVALID_HANDLE);
+		return NULL;
+	}
+
+	DWORD					dwBytesNeeded, dwSize;
+	LPQUERY_SERVICE_CONFIG	lpSc;
+
+	if ( ::QueryServiceConfig (m_hService, NULL, 0, &dwBytesNeeded) ) {
+		// SNH:
+		return NULL;
+	}
+	if ( ::GetLastError() != ERROR_INSUFFICIENT_BUFFER ) {
+		// SNH: Mistus!
+		return NULL;
+	}
+	if ( !(lpSc = (LPQUERY_SERVICE_CONFIG) malloc (dwBytesNeeded)) ) {
+		// No mem or corrupted heap
+		return NULL;
+	}
+
+	if ( !::QueryServiceConfig (m_hService, lpSc, dwBytesNeeded, &dwSize) ) {
+		// strange strange
+		free (lpSc);
+		return NULL;
+	}
+
+	return lpSc;
+}
+
+BOOL YService::SetInteractive (BOOL bInteractive) const
+{
+	LPQUERY_SERVICE_CONFIG pConfig = AllocQueryConfig ();
+	if ( !pConfig ) {
+		return FALSE;
+	}
+
+	YFlags dw(pConfig->dwServiceType);
+	dw.ChangeFlags (SERVICE_INTERACTIVE_PROCESS, bInteractive);
+	if ( dw == pConfig->dwServiceType ) {
+		// no change
+		return TRUE;
+	}
+	pConfig->dwServiceType = dw;
+
+	BOOL bRet = ChangeServiceConfig (
+		m_hService,
+		pConfig->dwServiceType,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		pConfig->lpDisplayName
+	);
+	FreeQueryConfig (pConfig);
+	return bRet;
+}
+
+BOOL YService::SetStartMode (DWORD dwStartType) const
+{
+	LPQUERY_SERVICE_CONFIG pConfig = AllocQueryConfig ();
+	if ( !pConfig ) {
+		return FALSE;
+	}
+	
+	switch ( dwStartType ) {
+	case SERVICE_AUTO_START:
+	case SERVICE_BOOT_START:
+	case SERVICE_DEMAND_START:
+	case SERVICE_DISABLED:
+	case SERVICE_SYSTEM_START:
+		break;
+	default:
+		::SetLastError (ERROR_INVALID_PARAMETER);
+		return FALSE;
+	}
+
+	BOOL bRet = ChangeServiceConfig (
+		m_hService,
+		SERVICE_NO_CHANGE,
+		dwStartType,
+		SERVICE_NO_CHANGE,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		pConfig->lpDisplayName
+	);
+	FreeQueryConfig (pConfig);
+	return bRet;
+}
+
+BOOL YService::SetErrorControl (DWORD dwErrorControl) const
+{
+	LPQUERY_SERVICE_CONFIG pConfig = AllocQueryConfig ();
+	if ( !pConfig ) {
+		return FALSE;
+	}
+	
+	switch ( dwErrorControl ) {
+	case SERVICE_ERROR_IGNORE:
+	case SERVICE_ERROR_NORMAL:
+	case SERVICE_ERROR_SEVERE:
+	case SERVICE_ERROR_CRITICAL:
+		break;
+	default:
+		::SetLastError (ERROR_INVALID_PARAMETER);
+		return FALSE;
+	}
+
+	BOOL bRet = ChangeServiceConfig (
+		m_hService,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		dwErrorControl,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		pConfig->lpDisplayName
+	);
+	FreeQueryConfig (pConfig);
+	return bRet;
+}
+
+BOOL YService::SetLoadOrderGroup (LPCTSTR lpGroup /* = NULL */, LPDWORD lpdwTagId /* = NULL */) const
+{
+	LPQUERY_SERVICE_CONFIG pConfig = AllocQueryConfig ();
+	if ( !pConfig ) {
+		return FALSE;
+	}
+	
+	BOOL bRet = ChangeServiceConfig (
+		m_hService,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		NULL,
+		lpGroup,
+		lpdwTagId,
+		NULL,
+		NULL,
+		NULL,
+		pConfig->lpDisplayName
+	);
+	FreeQueryConfig (pConfig);
+	return bRet;
+}
+
+BOOL YService::SetDependencies (LPCTSTR lpDependencies /* = _T("\0") */) const
+{
+	LPQUERY_SERVICE_CONFIG pConfig = AllocQueryConfig ();
+	if ( !pConfig ) {
+		return FALSE;
+	}
+	
+	BOOL bRet = ChangeServiceConfig (
+		m_hService,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		NULL,
+		NULL,
+		NULL,
+		lpDependencies,
+		NULL,
+		NULL,
+		pConfig->lpDisplayName
+	);
+	FreeQueryConfig (pConfig);
+	return bRet;
+}
+
+BOOL YService::SetStartUser (LPCTSTR lpUserName /* = _T("\0") */, LPCTSTR lpPassword /* = NULL */) const
+{
+	LPQUERY_SERVICE_CONFIG pConfig = AllocQueryConfig ();
+	if ( !pConfig ) {
+		return FALSE;
+	}
+	
+	BOOL bRet = ChangeServiceConfig (
+		m_hService,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		lpUserName,
+		lpPassword,
+		pConfig->lpDisplayName
+	);
+	FreeQueryConfig (pConfig);
+	return bRet;
+}
+
+BOOL YService::SetDisplayName (LPCTSTR lpDisplayName) const
+{
+	LPQUERY_SERVICE_CONFIG pConfig = AllocQueryConfig ();
+	if ( !pConfig ) {
+		return FALSE;
+	}
+	
+	BOOL bRet = ChangeServiceConfig (
+		m_hService,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		SERVICE_NO_CHANGE,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		lpDisplayName
+	);
+	FreeQueryConfig (pConfig);
+	return bRet;
 }
 
 #ifndef YLB_ENABLE_INLINE
