@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/10/25 09:18:59  leopoldo
+ * Added assignment operations
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -105,7 +108,6 @@ BOOL YBuffer::Realloc (UINT cbSize, BOOL fAllocCopyFree, BOOL fNoCopy)
 		if ( !(lpData = realloc (m_lpPtr, cbSize)) ) {
 			return FALSE;
 		}
-		Free ();
 		m_lpPtr		= lpData;
 		m_cbSize	= cbSize;
 		return TRUE;
