@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.14  2001/05/06 18:28:53  leopoldo
+ * Improved YPathString::StripExtension
+ *
  * Revision 1.13  2000/10/05 17:24:18  leopoldo
  * YFixedString::MakeCapital now upperizes also the first letter
  *
@@ -129,6 +132,28 @@ YBigString YLBAPI operator+ (TCHAR ch, const YStringData& string)
 /*=============================================================================
  * FIXED STRING CLASS IMPLEMENTATION
  *============================================================================*/
+void YFixedString::Fill (WCHAR ch, UINT cbSize /* = (UINT) -1 */)
+{
+	ASSERTY(m_pszString);
+	if ( cbSize > (m_cbSize - 1) ) {
+		cbSize = m_cbSize - 1;
+	}
+	for ( UINT n = 0; n < cbSize; n++ ) {
+		m_pszString[n] = (TCHAR) ch;
+	}
+	m_pszString[n] = 0;
+}
+
+void YFixedString::Fill (char ch, UINT cbSize /* = (UINT) -1 */)
+{
+	ASSERTY(m_pszString);
+	if ( cbSize > (m_cbSize - 1) ) {
+		cbSize = m_cbSize - 1;
+	}
+	memset (m_pszString, ch, cbSize);
+	m_pszString[cbSize] = 0;
+}
+
 void YFixedString::Copy (LPTSTR pszDest, UINT cbSize)
 {
 	ASSERTY(m_pszString && pszDest);
@@ -997,6 +1022,82 @@ void YLB_CDECL YFixedString::Format(UINT nFormatID, ...)
 	va_start (argList, nFormatID);
 	FormatV (strFormat, argList);
 	va_end (argList);
+}
+
+void YFixedString::BufferToHex (LPCVOID lpBuffer, UINT cbSize, TCHAR chDivisor /* = 0 */)
+{
+	
+	cbSize = min ((m_cbSize - 1) / ((chDivisor) ? (3) : (2)), cbSize);
+
+	LPBYTE	lpEnd = ((LPBYTE) lpBuffer) + cbSize;
+	LPSTR	lpDst = m_pszString;
+	for ( LPBYTE lpPtr = (LPBYTE) lpBuffer; cbSize; lpPtr++, cbSize-- ) {
+		BYTE hi = *lpPtr >> 4;
+		BYTE lo = *lpPtr & 0x0f;
+		*lpDst = (hi < 10) ? (_T('0') + hi) : (_T('a') + (hi - 10));
+		++lpDst;
+		*lpDst = (lo < 10) ? (_T('0') + lo) : (_T('a') + (lo - 10));
+		++lpDst;
+		if ( chDivisor ) {
+			*lpDst = chDivisor;
+			++lpDst;
+		}
+	}
+	if ( chDivisor && (lpDst > m_pszString) ) {
+		lpDst[-1] = 0;
+	}
+	else {
+		*lpDst = 0;
+	}
+}
+
+BOOL YFixedString::HexToBuffer (LPVOID lpBuffer, UINT cbSize) const
+{
+	UINT nLen = GetLength ();
+	if ( nLen & 1 ) {
+		// must be even!
+		return FALSE;
+	}
+	cbSize = min (cbSize, nLen / 2);
+	LPCTSTR	lpSrc = m_pszString;
+	LPBYTE	lpPtr = (LPBYTE) lpBuffer;
+	while ( cbSize ) {
+		BYTE hi, lo;
+		if ( (*lpSrc >= _T('0')) && (*lpSrc <= _T('9')) ) {
+			hi = *lpSrc - _T('0');
+		}
+		else if ( (*lpSrc >= _T('a')) && (*lpSrc <= _T('f')) ) {
+			hi= *lpSrc + 10 - _T('a');
+		}
+		else if ( (*lpSrc >= _T('A')) && (*lpSrc <= _T('F')) ) {
+			hi = *lpSrc + 10 - _T('A');
+		}
+		else {
+			// bad digit
+			return FALSE;
+		}
+		++lpSrc;
+
+		if ( (*lpSrc >= _T('0')) && (*lpSrc <= _T('9')) ) {
+			lo = *lpSrc - _T('0');
+		}
+		else if ( (*lpSrc >= _T('a')) && (*lpSrc <= _T('f')) ) {
+			lo = *lpSrc + 10 - _T('a');
+		}
+		else if ( (*lpSrc >= _T('A')) && (*lpSrc <= _T('F')) ) {
+			lo = *lpSrc + 10 - _T('A');
+		}
+		else {
+			// bad digit
+			return FALSE;
+		}
+		++lpSrc;
+
+		*lpPtr = (hi << 4) | lo;
+		++lpPtr;
+		--cbSize;
+	}
+	return TRUE;
 }
 
 /*=============================================================================
