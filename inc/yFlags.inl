@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:10  leo
  * Initial revision
  *
@@ -82,6 +85,12 @@ YLB_INLINE DWORD YFlags::SetFlags(DWORD flag)
 YLB_INLINE DWORD YFlags::ClearFlags(DWORD flag)
 {	
 	_state &= ~flag;
+	return _state;
+}
+
+YLB_INLINE DWORD YFlags::MaskFlags (DWORD flag)
+{
+	_state &= flag;
 	return _state;
 }
 
@@ -282,6 +291,12 @@ YLB_INLINE DWORDLONG YWideFlags::SetFlags(DWORDLONG flag)
 YLB_INLINE DWORDLONG YWideFlags::ClearFlags(DWORDLONG flag)
 {	
 	_state &= ~flag;
+	return _state;
+}
+
+YLB_INLINE DWORDLONG YWideFlags::MaskFlags (DWORDLONG flag)
+{
+	_state &= flag;
 	return _state;
 }
 

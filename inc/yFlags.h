@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:09  leo
  * Initial revision
  *
@@ -53,102 +56,112 @@
 /*=============================================================================
  * TYPES
  *============================================================================*/
-typedef enum {			// @enum FLG_TEST_MODE | Flag testing mode
-	FLG_AND,			// @emem Tests for all flags
-	FLG_OR,				// @emem Tests for any flag
-	FLG_XOR				// @emem ????
+//! Flag testing mode
+/*!	This enumeration type is used to define the the testing mode for flags
+	@see YFlags
+ */
+typedef enum {
+	FLG_AND,			//!	Tests for all flags
+	FLG_OR,				//!	Tests for any flag
+	FLG_XOR				//! Tests that only one of the specified flags is set
 } FLG_TEST_MODE;
 
-// @class Flag storage class
-// @comm This class implements the storage and method handling for 32 bit
-//		wide bitfields.
+//!	Flag storage class
+/*!	This class implements the storage and method handling for 32 bit
+	wide bitfields.
+ */
 class YFlags
 {
 public:
-	// @cmember Constructs a YFlags object
+	//! Constructs a YFlags object
 	YFlags				(DWORD defaultState = 0);
 
-	// @cmember Sets the bitfield
+	//!  Sets the bitfield
 	DWORD				Set				(DWORD flag);
-	// @cmember Gets the bitfield
+	//!  Gets the bitfield
 	DWORD				Get				(void) const;
-	// @cmember Sets one or more bits in the bitfield
+	//!  Sets one or more bits in the bitfield
 	DWORD				SetFlags		(DWORD flag);
-	// @cmember Clears one or more bits in the bitfield
+	//!  Clears one or more bits in the bitfield
 	DWORD				ClearFlags		(DWORD flag = ~(DWORD)0);
-	// @cmember Modifies one or more bits in the bitfield
+	//!  Masks one or more bits in the bitfield
+	DWORD				MaskFlags		(DWORD flag);
+	//!  Modifies one or more bits in the bitfield
 	DWORD				ChangeFlags		(DWORD flag, BOOL setState);
-	// @cmember Tests for one or more bits in the bitfield
+	//!  Tests for one or more bits in the bitfield
 	BOOL				TestFlags		(DWORD flag, FLG_TEST_MODE mode = FLG_AND) const;
 
-	// @cmember Tests and resets one or more bits in the bitfield
+	//!  Tests and resets one or more bits in the bitfield
 	BOOL				TestClearFlags	(DWORD flag);
-	// @cmember Tests and sets one or more bits in the bitfield
+	//!  Tests and sets one or more bits in the bitfield
 	BOOL				TestSetFlags	(DWORD flag);
 	
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator==		(YFlags&) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator==		(DWORD flags) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator!=		(YFlags&) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator!=		(DWORD flags) const;
-	// @cmember Casting operator
+	//!  Casting operator
 	operator			DWORD			() const;
 
 
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				CompareFlags	(DWORD mask, DWORD flags) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				CompareFlags	(DWORD mask, YFlags& other) const;
 
 private:
 	DWORD				_state;
 };
 
-// @class Flag storage class
-// @comm This class implements the storage and method handling for 32 bit
-//		wide bitfields.
+//!	Flag storage class
+/*!	This class implements the storage and method handling for 64 bit
+	wide bitfields.
+ */
 class YWideFlags
 {
 public:
-	// @cmember Constructs a YWideFlags object
+	//!  Constructs a YWideFlags object
 	YWideFlags			(DWORDLONG defaultState = 0);
 
-	// @cmember Sets the bitfield
+	//!  Sets the bitfield
 	DWORDLONG			Set				(DWORDLONG flag);
-	// @cmember Gets the bitfield
+	//!  Gets the bitfield
 	DWORDLONG			Get				(void) const;
-	// @cmember Sets one or more bits in the bitfield
+	//!  Sets one or more bits in the bitfield
 	DWORDLONG			SetFlags		(DWORDLONG flag);
-	// @cmember Clears one or more bits in the bitfield
+	//!  Clears one or more bits in the bitfield
 	DWORDLONG			ClearFlags		(DWORDLONG flag = ~(DWORDLONG)0);
-	// @cmember Modifies one or more bits in the bitfield
+	//!  Masks one or more bits in the bitfield
+	DWORDLONG			MaskFlags		(DWORDLONG flag);
+	//!  Modifies one or more bits in the bitfield
 	DWORDLONG			ChangeFlags		(DWORDLONG flag, BOOL setState);
-	// @cmember Tests for one or more bits in the bitfield
+	//!  Tests for one or more bits in the bitfield
 	BOOL				TestFlags		(DWORDLONG flag, FLG_TEST_MODE mode = FLG_AND) const;
 
-	// @cmember Tests and resets one or more bits in the bitfield
+	//!  Tests and resets one or more bits in the bitfield
 	BOOL				TestClearFlags	(DWORDLONG flag);
-	// @cmember Tests and sets one or more bits in the bitfield
+	//!  Tests and sets one or more bits in the bitfield
 	BOOL				TestSetFlags	(DWORDLONG flag);
 	
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator==		(YWideFlags&) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator==		(DWORDLONG flags) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator!=		(YWideFlags&) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				operator!=		(DWORDLONG flags) const;
-	// @cmember Casting operator
+	//!  Casting operator
 	operator			DWORDLONG			() const;
 
 
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				CompareFlags	(DWORDLONG mask, DWORDLONG flags) const;
-	// @cmember Compares two bitfields
+	//!  Compares two bitfields
 	BOOL				CompareFlags	(DWORDLONG mask, YWideFlags& other) const;
 
 private:
