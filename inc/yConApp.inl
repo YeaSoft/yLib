@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:02:57  leo
  * Initial revision
  *
@@ -158,7 +161,7 @@ YLB_INLINE BOOL YConApp::OnShutdown ()
 
 YLB_INLINE BOOL YConApp::OnCrtDebugReport (int reportType, LPCSTR pszMessage, int *iRetValue)
 {
-	return TRUE;
+	return FALSE;
 }
 
 #endif
