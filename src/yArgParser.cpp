@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2004/08/01 21:49:26  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -68,6 +71,17 @@ bool YArgPair::IsNamedValue (LPCTSTR pszTest, bool bCaseSensitive) const
 	return false;
 }
 
+bool YArgPair::HasNamedValue (LPCTSTR pszTest, bool bCaseSensitive) const
+{
+	if ( IsNamedValue (pszTest, bCaseSensitive) ) {
+		return *m_pszValue != 0;
+	}
+	return false;
+}
+
+/*=============================================================================
+ * PARSER IMPLEMENTATION
+ *============================================================================*/
 bool YArgPairParser::Create (LPCTSTR pszCmdLine)
 {
 	int			iNumArgs;
@@ -238,6 +252,68 @@ const YArgPair *YArgPairParser::FindNamedValuePtr (LPCTSTR pszParam, bool bCaseS
 		}
 	}
 	return NULL;
+}
+
+LPCTSTR YArgPairParser::GetValueByName (LPCTSTR pszParam, bool bCaseSensitive) const
+{
+	for ( int i = 0; i < m_argc; i++ ) {
+		if ( m_argv[i].IsNamedValue (pszParam, bCaseSensitive) ) {
+			return m_argv[i].GetValue ();
+		}
+	}
+	return NULL;
+}
+
+LPCTSTR YArgPairParser::GetValueByPosOrName (int nIndex, LPCTSTR pszParam, bool bCaseSensitive) const
+{
+	LPCTSTR pszValue = GetValueByName (pszParam, bCaseSensitive);
+	if ( !pszValue ) {
+		const YArgPair *pPair = GetAt (nIndex);
+		if ( pPair ) {
+			pszValue = pPair->IsCommand () ? pPair->GetName () : pPair->GetValue ();
+		}
+	}
+	return pszValue;
+}
+
+bool YArgPairParser::RemoveAt (int nIndex)
+{
+	if ( nIndex < 0 || nIndex >= m_argc ) {
+		// out of range
+		return false;
+	}
+	// elems to move: argc - 1 - nIndex
+	memmove (m_argv + nIndex, m_argv + nIndex + 1, (m_argc - 1 - nIndex) * sizeof (YArgPair));
+	--m_argc;
+	return true;	
+}
+
+bool YArgPairParser::RemoveAt (ITERATOR &pos)
+{
+	YArgPair *pPtr = (YArgPair *) pos;
+	if ( (pPtr < m_argv) || (pPtr >= (m_argv + m_argc)) ) {
+		// out of range
+		pos = NULL;
+		return false;
+	}
+	// elems to move: argc - 1 - nIndex
+	int nIndex = pPtr - m_argv;
+	memmove (pPtr, pPtr + 1, (m_argc - 1 - nIndex) * sizeof (YArgPair));
+	if ( pPtr >= (m_argv + m_argc) ) {
+		// out of range
+		pos = NULL;
+	}
+	return true;
+}
+
+bool YArgPairParser::Remove (LPCTSTR pszParam, bool bCaseSensitive)
+{
+	for ( int i = 0; i < m_argc; i++ ) {
+		if ( m_argv[i].IsCommand (pszParam, bCaseSensitive) || m_argv[i].IsNamedValue (pszParam, bCaseSensitive) ) {
+			return RemoveAt (i);
+		}
+	}
+	return false;
 }
 
 void YArgPairParser::ParseCmdLine (LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR pszArgs, int &iNumArgs, int &iNumChars)

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2004/08/01 21:48:52  leopoldo
+ * Initial revision
+ *
  *============================================================================*/
 
 /*=============================================================================
@@ -66,11 +69,11 @@ public:
 	LPCTSTR						GetName					() const { return m_pszName; }
 	LPCTSTR						GetValue				() const { return m_pszValue; }
 	bool						IsCommand				() const { return m_pszName && !m_pszValue; }
-	bool						IsNamedValue			() const { return m_pszName && m_pszValue; }
-	bool						HasNamedValue			() const { return m_pszName && m_pszValue && *m_pszName && *m_pszValue; }
-
 	bool						IsCommand				(LPCTSTR pszTest, bool bCaseSensitive = false) const;
+	bool						IsNamedValue			() const { return m_pszName && m_pszValue; }
 	bool						IsNamedValue			(LPCTSTR pszTest, bool bCaseSensitive = false) const;
+	bool						HasNamedValue			() const { return m_pszName && m_pszValue && *m_pszName && *m_pszValue; }
+	bool						HasNamedValue			(LPCTSTR pszTest, bool bCaseSensitive = false) const;
 
 private:
 	LPCTSTR						m_pszName;
@@ -111,6 +114,11 @@ public:
 	const YArgPair *			FindCommandPtr			(LPCTSTR pszParam, bool bCaseSensitive = false) const;
 	int							FindNamedValue			(LPCTSTR pszParam, bool bCaseSensitive = false) const;
 	const YArgPair *			FindNamedValuePtr		(LPCTSTR pszParam, bool bCaseSensitive = false) const;
+	LPCTSTR						GetValueByName			(LPCTSTR pszParam, bool bCaseSensitive = false) const;
+	LPCTSTR						GetValueByPosOrName		(int nIndex, LPCTSTR pszParam, bool bCaseSensitive = false) const;
+	bool						RemoveAt				(int nIndex);
+	bool						RemoveAt				(ITERATOR &pos);
+	bool						Remove					(LPCTSTR pszParam, bool bCaseSensitive = false);
 
 protected:
 	static void					ParseCmdLine			(LPCTSTR pszCmdLine, YArgPair *argp, LPTSTR pszArgs, int &iNumArgs, int &iNumChars);
