@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/30  10:59:15  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -72,6 +75,10 @@ BOOL FileSplitter::InitInstance (YCommandLineInfo *cli)
 
 	YFileNameHandler::SplitPath (cli->GetAt (1), ysPath.GetBuffer (), ysName.GetBuffer (), ysExt.GetBuffer ());
 
+	if ( ysPath.GetLength () ) {
+		ysPath += _T("\\");
+	}
+
 	YFile	yfSrc;
 	YFile	yfDst;
 	YBuffer	ybBuffer;
@@ -92,8 +99,9 @@ BOOL FileSplitter::InitInstance (YCommandLineInfo *cli)
 
 	for ( DWORD dwPart = 0; dwPart < dwParts; dwPart++ ) {
 		_tprintf (_T("Creating part %d..."), dwPart + 1);
-		ysDest.Format (_T("%s\\%s (%d).%s"), (LPCTSTR) ysPath, (LPCTSTR) ysName, dwPart + 1, (LPCTSTR) ysExt);
+		ysDest.Format (_T("%s%s (%d).%s"), (LPCTSTR) ysPath, (LPCTSTR) ysName, dwPart + 1, (LPCTSTR) ysExt);
 		if ( !yfDst.Create (ysDest) ) {
+			_tprintf (_T("\n"));
 			ShowError (_T("Cannot create output file %s (err: %d)"), ysDest, ::GetLastError ());
 			return FALSE;
 		}
@@ -101,40 +109,49 @@ BOOL FileSplitter::InitInstance (YCommandLineInfo *cli)
 
 		while ( dwRest ) {
 			if ( !yfSrc.Read (ybBuffer, min (ybBuffer.GetSize (), dwRest)) ) {
+				_tprintf (_T("\n"));
 				ShowError (_T("Error reading from source file (err: %d)"), ::GetLastError ());
 				return FALSE;
 			}
 			dwRest = (yfSrc.GetBytesRead () > dwRest) ? (0) : (dwRest - yfSrc.GetBytesRead ());
 			if ( !yfDst.Write (ybBuffer, yfSrc.GetBytesRead ()) ) {
+				_tprintf (_T("\n"));
 				ShowError (_T("Error writing to destination file (err: %d)"), ::GetLastError ());
 				return FALSE;
 			}
 		}
 		yfDst.Close ();
+		_tprintf (_T("\n"));
 	}
 
 	DWORD dwRest = yfSrc.GetLength () - (dwParts * dwChunkSize);
 
-	_tprintf (_T("Creating part %d..."), dwParts + 1);
-	ysDest.Format (_T("%s\\%s (%d).%s"), (LPCTSTR) ysPath, (LPCTSTR) ysName, dwParts + 1, (LPCTSTR) ysExt);
-	if ( !yfDst.Create (ysDest) ) {
-		ShowError (_T("Cannot create output file %s (err: %d)"), ysDest, ::GetLastError ());
-		return FALSE;
-	}
-
-	while ( dwRest ) {
-		if ( !yfSrc.Read (ybBuffer, ybBuffer.GetSize ()) ) {
-			ShowError (_T("Error reading from source file (err: %d)"), ::GetLastError ());
+	if ( dwRest ) {
+		_tprintf (_T("Creating part %d..."), dwParts + 1);
+		ysDest.Format (_T("%s\\%s (%d).%s"), (LPCTSTR) ysPath, (LPCTSTR) ysName, dwParts + 1, (LPCTSTR) ysExt);
+		if ( !yfDst.Create (ysDest) ) {
+			_tprintf (_T("\n"));
+			ShowError (_T("Cannot create output file %s (err: %d)"), ysDest, ::GetLastError ());
 			return FALSE;
 		}
-		dwRest = (yfSrc.GetBytesRead () > dwRest) ? (0) : (dwRest - yfSrc.GetBytesRead ());
-		if ( !yfDst.Write (ybBuffer, yfSrc.GetBytesRead ()) ) {
-			ShowError (_T("Error writing to destination file (err: %d)"), ::GetLastError ());
-			return FALSE;
-		}
-	}
-	yfDst.Close ();
 
+		while ( dwRest ) {
+			if ( !yfSrc.Read (ybBuffer, ybBuffer.GetSize ()) ) {
+				_tprintf (_T("\n"));
+				ShowError (_T("Error reading from source file (err: %d)"), ::GetLastError ());
+				return FALSE;
+			}
+			dwRest = (yfSrc.GetBytesRead () > dwRest) ? (0) : (dwRest - yfSrc.GetBytesRead ());
+			if ( !yfDst.Write (ybBuffer, yfSrc.GetBytesRead ()) ) {
+				_tprintf (_T("\n"));
+				ShowError (_T("Error writing to destination file (err: %d)"), ::GetLastError ());
+				return FALSE;
+			}
+		}
+		yfDst.Close ();
+		_tprintf (_T("\n"));
+	}
+	_tprintf (_T("Done.\n"));
 
 	return TRUE;
 }
