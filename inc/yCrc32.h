@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:00  leo
  * Initial revision
  *
@@ -72,15 +75,19 @@ public:
 	// @cmember Computes the CRC of a file based on it's filename
 	static DWORD			GetFileCrc				(LPCTSTR lpName);
 	// @cmember Updates the CRC using the supplied memory buffer
-	void					UpdateCrc				(LPVOID lpBuffer, DWORD cbSize);
+	void					UpdateCrc				(LPVOID lpBuffer, UINT cbSize);
 	// @cmember Returns the computed CRC value
 	DWORD					GetCrc					();
 	// @cmember Resets the internal CRC value for a new computation
 	void					ResetCrc				();
+	// @cmember Returns the CRC of a buffer
+	static DWORD			GetBufferCrc			(LPVOID lpBuffer, UINT cbSize);
+	// @cmember Returns the CRC of a string
+	static DWORD			GetStringCrc			(LPCTSTR pszString);
 
 
 private:
-	static DWORD			UpdateCrc				(LPSTR lpBuffer, DWORD cbSize, DWORD dwAccum);
+	static DWORD			UpdateCrc				(LPSTR lpBuffer, UINT cbSize, DWORD dwAccum);
 
 private:
 	DWORD					m_dwCrc;

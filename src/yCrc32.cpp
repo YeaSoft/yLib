@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:04:55  leo
  * Initial revision
  *
@@ -115,7 +118,7 @@ DWORD	YCrc32::m_dwTable[256] = {
 	0xafb010b1, 0xab710d06, 0xa6322bdf, 0xa2f33668, 0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
 };
 
-DWORD YCrc32::UpdateCrc (LPSTR lpBuffer, DWORD cbSize, DWORD dwAccum /* = 0 */)
+DWORD YCrc32::UpdateCrc (LPSTR lpBuffer, UINT cbSize, DWORD dwAccum /* = 0 */)
 {
 	register int	i;
 	register DWORD	j;

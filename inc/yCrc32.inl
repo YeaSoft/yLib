@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 11:59:53  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:03:00  leo
  * Initial revision
  *
@@ -48,6 +51,17 @@ YLB_INLINE YCrc32::YCrc32 ()
 	m_dwCrc = 0;
 }
 
+YLB_INLINE DWORD YCrc32::GetBufferCrc (LPVOID lpBuffer, UINT cbSize)
+{
+	return UpdateCrc ((LPSTR) lpBuffer, cbSize, 0);
+}
+
+YLB_INLINE DWORD YCrc32::GetStringCrc (LPCTSTR pszString)
+{
+	return UpdateCrc ((LPSTR) pszString, _tcslen (pszString) * sizeof (TCHAR), 0);
+}
+
+
 // @mfunc Updates the CRC using the supplied memory buffer
 // @parm LPVOID | lpBuffer | Pointer to the buffer containing the data
 //		to be used for the CRC computation
@@ -55,7 +69,7 @@ YLB_INLINE YCrc32::YCrc32 ()
 // @comm Call this member function to update the internal CRC value
 //		with the contents of the supplied memory buffer
 // @xref <mf YCrc32::GetCrc>, <mf YCrc32::ResetCrc>, <c YCrc32>
-YLB_INLINE void YCrc32::UpdateCrc (LPVOID lpBuffer, DWORD cbSize)
+YLB_INLINE void YCrc32::UpdateCrc (LPVOID lpBuffer, UINT cbSize)
 {
 	m_dwCrc = UpdateCrc ((LPSTR) lpBuffer, cbSize, m_dwCrc);
 }
