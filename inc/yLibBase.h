@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/08/31 14:45:52  leopoldo
+ * Improved Platform SDK Stuff
+ *
  * Revision 1.3  2001/05/16 17:15:34  leopoldo
  * Added support for reattachment of RTL output handles
  *
@@ -388,7 +391,9 @@ class	YObject;
 /*=============================================================================
  * USEFUL MACROS
  *============================================================================*/
+#ifndef _countof
 #define _countof(array)			(sizeof(array)/sizeof(array[0]))
+#endif
 
 /*=============================================================================
  * TRANSFORMER
