@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.8  2000/08/23  10:12:22  leo
+ * Fixed some release build issue
+ *
  * Revision 1.7  2000/08/22  16:18:51  leo
  * Added some of the directory operations to YPathString
  *
@@ -124,7 +127,7 @@ void YFixedString::Copy (LPTSTR pszDest, UINT cbSize)
 void YFixedString::Copy (LPSTR pszDest, UINT cbSize)
 {
 	ASSERTY(pszDest);
-	_ywcstombsz (pstDest, m_pszString, cbSize);
+	_ywcstombsz (pszDest, m_pszString, cbSize);
 }
 
 #else
