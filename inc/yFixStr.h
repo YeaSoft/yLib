@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.23  2002/11/29 14:28:45  leopoldo
+ * Added more copy and array[] operators
+ *
  * Revision 1.22  2002/08/08 15:57:16  leopoldo
  * Modified the visibility of an Assign method
  *
@@ -388,6 +391,7 @@ public:
 	YFixedStringClass			(BOOL bEmpty = TRUE) : YFixedString (m_szData, SIZE, bEmpty) { }
 	YFixedStringClass			(const YStringData& stringSrc) : YFixedString (m_szData, SIZE, FALSE) { Assign (stringSrc); }
 	YFixedStringClass			(LPCTSTR lpsz) : YFixedString (m_szData, SIZE, FALSE) { Assign (lpsz); }
+	YFixedStringClass			(const YFixedStringClass& stringSrc) : YFixedString (m_szData, SIZE, FALSE) { Assign (stringSrc); }
 	
 	// overloaded assignment
 	const YFixedStringClass &	operator=				(const YFixedStringClass& stringSrc) { Assign (stringSrc); return *this; }
@@ -433,6 +437,7 @@ public:
 	YBigString					(BOOL bEmpty = TRUE) : YFixedString (m_szData, YLB_BIGSTRING_SIZE, bEmpty) { }
 	YBigString					(const YStringData& stringSrc) : YFixedString (m_szData, YLB_BIGSTRING_SIZE, FALSE) { Assign (stringSrc); }
 	YBigString					(LPCTSTR lpsz) : YFixedString (m_szData, YLB_BIGSTRING_SIZE, FALSE) { Assign (lpsz); }
+	YBigString					(const YBigString& stringSrc) : YFixedString (m_szData, YLB_BIGSTRING_SIZE, FALSE) { Assign (stringSrc); }
 	
 	// overloaded assignment
 	const YBigString &			operator=				(const YBigString& stringSrc) { Assign (stringSrc); return *this; }
@@ -512,6 +517,7 @@ public:
 	YPathString					(BOOL bEmpty = TRUE) : YFixedString (m_szData, MAX_PATH, bEmpty) { }
 	YPathString					(const YStringData& stringSrc) : YFixedString (m_szData, MAX_PATH, FALSE) { Assign (stringSrc); }
 	YPathString					(LPCTSTR lpsz) : YFixedString (m_szData, MAX_PATH, FALSE) { Assign (lpsz); }
+	YPathString					(const YPathString& stringSrc) : YFixedString (m_szData, MAX_PATH, FALSE) { Assign (stringSrc); }
 	
 	// overloaded assignment
 	const YPathString &			operator=				(const YPathString& stringSrc) { Assign (stringSrc); return *this; }
