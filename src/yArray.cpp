@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/06 18:31:43  leopoldo
+ * Improved arrays
+ * Added cardinal array types
+ *
  * Revision 1.2  2001/04/19 17:30:04  leopoldo
  * Added new template YTypedAllocatedPtrArray
  *
@@ -108,7 +112,7 @@ int YBaseArray::SizeHeuristic (int nNewSize, int nAllocationGranularity)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

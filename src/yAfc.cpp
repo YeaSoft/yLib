@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2004/08/05 13:17:09  leopoldo
+ * Improved compatibility: Counters in YCommandLineInfo are now signed
+ *
  * Revision 1.3  2001/04/26 10:37:29  leopoldo
  * Fixed the command line index
  *
@@ -344,7 +347,7 @@ YCmdLineParam * YCmdLineParser::GetParamAt (ITERATOR pos)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+// LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

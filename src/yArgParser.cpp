@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2004/08/06 00:58:51  leopoldo
+ * Fixed missing decremenation in YArgPairParser::RemoveAt (ITERATOR &pos)
+ *
  * Revision 1.4  2004/08/05 13:18:32  leopoldo
  * Added more functionality to YArgPairParser
  *
@@ -611,7 +614,7 @@ void YArgPairParser::ParseCmdLine (int argc, TCHAR **argv, YArgPair *argp, LPTST
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF
