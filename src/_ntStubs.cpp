@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2002/08/20 18:58:55  leopoldo
+ * Added new pseudofunctions
+ *
  * Revision 1.2  2002/06/03 15:20:30  leopoldo
  * Fixed UniCode Stuff
  *
@@ -933,7 +936,7 @@ BOOL YLBAPI YlbUnlockServiceDatabase (
 #endif //YLB_NATIVE_NT_LINKING
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF
