@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sample1", "samples\Sample1\Sample1.vcxproj", "{5802CD39-2DA8-F223-C932-52FCBEB58C29}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sample2", "samples\Sample2\Sample2.vcxproj", "{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sample3", "samples\Sample3\Sample3.vcxproj", "{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sample5", "samples\Sample5\Sample5.vcxproj", "{E2D122CE-595D-9775-625B-F2551D26E725}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Static Debug CRT Unicode|Win32 = Static Debug CRT Unicode|Win32
+		Static Debug CRT|Win32 = Static Debug CRT|Win32
+		Static Release CRT Unicode|Win32 = Static Release CRT Unicode|Win32
+		Static Release CRT|Win32 = Static Release CRT|Win32
+		Template|Win32 = Template|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Debug CRT Unicode|Win32.ActiveCfg = Static Debug CRT Unicode|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Debug CRT Unicode|Win32.Build.0 = Static Debug CRT Unicode|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Debug CRT|Win32.ActiveCfg = Static Debug CRT|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Debug CRT|Win32.Build.0 = Static Debug CRT|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Release CRT Unicode|Win32.ActiveCfg = Static Release CRT Unicode|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Release CRT Unicode|Win32.Build.0 = Static Release CRT Unicode|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Release CRT|Win32.ActiveCfg = Static Release CRT|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Static Release CRT|Win32.Build.0 = Static Release CRT|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Template|Win32.ActiveCfg = Template|Win32
+		{5802CD39-2DA8-F223-C932-52FCBEB58C29}.Template|Win32.Build.0 = Template|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Debug CRT Unicode|Win32.ActiveCfg = Static Debug CRT Unicode|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Debug CRT Unicode|Win32.Build.0 = Static Debug CRT Unicode|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Debug CRT|Win32.ActiveCfg = Static Debug CRT|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Debug CRT|Win32.Build.0 = Static Debug CRT|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Release CRT Unicode|Win32.ActiveCfg = Static Release CRT Unicode|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Release CRT Unicode|Win32.Build.0 = Static Release CRT Unicode|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Release CRT|Win32.ActiveCfg = Static Release CRT|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Static Release CRT|Win32.Build.0 = Static Release CRT|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Template|Win32.ActiveCfg = Static Release CRT|Win32
+		{9468FBB1-E4C2-4C3C-2389-1CD73E9FD79E}.Template|Win32.Build.0 = Static Release CRT|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Debug CRT Unicode|Win32.ActiveCfg = Static Debug CRT Unicode|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Debug CRT Unicode|Win32.Build.0 = Static Debug CRT Unicode|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Debug CRT|Win32.ActiveCfg = Static Debug CRT|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Debug CRT|Win32.Build.0 = Static Debug CRT|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Release CRT Unicode|Win32.ActiveCfg = Static Release CRT Unicode|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Release CRT Unicode|Win32.Build.0 = Static Release CRT Unicode|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Release CRT|Win32.ActiveCfg = Static Release CRT|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Static Release CRT|Win32.Build.0 = Static Release CRT|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Template|Win32.ActiveCfg = Static Release CRT|Win32
+		{EAEFAC99-7F7F-399F-46ED-4B20833CAB80}.Template|Win32.Build.0 = Static Release CRT|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Debug CRT Unicode|Win32.ActiveCfg = Static Debug CRT Unicode|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Debug CRT Unicode|Win32.Build.0 = Static Debug CRT Unicode|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Debug CRT|Win32.ActiveCfg = Static Debug CRT|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Debug CRT|Win32.Build.0 = Static Debug CRT|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Release CRT Unicode|Win32.ActiveCfg = Static Release CRT Unicode|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Release CRT Unicode|Win32.Build.0 = Static Release CRT Unicode|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Release CRT|Win32.ActiveCfg = Static Release CRT|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Static Release CRT|Win32.Build.0 = Static Release CRT|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Template|Win32.ActiveCfg = Static Release CRT|Win32
+		{E2D122CE-595D-9775-625B-F2551D26E725}.Template|Win32.Build.0 = Static Release CRT|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
