@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/24 15:20:56  leopoldo
+ * Added support for YStringData and YMultiString
+ *
  * Revision 1.2  2000/09/04 11:59:53  leopoldo
  * Updated license to zlib/libpng
  *
@@ -39,6 +42,12 @@
  * Initial revision
  *
  *============================================================================*/
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#endif
 
 /*=============================================================================
  * @doc YLIB | yRegistry.h
@@ -181,7 +190,7 @@ YLB_INLINE UINT YRegistry::MultiStringGet (LPCTSTR lpszValueName, LPTSTR pszBuff
 		if ( pszBuffer ) {
 			if ( cbBuffer > 0 ) pszBuffer[0] = 0;
 			if ( cbBuffer > 1 ) pszBuffer[1] = 0;
-			return min(uRet,cbBuffer);
+			return MIN(uRet,cbBuffer);
 		}
 	}
 	return uRet;
