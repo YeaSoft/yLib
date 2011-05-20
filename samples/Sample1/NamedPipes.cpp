@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26 14:07:25  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -39,7 +42,7 @@ void Sample1::RunNPClient (YCmdLineParam *cliPar)
 	_tprintf (_T("\n"));
 
 	YClientNamedPipe	np;
-	LPCTSTR				lpComputerName = (cliPar->GetParamCount ()) ? (cliPar->GetAt(ZERO)) : (NULL);
+	LPCTSTR				lpComputerName = (cliPar->GetCount ()) ? (cliPar->GetAt(ZERO)) : (NULL);
 
 	if ( !np.Create (_T("TestPipe"), lpComputerName) ) {
 		_tprintf (_T("Cannot open the named pipe\n"));
@@ -53,8 +56,8 @@ void Sample1::RunNPClient (YCmdLineParam *cliPar)
 
 	TCHAR	szResult[32];
 
-	if ( cliPar->GetParamCount () > 1 ) {
-		for ( UINT i = 1; i < cliPar->GetParamCount (); i++ ) {
+	if ( cliPar->GetCount () > 1 ) {
+		for ( int i = 1; i < cliPar->GetCount (); i++ ) {
 			LPCTSTR	pszStr = cliPar->GetAt (i);
 			DWORD	dwRead;
 			if ( !np.Transact (pszStr, _tcslen (pszStr) + 1, szResult, _countof (szResult), &dwRead) ) {
@@ -166,7 +169,7 @@ void Sample1::RunNPServer (YCmdLineParam *cliPar)
 
 	DWORD dwWait = 30;
 
-	if ( cliPar->GetParamCount () ) {
+	if ( cliPar->GetCount () ) {
 		if ( _ttoi (cliPar->GetAt(ZERO)) > 5 ) {
 			dwWait = _ttoi (cliPar->GetAt(ZERO));
 		}

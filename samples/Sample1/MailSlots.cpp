@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26 14:07:24  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -39,15 +42,15 @@ void Sample1::RunMSClient (YCmdLineParam *cliPar)
 	_tprintf (_T("\n"));
 
 	YClientMailslot		ms;
-	LPCTSTR				lpComputerName = (cliPar->GetParamCount ()) ? (cliPar->GetAt(ZERO)) : (NULL);
+	LPCTSTR				lpComputerName = (cliPar->GetCount ()) ? (cliPar->GetAt(ZERO)) : (NULL);
 
 	if ( !ms.Create (_T("TestSlot"), lpComputerName) ) {
 		_tprintf (_T("ERROR: Cannot open the mailslot\n"));
 		return;
 	}
 
-	if ( cliPar->GetParamCount () > 1 ) {
-		for ( UINT i = 1; i < cliPar->GetParamCount (); i++ ) {
+	if ( cliPar->GetCount () > 1 ) {
+		for ( int i = 1; i < cliPar->GetCount (); i++ ) {
 			LPCTSTR	pszStr = cliPar->GetAt (i);
 
 			if ( !ms.Write (pszStr, _tcslen (pszStr) + 1) ) {
@@ -110,7 +113,7 @@ void Sample1::RunMSServer (YCmdLineParam *cliPar)
 
 	DWORD dwWait = 30;
 
-	if ( cliPar->GetParamCount () ) {
+	if ( cliPar->GetCount () ) {
 		if ( _ttoi (cliPar->GetAt(ZERO)) > 5 ) {
 			dwWait = _ttoi (cliPar->GetAt(ZERO));
 		}

@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26 14:07:25  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -49,7 +52,8 @@ void Sample1::SvcEnumReg ()
 				if ( regSvc.Open (lpStr) ) {
 					// this strange mode to read the display name key is intended
 					// only for demonstration purposes...
-					for ( ITERATOR pos = regSvc.GetFirstValuePosition (); pos; /*TUNIX*/ ) {
+					ITERATOR pos;
+					for ( pos = regSvc.GetFirstValuePosition (); pos; /*TUNIX*/ ) {
 						TCHAR	szVal[128];
 						DWORD	dwVal = sizeof(szVal); // This is correct also for UNICODE!
 						DWORD	dwType;

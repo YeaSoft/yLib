@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26 14:07:23  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -70,7 +73,7 @@ void Sample1::EvtTest1 (YCmdLineParam *cliPar)
 
 	YEventLogSource	evt;
 
-	if ( cliPar->GetParamCount () ) {
+	if ( cliPar->GetCount () ) {
 		_tprintf (_T("Message will be set with userid '%s'\n"), cliPar->GetAt (ZERO));
 		if ( !evt.SetOriginatorSID (cliPar->GetAt (ZERO)) ) {
 			_tprintf (_T("Error geeting the SID for user '%s'\n"), cliPar->GetAt (ZERO));
@@ -96,7 +99,7 @@ void Sample1::EvtTest2 (YCmdLineParam *cliPar)
 
 	YEventLogSource	evt;
 
-	if ( cliPar->GetParamCount () ) {
+	if ( cliPar->GetCount () ) {
 		_tprintf (_T("Message will be set with userid '%s'\n"), cliPar->GetAt (ZERO));
 		if ( !evt.SetOriginatorSID (cliPar->GetAt (ZERO)) ) {
 			_tprintf (_T("Error geeting the SID for user '%s'\n"), cliPar->GetAt (ZERO));
@@ -129,7 +132,7 @@ void Sample1::EvtTest3 (YCmdLineParam *cliPar)
 
 	evt.SetInserts (2, lpInserts);
 
-	if ( cliPar->GetParamCount () ) {
+	if ( cliPar->GetCount () ) {
 		_tprintf (_T("Message will be set with userid '%s'\n"), cliPar->GetAt (ZERO));
 		if ( !evt.SetOriginatorSID (cliPar->GetAt (ZERO)) ) {
 			_tprintf (_T("Error geeting the SID for user '%s'\n"), cliPar->GetAt (ZERO));

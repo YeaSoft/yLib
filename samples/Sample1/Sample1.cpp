@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/08/24 17:26:16  leo
+ * Added rudimentary TextTo Function
+ *
  * Revision 1.1  2000/05/26  14:07:26  leo
  * Initial revision
  *
@@ -101,12 +104,15 @@ BOOL CMyCliParser::OnProcessParam (BOOL &bTerminate, YCmdLineParam &cliPar)
 	}
 	else if ( !_tcsicmp (cliPar.m_pszParam, _T("SvcEnum")) ) {
 		SetCommandFlags (CMD_ENUMSVC);
+		return TRUE;
 	}
 	else if ( !_tcsicmp (cliPar.m_pszParam, _T("RunThread1")) ) {
+		SetCommandFlags (CMD_THREADTEST1);
 		return TRUE;
 	}
 	else if ( !_tcsicmp (cliPar.m_pszParam, _T("RunThread2")) ) {
 		SetCommandFlags (CMD_THREADTEST2);
+		return TRUE;
 	}
 	else if ( !_tcsicmp (cliPar.m_pszParam, _T("RunNPServer")) ) {
 		// remember since it gets parameters
@@ -134,7 +140,7 @@ BOOL CMyCliParser::OnProcessParam (BOOL &bTerminate, YCmdLineParam &cliPar)
 	}
 	else if ( !_tcsicmp (cliPar.m_pszParam, _T("TextTo")) ) {
 		// remember since it gets parameters
-		cliPar.SetParamCount (1);
+		cliPar.SetCount (1);
 		cliPar.m_dwMeaning	= (DWORD) CMD_TEXTTO;
 		SetCommandFlags (CMD_TEXTTO);
 		return TRUE;
@@ -231,7 +237,7 @@ void Sample1::TextTo (YCmdLineParam *cliPar)
 		_tprintf (_T("ERROR: No parameters\n"));
 		return;
 	}
-	if ( cliPar->GetParamCount () != 1 ) {
+	if ( cliPar->GetCount () != 1 ) {
 		_tprintf (_T("ERROR: wrong param count\n"));
 		return;
 	}

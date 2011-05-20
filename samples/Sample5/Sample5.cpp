@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2000/08/24 17:27:29  leo
+ * First step in new version
+ *
  * Revision 1.2  2000/05/30  11:17:36  leo
  * Fixed some smaller bug
  *
@@ -43,7 +46,7 @@
 #define LOWPART_DWORDLONG		((DWORDLONG) 0x00000000FFFFFFFF)
 #define HIGHPART_DWORDLONG		((DWORDLONG) 0xFFFFFFFF00000000)
 
-#define MAKEDWORDLONG(lo,hi)	( (DWORDLONG) ( ( (hi) << 32 ) | (lo) ) )
+#define MAKEDWORDLONG(lo,hi)	( (DWORDLONG) ( ( (DWORDLONG) (hi) << 32 ) | (lo) ) )
 #define LOWDWORD(x)				( (DWORD) ( (x) & LOWPART_DWORDLONG ) )
 #define HIDWORD(x)				( (DWORD) ( ( (x) & HIGHPART_DWORDLONG ) >> 32 ) )
 
@@ -169,13 +172,13 @@ BOOL CMyParser::OnProcessOption (BOOL &bTerminate, LPCTSTR &pszOptString, YCmdLi
 	case _T('s'):
 		SetOptionFlags (OPT_PARTSIZE);
 		cliOpt.SetMeaning (OPT_PARTSIZE);
-		cliOpt.SetParamCount (1);
+		cliOpt.SetCount (1);
 		++pszOptString;
 		return TRUE;
 	case _T('p'):
 		SetOptionFlags (OPT_PARTS);
 		cliOpt.SetMeaning (OPT_PARTS);
-		cliOpt.SetParamCount (1);
+		cliOpt.SetCount (1);
 		++pszOptString;
 		return TRUE;
 	}
@@ -221,7 +224,7 @@ BOOL CMyParser::OnFinalCheck ()
 
 	// check parts
 	if ( TestOptionFlags (OPT_PARTS) ) {
-		if ( !FindOptionByMeaning (OPT_PARTS)->GetParamCount () ) {
+		if ( !FindOptionByMeaning (OPT_PARTS)->GetCount () ) {
 			ShowIntro ();
 			_tprintf (_T("ERROR: no parts specified with -p\n\n"));
 			ShowUsage (GetCommands () & CMD_MASK);
@@ -232,7 +235,7 @@ BOOL CMyParser::OnFinalCheck ()
 
 	// check part size
 	if ( TestOptionFlags (OPT_PARTSIZE) ) {
-		if ( !FindOptionByMeaning (OPT_PARTSIZE)->GetParamCount () ) {
+		if ( !FindOptionByMeaning (OPT_PARTSIZE)->GetCount () ) {
 			ShowIntro ();
 			_tprintf (_T("ERROR: no size specified with -p\n\n"));
 			ShowUsage (GetCommands () & CMD_MASK);
@@ -354,7 +357,7 @@ BOOL FileSplitter::Split (CMyParser &cliParser)
 	m_pi.dwlFileSize = MAKEDWORDLONG (dwSizeLo, dwSizeHi);
 
 	YCmdLineOption *pPartSize = cliParser.FindOptionByMeaning (OPT_PARTSIZE);
-	if ( pPartSize && pPartSize->GetParamCount () ) {
+	if ( pPartSize && pPartSize->GetCount () ) {
 		LPCTSTR lpPtr = pPartSize->GetAt (ZERO);
 		if ( !_tcscmp (lpPtr, _T("1.44")) ) {
 			m_pi.dwPartSize = FLOPPYSIZE;
@@ -483,7 +486,7 @@ BOOL FileSplitter::CreatePart (YFile &inFile, YBuffer &workBuffer, DWORD dwPart)
 	DWORD dwRest = m_pi.dwPartSize;
 
 	while ( dwRest ) {
-		if ( !inFile.Read (workBuffer, min (workBuffer.GetSize (), dwRest)) ) {
+		if ( !inFile.Read (workBuffer, min ((DWORD) workBuffer.GetSize (), dwRest)) ) {
 			ShowError (_T("Error reading from source file (err: %d)"), ::GetLastError ());
 			return FALSE;
 		}

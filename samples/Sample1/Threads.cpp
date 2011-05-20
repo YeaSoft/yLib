@@ -25,6 +25,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.1  2000/05/26 14:07:32  leo
+ * Initial revision
+ *
  *============================================================================*/
 
 #include "StdAfc.h"
@@ -179,7 +182,7 @@ void Sample1::RunThread2 ()
 	tr[1].Create ();
 	tr[2].Create ();
 	YMultiGuard		mg1(sh, 3);
-	mg1.Wait (INFINITE);
+	mg1.Wait (INFINITE, TRUE);
 	_tprintf (_T("The result is %i\n"), CCounterThread::m_iCounter);
 
 	_tprintf (_T("Synchronized example:\n"));
@@ -189,7 +192,7 @@ void Sample1::RunThread2 ()
 	tr[1].Create ();
 	tr[2].Create ();
 	YMultiGuard		mg2(sh, 3);
-	mg2.Wait (INFINITE);
+	mg2.Wait (INFINITE, TRUE);
 	_tprintf (_T("The result is %i\n"), CCounterThread::m_iCounter);
 }
 
