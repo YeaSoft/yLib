@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.20  2002/05/09 14:27:22  leopoldo
+ * Added new methods for directory manipulation
+ *
  * Revision 1.19  2002/05/08 09:51:20  leopoldo
  * Added YPathString::ScanPath
  *
@@ -153,7 +156,8 @@ void YFixedString::Fill (WCHAR ch, UINT cbSize /* = (UINT) -1 */)
 	if ( cbSize > (m_cbSize - 1) ) {
 		cbSize = m_cbSize - 1;
 	}
-	for ( UINT n = 0; n < cbSize; n++ ) {
+	UINT n;
+	for ( n = 0; n < cbSize; n++ ) {
 		m_pszString[n] = (TCHAR) ch;
 	}
 	m_pszString[n] = 0;
@@ -478,6 +482,7 @@ void YFixedString::Trim ()
 	LPTSTR	lpStart	= m_pszString;
 	LPTSTR	lpStop	= NULL;
 	LPTSTR	lpLast	= NULL;
+	LPTSTR	lpPtr	= NULL;
 
 	// skip initial whitespaces
 	while ( _istspace (*lpStart) ) {
@@ -485,7 +490,7 @@ void YFixedString::Trim ()
 	}
 
 	// find last non-whitespace
-	for ( LPTSTR lpPtr = lpStart; *lpPtr; lpPtr = _tcsinc (lpPtr) ) {
+	for ( lpPtr = lpStart; *lpPtr; lpPtr = _tcsinc (lpPtr) ) {
 		if ( _istspace (*lpPtr) ) {
 			if ( lpLast == NULL ) {
 				lpLast = lpPtr;
@@ -560,6 +565,7 @@ void YFixedString::Trim (TCHAR chTarget)
 	LPTSTR	lpStart	= m_pszString;
 	LPTSTR	lpStop	= NULL;
 	LPTSTR	lpLast	= NULL;
+	LPTSTR	lpPtr	= NULL;
 
 	// skip initial targets
 	while ( *lpStart == chTarget ) {
@@ -567,7 +573,7 @@ void YFixedString::Trim (TCHAR chTarget)
 	}
 
 	// find last non-target
-	for ( LPTSTR lpPtr = lpStart; *lpPtr; lpPtr = _tcsinc (lpPtr) ) {
+	for ( lpPtr = lpStart; *lpPtr; lpPtr = _tcsinc (lpPtr) ) {
 		if ( *lpStart == chTarget ) {
 			if ( lpLast == NULL ) {
 				lpLast = lpPtr;
@@ -602,6 +608,7 @@ void YFixedString::Trim (LPCTSTR lpszTargets)
 	LPTSTR	lpStart	= m_pszString;
 	LPTSTR	lpStop	= NULL;
 	LPTSTR	lpLast	= NULL;
+	LPTSTR	lpPtr	= NULL;
 
 	// skip initial targets
 	while ( _tcschr (lpszTargets, *lpStart) ) {
@@ -609,7 +616,7 @@ void YFixedString::Trim (LPCTSTR lpszTargets)
 	}
 
 	// find last non-target
-	for ( LPTSTR lpPtr = lpStart; *lpPtr; lpPtr = _tcsinc (lpPtr) ) {
+	for ( lpPtr = lpStart; *lpPtr; lpPtr = _tcsinc (lpPtr) ) {
 		if ( _tcschr (lpszTargets, *lpStart) ) {
 			if ( lpLast == NULL ) {
 				lpLast = lpPtr;
@@ -1312,7 +1319,7 @@ BOOL YUserName::GetCurrent ()
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

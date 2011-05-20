@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.9  2004/08/05 13:17:23  leopoldo
+ * Improved compatibility: Counters in YCommandLineInfo are now signed
+ *
  * Revision 1.8  2003/02/17 11:48:48  leopoldo
  * Fixed bad message output
  *
@@ -987,12 +990,12 @@ void YServiceLogic::ServiceControl (DWORD dwCtrlCode)
 			return;
 		}
 		break;
-	case SERVICE_CONTROL_NETBINDCHANGE:
-		if ( !OnServiceNetBindChange () ) {
-			ReportStatusToSCM (ERROR_SERVICE_SPECIFIC_ERROR, m_dwServiceError, 0);
-			return;
-		}
-		break;
+//	case SERVICE_CONTROL_NETBINDCHANGE:
+//		if ( !OnServiceNetBindChange () ) {
+//			ReportStatusToSCM (ERROR_SERVICE_SPECIFIC_ERROR, m_dwServiceError, 0);
+//			return;
+//		}
+//		break;
 #endif
 	case SERVICE_CONTROL_INTERROGATE:
 		break;
@@ -1833,8 +1836,9 @@ BOOL YSrvApp::ProcessShellCommand (YServiceCmdLineParser &cliParser)
 void YSrvApp::Run ()
 {
 	SERVICE_TABLE_ENTRY	dispatchTable[YLB_MAX_SERVICES + 1];
+	unsigned int nCnt;
 
-	for ( UINT nCnt = 0; nCnt < m_nServices; nCnt++ ) {
+	for ( nCnt = 0; nCnt < m_nServices; nCnt++ ) {
 		dispatchTable[nCnt].lpServiceName = (LPTSTR) m_slServices[nCnt]->GetAppName ();
 		dispatchTable[nCnt].lpServiceProc = _ylb_service_main;
 	}
@@ -1913,7 +1917,7 @@ UINT YSrvApp::GetRequestedService (YServiceCmdLineParser &cliParser, DWORDLONG d
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+// LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

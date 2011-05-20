@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2002/05/09 17:37:33  leopoldo
+ * Fixed Bad empty MultiString on YRegistry::MultiStringRemove
+ *
  * Revision 1.5  2002/05/09 17:07:03  leopoldo
  * Fixed uninitialized stuff in YRegistry::MultiStringAdd in value does not exist
  *
@@ -68,6 +71,13 @@
 			(psz) = _T(""); \
 		} \
 	} while (0)
+
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#endif
 
 /*=============================================================================
  * @doc YLIB | yRegistry.h
@@ -767,7 +777,7 @@ UINT YRegistry::AnyGet (LPCTSTR lpszValueName, DWORD dwWantedType, LPVOID pBuffe
 			return 0;
 		}
 	}
-	return min(dwSize,cbBuffer);
+	return MIN(dwSize,cbBuffer);
 }
 
 UINT YRegistry::MultiStringGet (LPCTSTR lpszValueName, YMultiString &ysValue) const
@@ -787,8 +797,10 @@ UINT YRegistry::MultiStringGet (LPCTSTR lpszValueName, YMultiString &ysValue) co
 
 BOOL YRegistry::MultiStringSet (LPCTSTR lpszValueName, LPCTSTR lpszValue) const
 {
+	LPCTSTR lpPtr;
+
 	// determine size
-	for ( LPCTSTR lpPtr = lpszValue; *lpPtr; lpPtr += (_tcslen (lpPtr) + 1) ) {
+	for ( lpPtr = lpszValue; *lpPtr; lpPtr += (_tcslen (lpPtr) + 1) ) {
 		/*TUNIX*/
 	}
 	if ( lpPtr == lpszValue ) {
@@ -951,7 +963,7 @@ BOOL YRegistry::MultiStringRemove (LPCTSTR lpszValueName, LPCTSTR lpszValue, BOO
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/28 15:29:34  leopoldo
+ * Added assignment methods
+ *
  * Revision 1.2  2001/05/24 15:20:23  leopoldo
  * First basic implementation
  *
@@ -65,12 +68,14 @@ int YMultiString::GetStringCount () const
 
 ITERATOR YMultiString::GetLastStringPosition () const
 {
+	LPCTSTR	lpPtr = NULL;
+
 	if ( IsEmpty () ) {
 		return NULL;
 	}
 
 	// find the beginning of the last string
-	for ( LPCTSTR lpPtr = GetBufferLast (); lpPtr && *lpPtr && (lpPtr > GetBuffer ()); lpPtr-- ) {
+	for ( lpPtr = GetBufferLast (); lpPtr && *lpPtr && (lpPtr > GetBuffer ()); lpPtr-- ) {
 		/*TUNIX*/
 	}
 
@@ -111,6 +116,7 @@ LPCTSTR YMultiString::GetNext (ITERATOR &pos) const
 LPCTSTR YMultiString::GetPrev (ITERATOR &pos) const
 {
 	LPCTSTR lpPtr = (LPCTSTR) pos;
+	LPCTSTR	lpTest;
 
 	if ( IsEmpty () || (lpPtr < GetBuffer ()) || (lpPtr >= (LPCTSTR) m_dbStorage.GetByteBufferPtr (m_dbStorage.GetContentSize())) ) {
 		// junk pos
@@ -124,7 +130,7 @@ LPCTSTR YMultiString::GetPrev (ITERATOR &pos) const
 	}
 	else {
 		// lets go back
-		for ( LPCTSTR lpTest = lpPtr - 1; *lpTest && (lpTest > GetBuffer ()); lpTest-- ) {
+		for ( lpTest = lpPtr - 1; *lpTest && (lpTest > GetBuffer ()); lpTest-- ) {
 			/*TUNIX*/
 		}
 		if ( lpTest == GetBuffer () ) {
@@ -182,7 +188,7 @@ BOOL YMultiString::Append (LPCTSTR pszString)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF
