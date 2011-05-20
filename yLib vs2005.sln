@@ -1,0 +1,60 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yAfc", "src\yAfc.vcproj", "{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13} = {DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yLib", "src\yLib.vcproj", "{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Dynamic Debug CRT = Dynamic Debug CRT
+		Dynamic Debug CRT Unicode = Dynamic Debug CRT Unicode
+		Dynamic Release CRT = Dynamic Release CRT
+		Dynamic Release CRT Unicode = Dynamic Release CRT Unicode
+		Static Debug CRT = Static Debug CRT
+		Static Debug CRT Unicode = Static Debug CRT Unicode
+		Static Release CRT = Static Release CRT
+		Static Release CRT Unicode = Static Release CRT Unicode
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Debug CRT.ActiveCfg = Dynamic Debug CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Debug CRT.Build.0 = Dynamic Debug CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Debug CRT Unicode.ActiveCfg = Dynamic Debug CRT Unicode|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Debug CRT Unicode.Build.0 = Dynamic Debug CRT Unicode|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Release CRT.ActiveCfg = Dynamic Release CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Release CRT.Build.0 = Dynamic Release CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Release CRT Unicode.ActiveCfg = Dynamic Release CRT Unicode|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Dynamic Release CRT Unicode.Build.0 = Dynamic Release CRT Unicode|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Debug CRT.ActiveCfg = Static Debug CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Debug CRT.Build.0 = Static Debug CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Debug CRT Unicode.ActiveCfg = Static Debug CRT Unicode|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Debug CRT Unicode.Build.0 = Static Debug CRT Unicode|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Release CRT.ActiveCfg = Static Release CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Release CRT.Build.0 = Static Release CRT|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Release CRT Unicode.ActiveCfg = Static Release CRT Unicode|Win32
+		{0CA79E17-BF3A-488D-8B8D-AB5E6CE31224}.Static Release CRT Unicode.Build.0 = Static Release CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Debug CRT.ActiveCfg = Dynamic Debug CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Debug CRT.Build.0 = Dynamic Debug CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Debug CRT Unicode.ActiveCfg = Dynamic Debug CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Debug CRT Unicode.Build.0 = Dynamic Debug CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Release CRT.ActiveCfg = Dynamic Release CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Release CRT.Build.0 = Dynamic Release CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Release CRT Unicode.ActiveCfg = Dynamic Release CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Dynamic Release CRT Unicode.Build.0 = Dynamic Release CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Debug CRT.ActiveCfg = Static Debug CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Debug CRT.Build.0 = Static Debug CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Debug CRT Unicode.ActiveCfg = Static Debug CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Debug CRT Unicode.Build.0 = Static Debug CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Release CRT.ActiveCfg = Static Release CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Release CRT.Build.0 = Static Release CRT|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Release CRT Unicode.ActiveCfg = Static Release CRT Unicode|Win32
+		{DFD9FB84-54FA-4FE6-BFE5-1BB6BF7A0A13}.Static Release CRT Unicode.Build.0 = Static Release CRT Unicode|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
