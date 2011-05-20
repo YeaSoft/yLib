@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{d844364a-07f5-4ba6-ad64-d1afd9870a81}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2b1714a5-885a-4f4e-b4a0-3da49f13b5bc}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{4a7f457f-189e-4761-9518-f5fe56b6ac39}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="yLib Header Files">
+      <UniqueIdentifier>{7f3b041b-888a-423d-9610-79743bbcc3dc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EventLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MailSlots.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NamedPipes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sample1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Threads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Sample1.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="SampleMsg1.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sample1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleRes1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yAfc.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yAfcBase.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yArray.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yBaseApp.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yBuffer.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yConApp.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yConsole.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yCrc32.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yEventSource.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yFileObjects.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yFiles.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yFileTools.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yFixStr.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yFlags.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yHandle.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yLib.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yLibBase.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yLogging.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yMailSlots.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yMailSlotServer.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yPipes.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yPipeServer.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yRegistry.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\ySCM.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\ySecDesc.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\ySrvApp.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\ySync.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yThread.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yTokens.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yUNC.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\yVersInfo.h">
+      <Filter>yLib Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="SampleMsg1.mc">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MSG00001.bin">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MSG00007.bin">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MSG00010.bin">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
