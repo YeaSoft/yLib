@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/04/26 08:54:41  leopoldo
+ * Added support for renamable services
+ *
  * Revision 1.3  2001/04/12 18:50:16  leopoldo
  * Added YSrvApp::OnCrtDebugReport implementation which excludes
  * interactive operations
@@ -164,12 +167,14 @@ YLB_INLINE BOOL YServiceLogic::OnUserControl (DWORD dwCtrlCode)
 }
 
 #if(_WIN32_WINNT >= 0x0500)
-YLB_INLINE void YServiceLogic::OnServiceParamChange ()
+YLB_INLINE BOOL YServiceLogic::OnServiceParamChange ()
 {
+	return TRUE;
 }
 
-YLB_INLINE void YServiceLogic::OnServiceNetBindChange ()
+YLB_INLINE BOOL YServiceLogic::OnServiceNetBindChange ()
 {
+	return TRUE;
 }
 
 #endif

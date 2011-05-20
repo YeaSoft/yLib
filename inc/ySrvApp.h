@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/04/26 09:31:29  leopoldo
+ * Improved usage support
+ *
  * Revision 1.4  2001/04/26 08:54:41  leopoldo
  * Added support for renamable services
  *
@@ -231,8 +234,8 @@ public:
 	virtual BOOL				OnServiceContinue		();
 	virtual BOOL				OnUserControl			(DWORD dwCtrlCode);
 #if(_WIN32_WINNT >= 0x0500)
-	virtual void				OnServiceParamChange	();
-	virtual void				OnServiceNetBindChange	();
+	virtual BOOL				OnServiceParamChange	();
+	virtual BOOL				OnServiceNetBindChange	();
 #endif
 	virtual void				OnServiceError			(DWORD dwWin32Error, DWORD dwServiceError);
 	virtual void				OnServiceEnd			(BOOL bSystemShudown, BOOL bRegularExit);
