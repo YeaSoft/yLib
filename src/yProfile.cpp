@@ -32,6 +32,10 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2002/11/29 14:31:13  leopoldo
+ * Fixed bad implementation of YProfile::ValueExists
+ * Fixed bad implementation of YProfile::Create
+ *
  * Revision 1.5  2002/08/20 18:48:17  leopoldo
  * Added enumeration methods
  *
@@ -278,7 +282,7 @@ LPCTSTR YProfile::GetValue (LPCTSTR lpszValuePair, LPTSTR pszBuffer, UINT cbBuff
 		*lpPtr = 0;
 	}
 
-	if ( !(lpPtr = _tcschr (lpszValuePair, _T('='))) ) {
+	if ( !(lpPtr = const_cast<LPTSTR>(_tcschr (lpszValuePair, _T('=')))) ) {
 		// snh
 		if ( pdwType ) {
 			*pdwType = REG_NONE;
@@ -531,7 +535,7 @@ bool YProfile::StringSet (LPCTSTR lpszValueName, LPCTSTR lpszValue) const
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

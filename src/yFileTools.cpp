@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2003/02/17 12:01:38  leopoldo
+ * Fixed bad time transformation
+ *
  * Revision 1.3  2001/10/05 13:30:48  leopoldo
  * Added harder delete options to file and directory delete functions
  *
@@ -167,7 +170,7 @@ BOOL YFileNameHandler::SplitPath (LPCTSTR lpString, LPTSTR lpPath, LPTSTR lpName
 // @xref <mf YFileNameHandler::SplitPath>, <c YFileNameHandler>
 BOOL YFileNameHandler::SplitName (LPCTSTR lpString, LPTSTR lpName, LPTSTR lpExt)
 {
-	LPTSTR lpPtr = _tcsrchr (lpString, _T('.'));
+	LPTSTR lpPtr = const_cast<LPTSTR>(_tcsrchr (lpString, _T('.')));
 	if ( lpPtr ) {
 		if ( lpName ) {
 			_tcsncpy (lpName, lpString, lpPtr - lpString);
@@ -886,7 +889,7 @@ static BOOL sfMakeTree (LPCTSTR pszDirName)
 	}
 
 	// dir does not exist
-	if ( (lpPtr = _tcsrchr (pszDirName, _T('\\'))) != 0 ) {
+	if ( (lpPtr = const_cast<LPTSTR>(_tcsrchr (pszDirName, _T('\\')))) != 0 ) {
 		// get parent dir
 		*lpPtr = 0;
 		if ( (pszDirName[0]) && ((pszDirName[1] != ':') || (pszDirName[2])) ) {
@@ -988,7 +991,7 @@ static BOOL sfCompressTree (LPCTSTR pszDirName, BOOL bCompress, BOOL bRecurse)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF
