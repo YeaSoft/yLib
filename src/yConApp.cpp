@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2001/04/26 09:34:08  leopoldo
+ * Fixed a very bad assertion
+ *
  * Revision 1.3  2001/04/20 12:53:01  leopoldo
  * Missed to call CommonConstructor in YConApp::YConApp(LPCTSTR...
  *
@@ -244,7 +247,7 @@ void YConApp::CommonConstructor ()
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+// LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

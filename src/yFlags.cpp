@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:05:00  leo
  * Initial revision
  *
@@ -47,7 +50,7 @@
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

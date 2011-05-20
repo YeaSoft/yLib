@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/10/05 13:31:27  leopoldo
+ * Fixed missing auto-instance-creation
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -858,7 +861,7 @@ UINT YPipeServer::OnRunThread ()
 #endif
 
 /// RCS STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

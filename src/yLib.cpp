@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2004/08/07 10:20:10  leopoldo
+ * Added YCommandLine::Shift
+ *
  * Revision 1.4  2001/09/26 11:14:09  leopoldo
  * Fixed UNICODE issues
  *
@@ -515,7 +518,7 @@ BOOL YRuntimeInfo::IsDerivedFrom (const YRuntimeInfo* pBaseClass) const
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

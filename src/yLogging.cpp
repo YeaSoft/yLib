@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.4  2002/08/04 14:53:13  leopoldo
+ * Added new functionality
+ *
  * Revision 1.3  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -264,7 +267,7 @@ BOOL YLogFileHandler::WriteToFile (LPCTSTR pszStr, int iLen /* = -1 */)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

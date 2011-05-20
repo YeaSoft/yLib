@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2001/05/10 10:26:27  leopoldo
+ * Fixed array bugs and harmonized YPtrArray
+ *
  * Revision 1.1  2001/05/06 18:32:16  leopoldo
  * Initial revision
  *
@@ -238,7 +241,7 @@ BOOL YCharArray::SetAllocatedSize (int nNewSize)
 }
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

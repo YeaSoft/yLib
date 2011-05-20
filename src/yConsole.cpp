@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/16 17:15:53  leopoldo
+ * Added support for reattachment of RTL output handles
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -157,7 +160,7 @@ YConsole & YConsole::operator<< (LPCWSTR lpsz)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

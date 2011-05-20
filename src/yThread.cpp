@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/03/23 11:12:05  leopoldo
+ * Changes in naming convention
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -250,7 +253,7 @@ unsigned YWorkerThread::WorkerThread ()
 
 
 /// RCS STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EOF

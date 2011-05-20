@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.10  2002/05/04 17:43:40  leopoldo
+ * Started making memory classes more modular
+ *
  * Revision 1.9  2001/09/06 11:57:08  leopoldo
  * Added new initialisation methods
  *
@@ -465,6 +468,8 @@ BOOL YDynamicBuffer::PopData (LPVOID lpData, int cbSize, LPINT pNumberOfBytesRea
 
 BOOL YDynamicBuffer::ExtractString (int nOffset, LPSTR pszData, int cbSize)
 {
+	LPSTR lpPtr;
+
 	if ( !pszData || (nOffset < 0) || ((m_cbContentSize - nOffset) < 1) || (cbSize < 2) ) {
 		if ( pszData && (cbSize > 0) ) {
 			*pszData = 0;
@@ -476,7 +481,7 @@ BOOL YDynamicBuffer::ExtractString (int nOffset, LPSTR pszData, int cbSize)
 	cbSize = min (m_cbContentSize - nOffset, cbSize - 1);
 
 	// copy the stuff
-	for ( LPSTR lpPtr = (LPSTR) (m_lpPtr + nOffset); *lpPtr && cbSize; lpPtr++, cbSize-- ) {
+	for ( lpPtr = (LPSTR) (m_lpPtr + nOffset); *lpPtr && cbSize; lpPtr++, cbSize-- ) {
 		*pszData = *lpPtr;
 	}
 	// zero terminate
@@ -502,6 +507,8 @@ BOOL YDynamicBuffer::ExtractString (int nOffset, LPSTR pszData, int cbSize)
 
 BOOL YDynamicBuffer::ExtractString (int nOffset, LPWSTR pszData, int cbSize)
 {
+	LPWSTR lpPtr;
+
 	if ( !pszData || (nOffset < 0) || ((m_cbContentSize - nOffset) < sizeof(WCHAR)) || (cbSize < 2) ) {
 		if ( pszData && cbSize ) {
 			*pszData = 0;
@@ -513,7 +520,7 @@ BOOL YDynamicBuffer::ExtractString (int nOffset, LPWSTR pszData, int cbSize)
 	cbSize = min ((int) ((m_cbContentSize - nOffset) / sizeof(WCHAR)), (cbSize - 1));
 
 	// copy the stuff
-	for ( LPWSTR lpPtr = (LPWSTR) (m_lpPtr + nOffset); *lpPtr && cbSize; lpPtr++, cbSize-- ) {
+	for ( lpPtr = (LPWSTR) (m_lpPtr + nOffset); *lpPtr && cbSize; lpPtr++, cbSize-- ) {
 		*pszData = *lpPtr;
 	}
 	// zero terminate
@@ -551,7 +558,7 @@ BOOL YDynamicBuffer::SetContentSize (int cbContentSize)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

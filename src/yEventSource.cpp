@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.2  2000/09/04 12:07:43  leopoldo
+ * Updated license to zlib/libpng
+ *
  * Revision 1.1  2000/05/26 14:04:56  leo
  * Initial revision
  *
@@ -142,12 +145,13 @@ BOOL YEventLogSource::SetOriginatorSID (LPCTSTR lpszUserName /* = NULL */)
 BOOL YEventLogSource::ReportVa (WORD wType, WORD wCategory, DWORD dwEventID, va_list va) const
 {
 	LPCTSTR		lpStrArr[256];
+	DWORD		dwCount;
 
 	// initialize with inserts
 	if ( m_dwNumInserts && m_lplpInserts ) {
 		memcpy (lpStrArr, m_lplpInserts, m_dwNumInserts * sizeof (LPCTSTR));
 	}
-	for ( DWORD dwCount = m_dwNumInserts; ((lpStrArr[dwCount] = va_arg (va, LPCTSTR)) != NULL) && (dwCount < (256 - m_dwNumInserts)); dwCount++ ) {
+	for ( dwCount = m_dwNumInserts; ((lpStrArr[dwCount] = va_arg (va, LPCTSTR)) != NULL) && (dwCount < (256 - m_dwNumInserts)); dwCount++ ) {
 		/*TUNIX*/
 	}
 	return ReportEvent (wType, wCategory, dwEventID, m_pSID, (WORD) dwCount, lpStrArr);
@@ -156,12 +160,13 @@ BOOL YEventLogSource::ReportVa (WORD wType, WORD wCategory, DWORD dwEventID, va_
 BOOL YEventLogSource::ReportVa (WORD wType, DWORD dwEventID, va_list va) const
 {
 	LPCTSTR		lpStrArr[256];
+	DWORD		dwCount;
 
 	// initialize with inserts
 	if ( m_dwNumInserts && m_lplpInserts ) {
 		memcpy (lpStrArr, m_lplpInserts, m_dwNumInserts * sizeof (LPCTSTR));
 	}
-	for ( DWORD dwCount = m_dwNumInserts; ((lpStrArr[dwCount] = va_arg (va, LPCTSTR)) != NULL) && (dwCount < (256 - m_dwNumInserts)); dwCount++ ) {
+	for ( dwCount = m_dwNumInserts; ((lpStrArr[dwCount] = va_arg (va, LPCTSTR)) != NULL) && (dwCount < (256 - m_dwNumInserts)); dwCount++ ) {
 		/*TUNIX*/
 	}
 	return ReportEvent (wType, m_wCategory, dwEventID, m_pSID, (WORD) dwCount, lpStrArr);
@@ -236,7 +241,7 @@ static BOOL sfUninstall (HKEY hStartKey, LPCTSTR lpSourceName)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

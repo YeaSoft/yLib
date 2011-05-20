@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2004/12/02 14:06:41  leopoldo
+ * Fixed corrupt return value for read/written bytes
+ *
  * Revision 1.5  2001/05/06 18:29:59  leopoldo
  * Improved YStdioFile::ReadString
  *
@@ -463,7 +466,7 @@ DWORD YStdioFile::GetPosition (LPDWORD lpdwPosHigh) const
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

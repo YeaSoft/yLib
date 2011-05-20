@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2002/08/20 18:48:31  leopoldo
+ * Added compare functions
+ *
  * Revision 1.1  2002/05/08 09:59:56  leo
  * Initial Sourceforge Revision
  *
@@ -268,7 +271,7 @@ int YVersInfo::CompareProductVersion (YVersInfo &src)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.3  2001/05/07 21:07:28  leopoldo
+ * Improvements
+ *
  * Revision 1.2  2000/09/04 12:07:43  leopoldo
  * Updated license to zlib/libpng
  *
@@ -185,7 +188,7 @@ DWORD YCrc32::GetFileCrc (LPCTSTR lpName)
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF

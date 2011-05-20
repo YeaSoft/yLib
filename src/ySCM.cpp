@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.6  2001/05/25 16:32:04  leopoldo
+ * Added configuration management methods
+ *
  * Revision 1.5  2001/05/25 15:13:35  leopoldo
  * Fixed access rights
  *
@@ -726,7 +729,7 @@ BOOL YService::SetDisplayName (LPCTSTR lpDisplayName) const
 #endif
 
 /// IDENTITY STUFF ///
-#pragma comment( exestr, "$Id$" )
+//LPCTSTR lpComment = _T("$Id$");
 
 //
 // EoF
