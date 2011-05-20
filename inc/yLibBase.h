@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.9  2004/08/07 10:21:01  leopoldo
+ * Added YCommandLine::Shift
+ *
  * Revision 1.8  2004/08/05 13:14:59  leopoldo
  * Improved compatibility: Counters in YCommandLineInfo are now signed
  *
@@ -401,6 +404,8 @@ class	YObject;
 #endif
 #endif
 #endif
+
+#pragma warning(disable : 4996)
 
 /*=============================================================================
  * USEFUL MACROS
