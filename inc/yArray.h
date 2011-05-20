@@ -32,6 +32,9 @@
  * HISTORY		: =============================================================
  * 
  * $Log$
+ * Revision 1.5  2001/05/10 10:26:15  leopoldo
+ * Fixed array bugs and harmonized YPtrArray
+ *
  * Revision 1.4  2001/05/09 23:12:02  leopoldo
  * Added some inactive stuff
  *
@@ -447,7 +450,7 @@ template<class TYPE, class CREATIONTYPE>
 int YTypedAllocatedPtrArray<TYPE, CREATIONTYPE>::RemoveAt (int nIndex, int nCount, BOOL bFreeAllocated)
 {
 	if ( bFreeAllocated ) {
-		int nTop = min(nIndex + nCount,m_nSize);
+		int nTop = MIN(nIndex + nCount,m_nSize);
 		for ( int i = nIndex; (i >= 0) && (i < nTop); i++ ) {
 			TYPE lpPtr = GetAt (i);
 			if ( lpPtr ) {
@@ -720,10 +723,10 @@ BOOL YDataArray<TYPE>::SetAllocatedSize (int nNewSize)
 		if ( (pData = (TYPE *) malloc (nByteSize)) == NULL ) {
 			return FALSE;
 		}
-		memcpy (pData, m_pData, min (m_nSize, nNewSize) * sizeof (TYPE));
+		memcpy (pData, m_pData, MIN (m_nSize, nNewSize) * sizeof (TYPE));
 		free (m_pData);
 		m_pData				= pData;
-		m_nSize				= min (m_nSize, nNewSize);
+		m_nSize				= MIN (m_nSize, nNewSize);
 		m_nAllocatedSize	= nNewSize;
 	}
 	return TRUE;
@@ -1025,10 +1028,10 @@ BOOL YObjectArray<TYPE,ARG_TYPE>::SetAllocatedSize (int nNewSize)
 		if ( (pData = (TYPE *) malloc (nByteSize)) == NULL ) {
 			return FALSE;
 		}
-		memcpy (pData, m_pData, min (m_nSize, nNewSize) * sizeof (TYPE));
+		memcpy (pData, m_pData, MIN (m_nSize, nNewSize) * sizeof (TYPE));
 		free (m_pData);
 		m_pData				= pData;
-		m_nSize				= min (m_nSize, nNewSize);
+		m_nSize				= MIN (m_nSize, nNewSize);
 		m_nAllocatedSize	= nNewSize;
 	}
 	return TRUE;
